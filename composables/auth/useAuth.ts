@@ -1,3 +1,4 @@
+import type { RegisterResponse, RegisterCredentials } from '~/types/auth'
 import type { AuthUser, AuthMenu, LoginCredentials, LoginResponse } from '../../services/authService'
 import AuthService from '../../services/authService'
 
@@ -40,7 +41,37 @@ export const useAuth = () => {
       loading.value = false
     }
   }
-
+  const register = async (credentials: RegisterCredentials): Promise<RegisterResponse> => {
+    loading.value = true
+    error.value = null
+    try {
+      const response: RegisterResponse = await authService.register(credentials)
+      user.value = response.data.user as AuthUser
+      isAuthenticated.value = true
+      menu.value = authService.getMenu()
+      return response
+    }
+    catch (err) {
+      error.value = err.data.message
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+  const loginCliente = async (credentials: LoginCredentials): Promise<LoginResponse> => {
+    loading.value = true
+    error.value = null
+    try {
+      const response: LoginResponse = await authService.loginCliente(credentials)
+      return response
+    }
+    catch (err) {
+      error.value = err.data.message
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
   // Logout function
   const logout = async () => {
     loading.value = true
@@ -94,6 +125,8 @@ export const useAuth = () => {
     getMenu,
     checkAuth,
     getToken,
-    initializeAuth
+    initializeAuth,
+    register,
+    loginCliente
   }
 } 

@@ -1,9 +1,11 @@
+import type { ErrorResponse } from '~/types/auth'
+
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig()
-  
+
   const API_CONFIG = {
     baseURL: config.public.apiBaseUrl,
-    timeout: 3*60*1000,
+    timeout: 3 * 60 * 1000,
     headers: {
       'Content-Type': 'application/json',
     }
@@ -26,26 +28,26 @@ export default defineNuxtPlugin(() => {
 
   // Función para hacer llamadas a la API con configuración consistente
   const apiCall = async <T>(
-    endpoint: string, 
+    endpoint: string,
     options: any = {}
   ): Promise<T> => {
     try {
       const token = getAuthToken()
       const isFormData = options.body instanceof FormData
-      
+
       const finalHeaders = {
         ...(isFormData ? {} : API_CONFIG.headers),
         ...options.headers,
         ...(token && { 'Authorization': `Bearer ${token}` })
       }
-      
+
       const config = {
         baseURL: API_CONFIG.baseURL,
         timeout: API_CONFIG.timeout,
         headers: finalHeaders,
         ...options
       }
-      
+
       config.headers = finalHeaders
 
       return await $fetch<T>(endpoint, config)
@@ -53,7 +55,7 @@ export default defineNuxtPlugin(() => {
       if ((error.status === 401 || error.statusCode === 401) && !endpoint.includes('/api/auth/login')) {
         handleSessionExpired()
       }
-   
+
       throw error
     }
   }
@@ -63,10 +65,15 @@ export default defineNuxtPlugin(() => {
     endpoint: string,
     credentials: { No_Usuario: string; No_Password: string }
   ): Promise<T> => {
-    return await apiCall<T>(endpoint, {
-      method: 'POST',
-      body: credentials
-    })
+    try {
+      return await apiCall<T>(endpoint, {
+        method: 'POST',
+        body: credentials
+      })
+    } catch (error: ErrorResponse | any) {
+      console.error('Error in authApiCall:', error.message,error.data)
+      throw error
+    }
   }
 
   return {

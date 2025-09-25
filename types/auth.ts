@@ -25,6 +25,24 @@ export interface LoginResponse {
   message?: string
   error?: string
 }
+export interface RegisterCredentials {
+  nombre: string
+  apellido: string
+  email: string
+  whatsapp: string
+  password: string
+  repeatPassword: string
+}
+
+export interface RegisterResponse {
+  success: boolean
+  data: {
+    user: User
+    token: string
+  } | null
+  message?: string
+  error?: string
+}
 
 export interface ApiLoginResponse {
   success: boolean
@@ -104,3 +122,8 @@ export interface UpdateProfileRequest {
   position?: string
   avatar?: string
 } 
+export interface ErrorResponse {
+  status: string
+  message: string
+
+}

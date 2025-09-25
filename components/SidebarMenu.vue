@@ -80,6 +80,7 @@
                           </div>
 
                           <div v-show="expanded[String(child.id)]" class="pl-6 mt-1 space-y-1">
+                            
                             <template v-for="sub in child.children" :key="sub.id">
                               <UButton :label="sub.name" :icon="sub.icon" variant="ghost"
                                 class="w-full justify-start text-sm gap-2 py-1 px-2 rounded-md"
@@ -91,6 +92,7 @@
 
                         <!-- Child simple -->
                         <div v-else>
+                          
                           <UButton :label="getCustomMenuName(item.name, child.name)" :icon="child.icon" variant="ghost"
                             class="w-full justify-start text-sm gap-2 py-2 px-2 rounded-md"
                             :class="isActiveRoute(child.route) ? 'text-primary-600 dark:text-primary-400 font-medium' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"

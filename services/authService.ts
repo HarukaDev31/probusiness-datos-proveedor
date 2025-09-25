@@ -1,4 +1,4 @@
-import type { User, LoginCredentials as _LoginCredentials, LoginResponse as _LoginResponse, ApiLoginResponse } from '../types/auth'
+import type { User, LoginCredentials as _LoginCredentials, LoginResponse as _LoginResponse, ApiLoginResponse, RegisterCredentials, RegisterResponse } from '../types/auth'
 import { websocketRoles } from '../config/websocket/channels'
 import { useEcho } from '../composables/websocket/useEcho'
 
@@ -201,7 +201,118 @@ class AuthService {
       }
     }
   }
+  async loginCliente(credentials: _LoginCredentials): Promise<_LoginResponse> {
+    try {
+      if (!this.nuxtApp) throw new Error('Nuxt app not initialized')
 
+      const response = await this.nuxtApp.$api.auth<any>('/api/auth/clientes/login', {
+        No_Usuario: credentials.email,
+        No_Password: credentials.password
+      })
+
+      if (response.status === 'success' && response.token && response.user) {
+        const user: AuthUser = {
+          id: response.user.ID_Usuario,
+          email: response.user.Txt_Email || response.user.No_Usuario,
+          name: response.user.No_Usuario,
+          role: response.user.role || 'user',
+          avatar: null,
+          lastLogin: response.user.Fe_Creacion,
+          isActive: response.user.Nu_Estado === 1,
+          raw: response.user
+        }
+        const token = response.token
+        const menu: AuthMenu[] = response.menus || []
+
+        this.currentUser = user
+        this.token = token
+        //if menu.show_father=0 then remove menu.Hijos
+        menu.forEach(
+          (item) => {
+            if (item.show_father == 0) {
+              item.Hijos = []
+            }
+            item.route = item.url_intranet_v2 || ''
+          }
+        )
+        this.menu = menu
+        this.saveToStorage()
+
+        // Inicializar Echo y configurar canales
+        await this.initializeEcho()
+
+        return {
+          success: true,
+          data: {
+            user: user as any,
+            token
+          },
+          message: response.message || 'Login exitoso'
+        }
+      } else {
+        return {
+          success: false,
+          data: null,
+          error: response.message || 'Credenciales incorrectas'
+        }
+      }
+    } catch (error: any) {
+      return {
+        success: false,
+        data: null,
+        error: error.message || 'Error de conexión'
+      }
+    }
+  }
+  async register(credentials: RegisterCredentials): Promise<RegisterResponse> {
+    try {
+      if (!this.nuxtApp) throw new Error('La aplicación Nuxt no está inicializada')
+      // Corregido para usar los tipos correctos y evitar el uso de <any>
+      const response = await this.nuxtApp.$api.auth('/api/auth/clientes/register', {
+        nombre: credentials.nombre,
+        apellido: credentials.apellido,
+        email: credentials.email,
+        whatsapp: credentials.whatsapp, 
+        password: credentials.password,
+        repeatPassword: credentials.repeatPassword
+      })
+      if (response.success && response.token && response.user) {
+        console.log(response)
+        const user: AuthUser = {
+          id: response.user.ID_Usuario,
+          email: response.user.Txt_Email || response.user.No_Usuario,
+          name: response.user.No_Usuario,
+          role: response.user.role || 'user',
+          avatar: null,
+          lastLogin: response.user.Fe_Creacion,
+          isActive: response.user.Nu_Estado === 1,
+          raw: response.user
+        }
+        const token = response.token
+        const menu: AuthMenu[] = response.menus || []
+
+        this.currentUser = user
+        this.token = token
+        this.menu = menu
+        this.saveToStorage()
+
+        // Inicializar Echo y configurar canales
+        await this.initializeEcho()
+
+        return {
+          success: true,
+          data: {
+            user: user as any,
+            token
+          },
+          message: response.message || 'Registro exitoso'
+        }
+      }
+    }
+    catch (error: any) {
+      throw error
+    }
+  }
   async logout(): Promise<void> {
     try {
       if (this.isEchoInitialized) {

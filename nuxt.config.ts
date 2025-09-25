@@ -2,14 +2,14 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxt/ui'],
+  modules: ['@nuxt/ui', '@hypernym/nuxt-anime'],
   typescript: {
     strict: false,
     typeCheck: false,
     shim: false
   },
   ssr: false,
-  
+
   // Configuración de CSS
   css: [
     '../assets/css/tailwind.css'
@@ -17,14 +17,14 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'ProBusiness - Intranet | Sistema de gestion Interna',
-      
+
       link: [
         { rel: 'icon', type: 'image/x-icon', href: 'https://intranet.probusiness.pe/assets/img/logos/probusiness.png' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: 'https://intranet.probusiness.pe/assets/img/logos/probusiness.png' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: 'https://intranet.probusiness.pe/assets/img/logos/probusiness.png' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: 'https://intranet.probusiness.pe/assets/img/logos/probusiness.png' },
         { rel: 'manifest', href: 'https://intranet.probusiness.pe/assets/img/logos/probusiness.png' },
-       
+
       ],
 
     },
@@ -42,18 +42,18 @@ export default defineNuxtConfig({
       ],
     }
   },
-  
+
   // Configuración de iconos
   icon: {
     // Usar iconos locales instalados
     collections: ['heroicons', 'fa', 'vscode-icons', 'mdi', 'tabler']
   },
- 
+
   // Configuración de variables de entorno
   runtimeConfig: {
     // Variables privadas (solo servidor)
     apiSecret: process.env.API_SECRET,
-    
+
     // Variables públicas (cliente y servidor)
     public: {
       apiBaseUrl: process.env.NUXT_API_BASE_URL || 'http://localhost:8000',
@@ -65,5 +65,5 @@ export default defineNuxtConfig({
     }
   },
 
- 
+
 })
