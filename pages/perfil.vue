@@ -125,7 +125,6 @@
   })
   import { ref, onMounted, watch } from 'vue'
   import { getUserAccount, updateUserAccount } from '~/services/user-account-service'
-  import * as locationService from '~/services/location-service'
   
   const user = ref({})
   const editUser = ref({})
@@ -153,16 +152,7 @@
     }
   }
   
-  const loadDepartamentos = async () => {
-    departamentos.value = await locationService.getDepartamentos()
-  }
-  const loadProvincias = async (departamentoId) => {
-    provincias.value = departamentoId ? await locationService.getProvincias(departamentoId) : []
-  }
-  const loadDistritos = async (provinciaId) => {
-    distritos.value = provinciaId ? await locationService.getDistritos(provinciaId) : []
-  }
-  
+
   const onDepartamentoChange = async () => {
     editUser.value.provincia_id = ''
     editUser.value.distrito_id = ''
