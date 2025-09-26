@@ -40,19 +40,19 @@ const tableColumns: ref<TableColumn<any>[]> = ref([
     cell: ({ row }) => h('span', { class: 'font-medium' }, `Contenedor #${row.getValue('carga')}`)
   },
   {
-    accessorKey: 'closeDate',
+    accessorKey: 'fecha_cierre',
     header: 'Fecha Cierre',
-    cell: ({ row }) => h('span', {}, formatDate(row.getValue('fecha_cierre')))
+    cell: ({ row }) => h('span', {}, formatDateTimeToDmy(row.getValue('fecha_cierre')))
   },
   {
-    accessorKey: 'arrivalDate',
+    accessorKey: 'fecha_arribo',
     header: 'Fecha Arribo',
-    cell: ({ row }) => h('span', {}, formatDate(row.getValue('fecha_arribo')))
+    cell: ({ row }) => h('span', {}, formatDateTimeToDmy(row.getValue('fecha_arribo')))
   },
   {
-    accessorKey: 'deliveryDate',
+    accessorKey: 'fecha_entrega',
     header: 'Fecha Entrega',
-    cell: ({ row }) => h('span', {}, formatDate(row.getValue('fecha_entrega')))
+    cell: ({ row }) => h('span', {}, formatDateTimeToDmy(row.getValue('fecha_entrega')))
   },
   {
     accessorKey: 'qty_box',
@@ -83,7 +83,6 @@ const tableColumns: ref<TableColumn<any>[]> = ref([
         class: 'flex justify-center items-center gap-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors'
       }, [
         h(UIcon, { name: 'i-heroicons-eye', class: 'w-4 h-4 text-gray-600 dark:text-gray-400' }),
-        h('span', { class: 'text-sm text-gray-600 dark:text-gray-400' }, 'Ver seguimiento')
       ])
     }
   },

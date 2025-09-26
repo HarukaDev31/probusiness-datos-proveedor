@@ -1,6 +1,8 @@
 import { TrayectoService } from "~/services/clientes/importaciones/trayectoService"
 import type { PaginationInfo } from "~/types/data-table"
 import type { Trayecto } from "~/types/clientes/importaciones/trayecto"
+import type { Provider, FileAlmacenInspection } from "~/types/clientes/importaciones/inspeccion"
+import type { Seguimiento } from "~/types/clientes/importaciones/seguimiento"
 export const useTrayecto = () => {
     const trayectos = ref<Trayecto[]>([])
     const loading = ref(false)
@@ -14,7 +16,12 @@ export const useTrayecto = () => {
         to: 0
     })
     const search = ref('')
-
+    const providers=ref<Provider[]>([])
+    const filesAlmacenInspection=ref<FileAlmacenInspection[]>([])
+    const tabs=ref<{ id: string; label: string; value: string }[]>([])
+    const activeTab=ref<string>('')
+    const activeFilesAlmacenInspection=ref<FileAlmacenInspection[]>([])
+    const seguimientos=ref<Seguimiento[]>([])
     const getTrayectos = async () => {
         try {
             const params: any = {
@@ -33,6 +40,49 @@ export const useTrayecto = () => {
         } finally {
             loading.value = false
         }
+        }
+    const getInspeccion = async (uuid: string) => {
+        try {
+            loading.value = true
+            const response = await TrayectoService.getInspeccion(uuid)
+            providers.value = response.data.providers
+            filesAlmacenInspection.value = response.data.files_almacen_inspection
+            await procesarProveedores(response.data)
+            if(tabs.value.length > 0) {
+                await cambiarProveedor(tabs.value[0]?.value || '')
+            }
+        } catch (err: any) {
+            error.value = err.message
+            console.error('Error en getInspeccion:', err)
+        } finally {
+            loading.value = false
+        }
+        
+    }
+    const procesarProveedores = async (data: any) => {
+        providers.value = data.providers
+        tabs.value = data.providers.map((provider: Provider) => ({
+            id: provider.id.toString(),
+            label: provider.code_supplier,
+            value: provider.code_supplier
+        }))
+    }
+    const cambiarProveedor = async (codeSupplier: string) => {
+        activeTab.value = codeSupplier
+        const proveedor = providers.value.find(p => p.code_supplier.toString() === codeSupplier)
+        console.log(proveedor,'proveedor')
+        if (proveedor) {
+            activeFilesAlmacenInspection.value = filesAlmacenInspection.value.filter(f => f.id_proveedor === proveedor.id)
+        }
+    }
+    const getSeguimiento = async (uuid: string) => {
+        try {
+            const response = await TrayectoService.getSeguimiento(uuid)
+            seguimientos.value = response.data
+        }catch(err: any) {
+            error.value = err.message
+            console.error('Error en getSeguimiento:', err)
+        }
     }
     return {
         trayectos,
@@ -40,6 +90,15 @@ export const useTrayecto = () => {
         error,
         pagination,
         search,
-        getTrayectos
+        getTrayectos,
+        getInspeccion,
+        providers,
+        filesAlmacenInspection,
+        tabs,
+        activeTab,
+        activeFilesAlmacenInspection,
+        cambiarProveedor,
+        getSeguimiento,
+        seguimientos
     }
 }

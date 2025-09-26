@@ -52,6 +52,7 @@ export const useAuth = () => {
       return response
     }
     catch (err) {
+      console.log(err,'err')
       error.value = err.data.message
       throw err
     } finally {

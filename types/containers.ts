@@ -29,14 +29,11 @@ export interface ContainerJourney extends Container {
     seekingUuid: string | null
 }
 export interface ContainerJourneyStatus {
-    id: number,
+    key: string,
     name: string,
+    status: string,
+    description: string,
     date: string,
-    status: number,
-    title: string,
-    description?: string,
-    icon: string,
-    containerId: number,
 }
 export interface ContainerInspectionProviders{
     id:number,

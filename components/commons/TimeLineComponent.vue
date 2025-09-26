@@ -6,6 +6,7 @@
       color="success"
       size="md"
       orientation="vertical"
+      
       class="w-full max-w-2xl mx-auto"
     />
   </div>
@@ -30,18 +31,19 @@ const props = defineProps({
 const timelineItems = computed<TimelineItem[]>(() => {
   return props.events.map((event, index) => ({
     date: formatDate(event.date),
-    title: event.title,
-    description: event.description || `${event.name} - ${event.status === 1 ? 'Completado' : 'Pendiente'}`,
-    icon: getStatusIcon(event.status, event.icon),
+    title: event.name,
+    description: event.description || `${event.name} `,
+    icon: getStatusIcon(event.status, 'i-heroicons-clock'),
     value: index,
     class: getItemClass(event.status)
   }))
 })
 
-// Calcular el índice del elemento activo (último completado)
+//obtener indices activos de los eventos PENDIENTE y COMPLETADO
 const activeItemIndex = computed(() => {
-  const lastCompletedIndex = props.events.findLastIndex(event => event.status === 1)
-  return lastCompletedIndex >= 0 ? lastCompletedIndex : 0
+ //last item with status COMPLETADO
+  const lastCompletedIndex = props.events.findLastIndex(event => event.status === 'COMPLETADO')
+  return lastCompletedIndex >= 0 ? lastCompletedIndex : -1
 })
 
 // Función para formatear fechas
@@ -57,21 +59,23 @@ const formatDate = (dateString: string) => {
 }
 
 // Función para obtener el icono según el estado
-const getStatusIcon = (status: number, defaultIcon: string) => {
-  if (status === 1) {
+  const getStatusIcon = (status: string, defaultIcon: string) => {
+  if (status === 'COMPLETADO') {
     return 'i-heroicons-check-circle'
-  } else if (status === 0) {
+  } else if (status === 'PENDIENTE') {
     return 'i-heroicons-clock'
-  }
-  return defaultIcon || 'i-heroicons-circle-stack'
+  } 
+  return defaultIcon || 'i-heroicons-clock  '
 }
 
 // Función para obtener clases CSS según el estado
-const getItemClass = (status: number) => {
-  if (status === 1) {
+const getItemClass = (status: string) => {
+  if (status === 'COMPLETADO') {
     return 'text-green-600 dark:text-green-400'
-  } else if (status === 0) {
+  } else if (status === 'PENDIENTE') {
     return 'text-gray-500 dark:text-gray-400'
+  } else if (status === 'COMPLETADO') {
+    return 'text-green-600 dark:text-green-400'
   }
   return 'text-blue-600 dark:text-blue-400'
 }

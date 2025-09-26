@@ -1,7 +1,7 @@
 <template>
     <div class="p-6">
         <PageHeader title="" subtitle="" icon="" :hide-back-button="false"
-            @back="navigateTo(`/cargaconsolidada/abiertos/clientes/${cliente?.id_contenedor}`)">
+            @back="navigateTo(`/importaciones/trayecto/`)">
             <template #actions>
                 <!--button save-->
                 <UButton label="Guardar cambios" color="primary" variant="solid" icon="i-heroicons-arrow-down-tray"
@@ -161,29 +161,12 @@
             </div>
         </div>
 
-        <!-- Error state -->
-        <div v-else-if="error" class="mt-6">
-            <UCard class="bg-red-50 border-red-200">
-                <div class="flex items-center gap-2 text-red-800">
-                    <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5" />
-                    <span>{{ error }}</span>
-                </div>
-            </UCard>
-        </div>
-
+        
         <!-- Main content -->
-        <div v-else-if="hasData" class="mt-6 ">
-            <div class="mb-6  border-gray-200 rounded-lg p-6 border-b-2 border-gray-200">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <span class=" font-semibold">{{ cliente?.nombre }}</span>
-                    </div>
-
-
-                </div>
-            </div>
+        <div  class="mt-6 ">
+            
             <!-- Tabs de proveedores -->
-            <div v-if="hasProveedores" class="mb-6">
+            <div v-if="providers?.length > 0" class="mb-6">
                 <UTabs v-model="activeTab" :items="tabs" size="md" variant="pill" 
                 :class="{ 'w-200': tabs.length >=3, 'w-50': tabs.length <3, 'w-300': tabs.length >= 5 }"
 
@@ -191,150 +174,15 @@
                     @update:model-value="handleTabChange" />
             </div>
 
-            <!-- Información del cliente -->
-
 
             <!-- Contenido por proveedor -->
-            <div v-if="proveedorActivo" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div v-if="activeFilesAlmacenInspection.length > 0" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Sección de Documentación -->
-                <UCard class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md " :class="{ 'col-span-2': currentRole === ROLES.COORDINACION }">
-                    <template #header>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <UIcon name="i-heroicons-folder" class="w-5 h-5 text-gray-500"  v-if="currentRole !== ROLES.DOCUMENTACION" />
-
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                    Documentación {{ currentRole === ROLES.DOCUMENTACION ? 'Perú' : '' }}
-                                </h3>
-                                <img  v-if="currentRole === ROLES.DOCUMENTACION" :src="CUSTOMIZED_ICONS_URL['PERU']" alt="Flag" class="w-5 h-5" />
-                                <UBadge v-if="hasUnsavedChanges" color="warning" variant="subtle" size="sm">
-                                    Cambios sin guardar
-                                </UBadge>
-                            </div>
-                            <div class="flex gap-2">
-
-                                <UButton label="Nuevo Documento" color="warning" variant="solid" icon="i-heroicons-plus"
-                                    size="sm" v-if="currentRole === ROLES.COORDINACION"
-                                    @click="handleNuevoDocumento" />
-                            </div>
-                        </div>
-                    </template>
-
+                
+                <UCard class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                   
                     <div class="space-y-4">
-                        <!-- Campos de volumen y valor -->
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Volumen documento
-                                </label>
-                                <UInput v-model="proveedorActivo.volumen_doc" type="number" placeholder="0"
-                                    class="w-full" @update:model-value="handleVolumenChange"
-                                    :disabled="!isCoordinacion" />
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Valor documento
-                                </label>
-                                <UInput v-model="proveedorActivo.valor_doc" type="number" placeholder="$ 0"
-                                    class="w-full" @update:model-value="handleValorChange"
-                                    :disabled="!isCoordinacion" />
-                            </div>
-                        </div>
-
-                        <!-- Área de carga de Factura Comercial -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Factura Comercial
-                            </label>
-                            <FileUploader :accepted-types="['.xlsx', '.png', '.jpg', '.jpeg','.pdf']" :immediate="false" :disabled="!isCoordinacion"
-                                :custom-message="'Selecciona o arrastra tu archivo aquí'"
-                                :show-remove-button="currentRole === ROLES.COORDINACION" :initial-files="proveedorActivo.factura_comercial ? [{
-                                    id: proveedorActivo.id, // debe ser número
-                                    file_name: 'Factura Comercial',
-                                    file_url: proveedorActivo.factura_comercial,
-                                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // tipo MIME si está disponible, si no dejar vacío
-                                    size: 0, // tamaño en bytes si está disponible, si no dejar en 0
-                                    lastModified: 0, // timestamp si está disponible, si no dejar en 0
-                                    file_ext: 'xlsx' // extensión si está disponible, si no dejar vacío
-                                }] : []" @files-selected="handleFacturaComercial"
-                                @file-removed="handleRemoveFacturaComercial" />
-                        </div>
-
-                        <!-- Área de carga de Packing List -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Packing List
-                            </label>
-                            <FileUploader :accepted-types="['.xlsx', '.png', '.jpg', '.jpeg','.pdf']"
-                                :custom-message="'Selecciona o arrastra tu archivo aquí'" :immediate="false" :disabled="!isCoordinacion"
-                                :show-remove-button="currentRole === ROLES.COORDINACION" :initial-files="proveedorActivo.packing_list ? [{
-                                    id: proveedorActivo.id, // debe ser número
-                                    file_name: 'Packing List',
-                                    file_url: proveedorActivo.packing_list,
-                                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // tipo MIME si está disponible, si no dejar vacío
-                                    size: 0, // tamaño en bytes si está disponible, si no dejar en 0
-                                    lastModified: 0, // timestamp si está disponible, si no dejar en 0
-                                    file_ext: 'xlsx' // extensión si está disponible, si no dejar vacío
-                                }] : []" @files-selected="handlePackingList" @file-removed="handleRemovePackingList" />
-                        </div>
-
-                        <!-- Área de carga de Excel Confirmación -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Excel Confirmación
-                            </label>
-                            <FileUploader :accepted-types="['.xlsx', '.png', '.jpg', '.jpeg','.pdf']" :immediate="false" :disabled="!isCoordinacion"
-                                :show-remove-button="currentRole === ROLES.COORDINACION"
-                                :custom-message="'Selecciona o arrastra tu archivo aquí'" :initial-files="proveedorActivo.excel_confirmacion ? [{
-                                    id: proveedorActivo.id, // debe ser número
-                                    file_name: 'Excel Confirmación',
-                                    file_url: proveedorActivo.excel_confirmacion,
-                                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // tipo MIME si está disponible, si no dejar vacío
-                                    size: 0, // tamaño en bytes si está disponible, si no dejar en 0
-                                    lastModified: 0, // timestamp si está disponible, si no dejar en 0
-                                    file_ext: 'xlsx' // extensión si está disponible, si no dejar vacío
-                                }] : []" @files-selected="handleExcelConfirmacion"
-                                @file-removed="handleRemoveExcelConfirmacion" />
-                        </div>
-                        <div v-for="file in files.filter(f => f.id_proveedor === proveedorActivo.id)" :key="file.id">
-                            <span>{{ file.folder_name||file.file_name }}</span>
-                            <FileUploader :accepted-types="['.xlsx', '.png', '.jpg', '.jpeg','.pdf']" :immediate="false"
-                                :show-remove-button="false" :initial-files="[{
-                                    id: file.id,
-                                    file_name: file.folder_name||file.file_name,
-                                    file_url: file.file_url,
-                                    type: file.file_ext,
-                                    size: 0,
-                                    lastModified: 0,
-                                    file_ext: file.file_ext
-                                }]" />
-                        </div>
-                    </div>
-                </UCard>
-                <UCard class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
-                    v-if="currentRole === ROLES.DOCUMENTACION">
-                    <template #header>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <UIcon name="i-heroicons-folder" class="w-5 h-5 text-gray-500"  v-if="currentRole !== ROLES.DOCUMENTACION" />
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                    Documentación China
-                                </h3>
-                                <img  v-if="currentRole === ROLES.DOCUMENTACION" :src="CUSTOMIZED_ICONS_URL['CHINA']" alt="Flag" class="w-5 h-5" />
-
-                                <UBadge v-if="hasUnsavedChanges" color="warning" variant="subtle" size="sm">
-                                    Cambios sin guardar
-                                </UBadge>
-                            </div>
-                            <div class="flex gap-2">
-                                <UButton v-if="hasUnsavedChanges" label="Guardar cambios" color="primary"
-                                    variant="solid" icon="i-heroicons-check" size="sm" @click="handleSaveChanges" />
-
-                            </div>
-                        </div>
-                    </template>
-                    <div class="space-y-4">
-                        <div v-for="file in filesAlmacenDocumentacion.filter(f => f.id_proveedor === proveedorActivo.id)"
+                        <div v-for="file in activeFilesAlmacenInspection"
                             :key="file.id">
 
                             <FileUploader :accepted-types="['.xlsx', '.png', '.jpg', '.jpeg','.pdf']" :immediate="false"
@@ -352,63 +200,10 @@
                     </div>
 
                 </UCard>
-                <UCard class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
-                    v-if="currentRole === ROLES.DOCUMENTACION">
-                    <template #header>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <UIcon name="i-heroicons-folder" class="w-5 h-5 text-gray-500" />
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                    Inspección
-                                </h3>
-                                <UBadge v-if="hasUnsavedChanges" color="warning" variant="subtle" size="sm">
-                                    Cambios sin guardar
-                                </UBadge>
-                            </div>
-                            <div class="flex gap-2">
-                                <UButton v-if="hasUnsavedChanges" label="Guardar cambios" color="primary"
-                                    variant="solid" icon="i-heroicons-check" size="sm" @click="handleSaveChanges" />
-
-                            </div>
-                        </div>
-                    </template>
-                    <div class="space-y-4">
-                        <div v-for="file in filesAlmacenInspection.filter(f => f.id_proveedor === proveedorActivo.id)"
-                            :key="file.id">
-                            <FileUploader :accepted-types="['.xlsx', '.png', '.jpg', '.jpeg','.pdf']" :immediate="false"
-                                :show-remove-button="false" :initial-files="[{
-                                    id: file.id,
-                                    file_name: file.file_name,
-                                    file_url: file.file_url,
-                                    type: file.file_ext,
-                                    size: 0,
-                                    lastModified: 0,
-                                    file_ext: file.file_ext
-                                }]" />
-                        </div>
-
-                    </div>
-
-                </UCard>
-
-                <!-- Sección de Cotizaciones -->
-                <UCard class="bg-white dark:bg-gray-800 p-6 rounded-lg h-40 shadow-md"
-                    v-if="currentRole === ROLES.COORDINACION">
-
-                    <div class="space-y-4">
-
-
-                        <!-- Botón de descarga de cotización inicial -->
-                        <UButton label="Descargar cotización inicial" color="neutral" variant="outline"
-                            icon="i-heroicons-arrow-down-tray" class="w-full" @click="handleDownloadCotizacionInicial"
-                            :disabled="!cliente?.cotizacion_file_url" />
-
-                        <!-- Botón de descarga de cotización final -->
-                        <UButton label="Descargar cotización final" color="neutral" variant="outline"
-                            icon="i-heroicons-arrow-down-tray" class="w-full" @click="handleDownloadCotizacionFinal"
-                            :disabled="!cliente?.cotizacion_final_url" />
-                    </div>
-                </UCard>
+                
+            </div>
+            <div v-else>
+                <p>No hay archivos de inspección</p>
             </div>
 
 
@@ -424,42 +219,17 @@ import { useSpinner } from '~/composables/commons/useSpinner'
 import { useVariacionCliente } from '~/composables/cargaconsolidada/useVariacionCliente'
 import FileUploader from '~/components/commons/FileUploader.vue'
 import type { FileItem } from '~/types/commons/file'
-import type { id } from '@nuxt/ui/runtime/locale/index.js'
+
 import { ROLES, ID_JEFEVENTAS } from '~/constants/roles'
 import { CUSTOMIZED_ICONS_URL } from '~/constants/ui'
 import { useUserRole } from '~/composables/auth/useUserRole'
 const { currentRole, currentId, isCoordinacion } = useUserRole()
 import SimpleUploadFile from '~/components/commons/SimpleUploadFile.vue'
-// Composables
+import { useTrayecto } from '~/composables/clientes/importaciones/useTrayecto'
 const { showSuccess, showError, showConfirmation } = useModal()
 const { withSpinner } = useSpinner()
-const {
-    cliente,
-    loading,
-    error,
-    activeTab,
-    tabs,
-    proveedores,
-    proveedorActivo,
-    archivosDocumentacion,
-    archivosInspeccion,
-    hasData,
-    hasProveedores,
-    filesAlmacenDocumentacion,
-    filesAlmacenInspection,
-    files,
-    getClienteDocumentacion,
 
-    cambiarProveedor,
-    updateProveedorDocumentacion,
-    updateClienteDocumentacion,
-    uploadArchivo,
-    deleteArchivo,
-    deleteFacturaComercial,
-    deletePackingList,
-    deleteExcelConfirmacion,
-    createProveedorDocumentacion
-} = useVariacionCliente()
+const { getInspeccion, providers, filesAlmacenInspection,loading,tabs,activeTab,cambiarProveedor,activeFilesAlmacenInspection} = useTrayecto()
 import { useOverlay } from '#imports'
 const overlay = useOverlay()
 const simpleUploadFile = overlay.create(SimpleUploadFile)
@@ -483,7 +253,7 @@ const hasUnsavedChanges = computed(() => {
 
 // Route
 const route = useRoute()
-const clienteId = Number(route.params.id)
+const uuid =route.params.id
 
 // Manejadores de tabs
 const handleTabChange = async (tabId: string) => {
@@ -734,15 +504,7 @@ const downloadArchivo = async (fileUrl: string) => {
 }
 
 onMounted(async () => {
-    if (clienteId) {
-        await getClienteDocumentacion(clienteId)
-        // Seleccionar el primer proveedor si existe
-        if (proveedores.value && proveedores.value.length > 0) {
-            const primerProveedor = proveedores.value[0]
-            activeTab.value = primerProveedor.code_supplier
-            await cambiarProveedor(primerProveedor.code_supplier)
-        }
-    }
+    getInspeccion(uuid as string)
 })
 </script>
 
