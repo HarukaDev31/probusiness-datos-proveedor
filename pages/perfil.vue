@@ -124,7 +124,6 @@
     middleware: 'auth'
   })
   import { ref, onMounted, watch } from 'vue'
-  import { getUserAccount, updateUserAccount } from '~/services/user-account-service'
   
   const user = ref({})
   const editUser = ref({})
