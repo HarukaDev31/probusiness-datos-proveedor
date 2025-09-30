@@ -6,15 +6,25 @@ export default defineNuxtPlugin(() => {
   // Crear una instancia global del composable
   const { fetchCurrentUser } = useUserRole()
 
+  // Función para manejar cambios en localStorage
+  const handleStorageChange = (event: StorageEvent) => {
+    if (event.key === 'auth_user') {
+      fetchCurrentUser()
+    }
+  }
+
   // Cargar datos del usuario al iniciar la aplicación
   fetchCurrentUser()
 
-  // Opcional: También se puede cargar cuando se detecte un cambio en localStorage
+  // Escuchar cambios en localStorage
   if (process.client) {
-    window.addEventListener('storage', (event) => {
-      if (event.key === 'auth_user') {
-        fetchCurrentUser()
-      }
-    })
+    window.addEventListener('storage', handleStorageChange)
   }
+
+  // Limpiar listeners cuando se desmonte el plugin
+  onUnmounted(() => {
+    if (process.client) {
+      window.removeEventListener('storage', handleStorageChange)
+    }
+  })
 }) 

@@ -1,6 +1,9 @@
 import { useSession } from '../composables/auth/useSession'
+import { useMemoryCleanup } from '../composables/commons/useMemoryCleanup'
+
 export default defineNuxtPlugin(() => {
   const { handleSessionExpired } = useSession()
+  const { createTimer, addEventListener } = useMemoryCleanup()
 
   const INACTIVITY_TIMEOUT = 24 * 100 * 60 * 100
   let inactivityTimer: NodeJS.Timeout | null = null
@@ -11,7 +14,7 @@ export default defineNuxtPlugin(() => {
       clearTimeout(inactivityTimer)
     }
 
-    inactivityTimer = setTimeout(() => {
+    inactivityTimer = createTimer(() => {
       console.log('Inactividad detectada, expirando sesión...')
       handleSessionExpired()
     }, INACTIVITY_TIMEOUT)
@@ -28,22 +31,11 @@ export default defineNuxtPlugin(() => {
     'focus'
   ]
 
-  // Agregar listeners para detectar actividad
+  // Agregar listeners para detectar actividad con limpieza automática
   activityEvents.forEach(event => {
-    document.addEventListener(event, resetInactivityTimer, true)
+    addEventListener(document, event, resetInactivityTimer, true)
   })
 
   // Iniciar el timer cuando se carga la página
   resetInactivityTimer()
-
-  // Limpiar timer cuando se desmonte el plugin
-  onUnmounted(() => {
-    if (inactivityTimer) {
-      clearTimeout(inactivityTimer)
-    }
-
-    activityEvents.forEach(event => {
-      document.removeEventListener(event, resetInactivityTimer, true)
-    })
-  })
 }) 

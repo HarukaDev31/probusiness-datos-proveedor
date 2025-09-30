@@ -1,4 +1,3 @@
-import type { TableColumn } from '@nuxt/ui'
 import { ref, computed } from 'vue'
 import { PagosService } from '~/services/curso/pagosService'
 import type { CursosFilters, PaginationInfo, CursosDetalleResponse, CursoItem, DatosClientePorPedido, PagoDetalle } from '~/types/cursos/cursos'

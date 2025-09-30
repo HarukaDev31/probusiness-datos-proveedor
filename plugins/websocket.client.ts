@@ -102,31 +102,49 @@ export default defineNuxtPlugin(async () => {
       }
   }
 
+  // Función para manejar cambios en localStorage
+  const handleStorageChange = (event: StorageEvent) => {
+    if (event.key === 'auth_token' || event.key === 'auth_user') {
+      const authToken = localStorage.getItem('auth_token')
+      const authUser = localStorage.getItem('auth_user')
+      
+      if (!authToken || !authUser) {
+        // Usuario se deslogueó
+        console.log('🔌 Usuario deslogueado, limpiando WebSocket...')
+        resetEcho()
+        isInitialized = false
+        isInitializing = false
+        if (typeof window !== 'undefined') {
+          delete (window as any).Echo
+        }
+      } else {
+        // Usuario se logueó
+        console.log('🔌 Usuario logueado, reinicializando WebSocket...')
+        initializeWebSockets()
+      }
+    }
+  }
+
   // Intentar inicializar inmediatamente
   await initializeWebSockets()
 
   // Escuchar cambios en el localStorage para detectar login/logout
   if (process.client) {
-    window.addEventListener('storage', (event) => {
-      if (event.key === 'auth_token' || event.key === 'auth_user') {
-        const authToken = localStorage.getItem('auth_token')
-        const authUser = localStorage.getItem('auth_user')
-        
-        if (!authToken || !authUser) {
-          // Usuario se deslogueó
-          console.log('🔌 Usuario deslogueado, limpiando WebSocket...')
-          resetEcho()
-          isInitialized = false
-          isInitializing = false
-          if (typeof window !== 'undefined') {
-            delete (window as any).Echo
-          }
-        } else {
-          // Usuario se logueó
-          console.log('🔌 Usuario logueado, reinicializando WebSocket...')
-          initializeWebSockets()
-        }
-      }
-    })
+    window.addEventListener('storage', handleStorageChange)
   }
+
+  // Limpiar listeners cuando se desmonte el plugin
+  onUnmounted(() => {
+    if (process.client) {
+      window.removeEventListener('storage', handleStorageChange)
+    }
+    
+    // Limpiar WebSocket al desmontar
+    resetEcho()
+    isInitialized = false
+    isInitializing = false
+    if (typeof window !== 'undefined') {
+      delete (window as any).Echo
+    }
+  })
 })

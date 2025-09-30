@@ -328,7 +328,7 @@ const { showSuccess } = useModal()
 // Meta
 definePageMeta({
   title: 'Formulario de Entrega - Lima',
-  layout: 'default'
+  layout: false
 })
 
 // Estado del formulario

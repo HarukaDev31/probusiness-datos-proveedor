@@ -155,13 +155,12 @@
         </div>
       </div>
     </nav>
-
     <!-- Bottom: user info + logout -->
-    <div class="border-b border-gray-100 dark:border-gray-700 px-4 py-4">
+    <div class="border-b border-gray-100 dark:border-gray-700 px-4 py-4" @click="navigateTo('/perfil')">
       <div class="flex items-center gap-3">
         <UAvatar :src="userData?.avatar || undefined" :alt="userName || 'Usuario'" size="sm" />
         <div class="flex-1 min-w-0">
-          <div class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ userName || 'Usuario' }}</div>
+          <div class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ userData?.name || 'Usuario' }}</div>
           <div class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ currentRole || 'Sin rol' }}</div>
         </div>
       </div>
@@ -296,25 +295,7 @@ const isParentActive = (item: any) => {
 
 onMounted(async () => {
   fetchCurrentUser()
-  
-  // Cargar contador de notificaciones no leídas
-  await fetchUnreadCount()
-  
-  // Actualizar contador cada 30 segundos
-  const interval = setInterval(async () => {
-    try {
-      await fetchUnreadCount()
-    } catch (error) {
-      console.error('Error actualizando contador de notificaciones:', error)
-    }
-  }, 1000*60*5) // 5 minutos
-  
-  // Limpiar intervalo cuando el componente se desmonte
-  onUnmounted(() => {
-    clearInterval(interval)
-  })
 
-  // expandir padres que contienen la ruta activa
   const current = useRoute().path
   for (const category of props.menuCategories || []) {
     for (const item of category.modules || []) {

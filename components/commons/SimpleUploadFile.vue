@@ -6,17 +6,31 @@
         <template #body>
             <div class="p-6 space-y-6">
                 <div class="space-y-4">
-
                     <div>
                         <div v-if="props.withNameField">
-                            <UInput v-model="name" placeholder="Nombre del documento"  class="mb-2 w-full"/>
+                            <UInput v-model="name" placeholder="Nombre del documento" class="mb-2 w-full" />
                         </div>
                         <FileUploader ref="fileUploaderRef" :multiple="false" @file-added="handleFileAdded"
-                            @file-removed="handleFileRemoved" 
-                            :show-save-button="false"
-                            :show-remove-button="false"
-                            />
-                        
+                            @file-removed="handleFileRemoved" :show-save-button="false" :show-remove-button="false"
+                            :acceptedTypes="props.validTypes" />
+                    </div>
+                    
+                    <!-- Vista previa de la imagen -->
+                    <div v-if="previewUrl" class="mt-4">
+                        <h3 class="text-sm font-medium mb-2">Vista previa:</h3>
+                        <div class="relative inline-block">
+                            <img :src="previewUrl" alt="Vista previa" class="max-w-xs max-h-48 rounded-lg border border-gray-200" />
+                            <UButton 
+                                v-if="selectedFile" 
+                                color="red" 
+                                variant="soft" 
+                                size="xs" 
+                                class="absolute -top-2 -right-2"
+                                @click="removePreview"
+                            >
+                                <UIcon name="i-heroicons-x-mark" />
+                            </UButton>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -46,10 +60,14 @@ const emit = defineEmits<{
     (e: 'save', data: { file: File, name?: string | null }): void
 }>()
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     title: string
     withNameField?: boolean
-}>()
+    validTypes?: string[]
+}>(), {
+    validTypes: () => ['.jpg', '.jpeg', '.png']
+})
+
 const selectedFile = ref<File | null>(null)
 const fileUploaderRef = ref<InstanceType<typeof FileUploader> | null>(null)
 const name = ref<string>('')

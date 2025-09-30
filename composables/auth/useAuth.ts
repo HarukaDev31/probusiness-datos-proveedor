@@ -52,7 +52,7 @@ export const useAuth = () => {
       return response
     }
     catch (err) {
-      console.log(err,'err')
+      console.log(err, 'err')
       error.value = err.data.message
       throw err
     } finally {
@@ -73,6 +73,15 @@ export const useAuth = () => {
       loading.value = false
     }
   }
+
+  const updateUserAccount = async (data: any) => {
+    try {
+      const response = await authService.updateUserAccount(data)
+      return response
+    } catch (err) {
+      console.error('Error during updateUserAccount:', err)
+    }
+  }
   // Logout function
   const logout = async () => {
     loading.value = true
@@ -87,6 +96,15 @@ export const useAuth = () => {
     } finally {
       loading.value = false
     }
+  }
+  const me = async () => {
+    try {
+      const response = await authService.me()
+      return response
+    } catch (err) {
+      console.error('Error during me:', err)
+    }
+    return response
   }
 
   // Get current user
@@ -128,6 +146,8 @@ export const useAuth = () => {
     getToken,
     initializeAuth,
     register,
-    loginCliente
+    loginCliente,
+    updateUserAccount,
+    me
   }
 } 

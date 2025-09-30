@@ -210,16 +210,16 @@ class AuthService {
         No_Password: credentials.password
       })
 
-      if (response.status === 'success' && response.token && response.user) {
+      if (response.success && response.token && response.user) {
         const user: AuthUser = {
-          id: response.user.ID_Usuario,
-          email: response.user.Txt_Email || response.user.No_Usuario,
-          name: response.user.No_Usuario,
+          id: response.user.id,
+          email: response.user.email || response.user.No_Usuario,
+          name: response.user.fullName,
           role: response.user.role || 'user',
-          avatar: null,
+          avatar: response.user.photoUrl,
           lastLogin: response.user.Fe_Creacion,
           isActive: response.user.Nu_Estado === 1,
-          raw: response.user
+          raw: response.user.raw
         }
         const token = response.token
         const menu: AuthMenu[] = response.menus || []
@@ -264,6 +264,7 @@ class AuthService {
       }
     }
   }
+
   async register(credentials: RegisterCredentials): Promise<RegisterResponse> {
     try {
       if (!this.nuxtApp) throw new Error('La aplicación Nuxt no está inicializada')
@@ -272,7 +273,7 @@ class AuthService {
         nombre: credentials.nombre,
         apellido: credentials.apellido,
         email: credentials.email,
-        whatsapp: credentials.whatsapp, 
+        whatsapp: credentials.whatsapp,
         password: credentials.password,
         repeatPassword: credentials.repeatPassword
       })

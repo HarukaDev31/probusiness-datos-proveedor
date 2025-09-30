@@ -315,26 +315,67 @@ export const useEcho = () => {
   const disconnect = () => {
     if (echoInstance) {
       console.log('🔌 Desconectando todos los canales')
-      activeChannels.value.forEach((_, channelName) => {
-        unsubscribeFromChannel(channelName)
+      
+      // Limpiar todos los canales activos
+      activeChannels.value.forEach((channel, channelName) => {
+        try {
+          // Limpiar listeners del canal antes de desconectar
+          if (channel && typeof channel === 'object') {
+            // Intentar diferentes métodos de limpieza
+            if (typeof channel.unbind === 'function') {
+              channel.unbind()
+            } else if (typeof channel.off === 'function') {
+              channel.off()
+            } else if (typeof channel.removeEventListener === 'function') {
+              // Para eventos DOM, necesitaríamos una lista de eventos específicos
+              // Por ahora, solo desconectamos
+            }
+          }
+          
+          // Desconectar del canal
+          echoInstance?.leave(channelName)
+        } catch (err) {
+          console.warn(`⚠️ Error limpiando canal ${channelName}:`, err)
+        }
       })
+      
+      // Limpiar el mapa de canales activos
+      activeChannels.value.clear()
+      
+      // Desconectar Echo
       echoInstance.disconnect()
       echoInstance = null
       isConnected.value = false
       isInitialized = false
       isInitializing = false
+      
+      // Limpiar referencia global
+      if (typeof window !== 'undefined') {
+        delete (window as any).Echo
+        delete (window as any).Pusher
+      }
+      
       console.log('✅ Desconexión completa')
     }
   }
 
   const resetEcho = () => {
     console.log('🔄 Reseteando estado global de Echo')
-    echoInstance = null
+    
+    // Limpiar completamente antes de resetear
+    disconnect()
+    
+    // Resetear variables de estado
     isInitialized = false
     isInitializing = false
-    activeChannels.value.clear()
     isConnected.value = false
     error.value = null
+    
+    // Limpiar referencias globales
+    if (typeof window !== 'undefined') {
+      delete (window as any).Echo
+      delete (window as any).Pusher
+    }
   }
 
   const getActiveChannels = () => {
