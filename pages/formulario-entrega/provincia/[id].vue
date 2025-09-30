@@ -246,6 +246,14 @@
                   :rows="2" :disabled="loading" class="w-full" />
               </UFormField>
             </div>
+
+            <!-- Programador de Citas -->
+            <div class="mt-8">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Programar Recogida
+              </h3>
+              <AppointmentScheduler :horarios="horarios" />
+            </div>
           </div>
 
           <!-- Navigation Buttons -->
@@ -284,13 +292,13 @@ import { useSpinner } from '~/composables/commons/useSpinner'
 import {useModal} from '~/composables/commons/useModal'
 const { showSuccess, showError } = useModal()
 const { paises, getPaises } = useOptions()
-const { getDeliveryByConsolidadoId, clientes, carga, getDeliveryAgency, agencies, saveDeliveryProvincia } = useDelivery()
+const { getDeliveryByConsolidadoId, clientes, carga, getDeliveryAgency, agencies, saveDeliveryProvincia, getHorariosDisponibles, horarios, loadingHorarios } = useDelivery()
 const { departamentos, provincias, distritos, getDepartamentos, getProvincias, getDistritos, loadingDepartamentos, loadingProvincias, loadingDistritos } = useLocation()
 const { withSpinner } = useSpinner()
 // Meta
 definePageMeta({
   title: 'Formulario de Entrega - Provincia',
-  layout: 'default'
+  layout: 'external'
 })
 
 // Route
@@ -424,7 +432,7 @@ const finalizarFormulario = async () => {
           tipoDestinatario: formData.tipoDestinatario.value,
           destinatarioDepartamento: formData.destinatarioDepartamento.value,
           destinatarioProvincia: formData.destinatarioProvincia.value,
-          destinatarioDistrito: formData.destinatarioDistrito.value,
+          destinatarioDistrito: formData.destinatarioDistrito,
           agenciaEnvio: formData.agenciaEnvio.value,
         }
         const response = await saveDeliveryProvincia(data)
@@ -503,6 +511,10 @@ watch(() => formData.tipoComprobante, (newValue) => {
 onMounted(async () => {
   await getDeliveryByConsolidadoId(Number(consolidadoId))
   importadores.value = clientes.value
+  
+  // Cargar horarios disponibles
+  await getHorariosDisponibles(Number(consolidadoId))
+  
   Promise.all([
     await getDepartamentos(),
     await getProvincias('1'),
