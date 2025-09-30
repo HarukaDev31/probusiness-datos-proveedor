@@ -288,6 +288,7 @@ import { useDelivery } from '~/composables/clientes/delivery/useDelivery'
 import type { ClientesOptions } from '~/types/clientes/delivery/common'
 import { useLocation } from '~/composables/commons/useLocation'
 import { useSpinner } from '~/composables/commons/useSpinner'
+import { useFormPersistence } from '~/composables/commons/useFormPersistence'
 // Composables
 import {useModal} from '~/composables/commons/useModal'
 const { showSuccess, showError } = useModal()
@@ -295,6 +296,7 @@ const { paises, getPaises } = useOptions()
 const { getDeliveryByConsolidadoId, clientes, carga, getDeliveryAgency, agencies, saveDeliveryProvincia, getHorariosDisponibles, horarios, loadingHorarios } = useDelivery()
 const { departamentos, provincias, distritos, getDepartamentos, getProvincias, getDistritos, loadingDepartamentos, loadingProvincias, loadingDistritos } = useLocation()
 const { withSpinner } = useSpinner()
+
 // Meta
 definePageMeta({
   title: 'Formulario de Entrega - Provincia',
@@ -303,7 +305,8 @@ definePageMeta({
 
 // Route
 const route = useRoute()
-const consolidadoId = route.params.id
+const consolidadoId = route.params.id as string
+const { saveFormState, loadFormState, clearFormState } = useFormPersistence('provincia', consolidadoId)
 
 // Estado del formulario
 const currentStep = ref(1)
@@ -403,12 +406,16 @@ const canProceedToNextStep = computed(() => {
 const nextStep = () => {
   if (currentStep.value < 3 && canProceedToNextStep.value) {
     currentStep.value++
+    // Guardar estado después de cambiar de paso
+    saveFormState(formData, currentStep.value)
   }
 }
 
 const previousStep = () => {
   if (currentStep.value > 1) {
     currentStep.value--
+    // Guardar estado después de cambiar de paso
+    saveFormState(formData, currentStep.value)
   }
 }
 
@@ -438,6 +445,8 @@ const finalizarFormulario = async () => {
         const response = await saveDeliveryProvincia(data)
         if (response.success) {
           showSuccess('Guardado exitosamente', 'Los datos se han guardado correctamente')
+          // Limpiar estado del localStorage al enviar exitosamente
+          clearFormState()
           resetForm()
         
         } else {
@@ -509,6 +518,7 @@ watch(() => formData.tipoComprobante, (newValue) => {
 
 // Cargar datos iniciales
 onMounted(async () => {
+  // Cargar datos del servidor
   await getDeliveryByConsolidadoId(Number(consolidadoId))
   importadores.value = clientes.value
   
@@ -521,6 +531,16 @@ onMounted(async () => {
     await getDistritos('1'),
     await getDeliveryAgency()
   ])
+  
+  // Intentar cargar estado guardado
+  const savedState = loadFormState()
+  if (savedState) {
+    console.log('Estado guardado encontrado:', savedState)
+    // Restaurar datos del formulario
+    Object.assign(formData, savedState.formData)
+    // Restaurar paso actual
+    currentStep.value = savedState.currentStep
+  }
 })
 </script>
 

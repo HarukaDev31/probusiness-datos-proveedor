@@ -171,7 +171,7 @@
               </UFormField>
 
               <UFormField label="Distrito de la dirección final de destino:">
-                <UInput v-model="formData.distritoDestino" placeholder="Distrito" :disabled="loading" class="w-full" />
+                <USelectMenu v-model="formData.distritoDestino" :items="distritos" placeholder="Distrito" :disabled="loading" class="w-full" />
               </UFormField>
             </div>
           </div>
@@ -221,6 +221,7 @@ import { useDelivery } from '~/composables/clientes/delivery/useDelivery'
 import type { ClientesOptions } from '~/types/clientes/delivery/common'
 import { useLocation } from '~/composables/commons/useLocation'
 import { useSpinner } from '~/composables/commons/useSpinner'
+import { useFormPersistence } from '~/composables/commons/useFormPersistence'
 import { useRoute } from 'vue-router'
 
 const { showSuccess, showError } = useModal()
@@ -234,12 +235,14 @@ definePageMeta({
   layout: 'external'
 })
 
+// Route
+const route = useRoute()
+const consolidadoId = route.params.id as string
+const { saveFormState, loadFormState, clearFormState } = useFormPersistence('lima', consolidadoId)
+
 // Estado del formulario
 const currentStep = ref(1)
 const loading = ref(false)
-
-const route = useRoute()
-const consolidadoId = route.params.id
 
 
 // Configuración de pasos
@@ -317,12 +320,16 @@ const nextStep = () => {
   console.log(canProceedToNextStep.value, "waos")
   if (currentStep.value < 4 && canProceedToNextStep.value) {
     currentStep.value++
+    // Guardar estado después de cambiar de paso
+    saveFormState(formData, currentStep.value)
   }
 }
 
 const previousStep = () => {
   if (currentStep.value > 1) {
     currentStep.value--
+    // Guardar estado después de cambiar de paso
+    saveFormState(formData, currentStep.value)
   }
 }
 
@@ -330,6 +337,8 @@ const previousStep = () => {
 const handleDateSelected = (date: Date | null, timeSlot: any) => {
   formData.fechaEntrega = date
   formData.horarioSeleccionado = timeSlot
+  // Guardar estado cuando se selecciona fecha/horario
+  saveFormState(formData, currentStep.value)
 }
 
 // Manejo del formulario
@@ -350,7 +359,8 @@ const finalizarReserva = async () => {
           importador: formData.importador.value,
           tipoComprobante: formData.tipoComprobante.value,
           fechaEntrega: formData.fechaEntrega,
-          horarioSeleccionado: formData.horarioSeleccionado
+          horarioSeleccionado: formData.horarioSeleccionado,
+          distritoDestino: formData.distritoDestino.label
         }
         
         const response = await saveDeliveryLima(data)
@@ -358,6 +368,8 @@ const finalizarReserva = async () => {
         if (response.success) {
           console.log("exitosamente")
           showSuccess('Guardado exitosamente', 'Los datos se han guardado correctamente')
+          // Limpiar estado del localStorage al enviar exitosamente
+          clearFormState()
           resetForm()
         } else {
           showError('Error al guardar', response.error || 'Error al guardar los datos')
@@ -421,8 +433,20 @@ watch(() => formData.tipoComprobante, (newValue) => {
   }
 })
 onMounted(async () => {
+  // Cargar datos del servidor
   await getDeliveryByConsolidadoId(Number(consolidadoId))
   await getHorariosDisponibles(Number(consolidadoId))
+  
+  // Intentar cargar estado guardado
+  const savedState = loadFormState()
+  if (savedState) {
+    console.log('Estado guardado encontrado:', savedState)
+    // Restaurar datos del formulario
+    Object.assign(formData, savedState.formData)
+    // Restaurar paso actual
+    currentStep.value = savedState.currentStep
+  }
+  await getDistritos('1')
 })
 </script>
 
