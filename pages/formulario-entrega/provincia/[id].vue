@@ -439,7 +439,7 @@ const finalizarFormulario = async () => {
           tipoDestinatario: formData.tipoDestinatario.value,
           destinatarioDepartamento: formData.destinatarioDepartamento.value,
           destinatarioProvincia: formData.destinatarioProvincia.value,
-          destinatarioDistrito: formData.destinatarioDistrito,
+          destinatarioDistrito: formData.destinatarioDistrito.value,
           agenciaEnvio: formData.agenciaEnvio.value,
         }
         const response = await saveDeliveryProvincia(data)
