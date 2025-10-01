@@ -3,7 +3,7 @@
       <!-- Sidebar -->
   
       <!-- Main Content -->
-      <div class="flex-1 flex flex-col transition-all duration-300 w-80" :class="sidebarVisible ? 'lg:ml-70' : ''">
+      <div class="flex-1 flex flex-col transition-all duration-300 w-100" :class="sidebarVisible ? '' : ''">
         <!-- Top Header -->
         <header 
         class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 lg:hidden">
