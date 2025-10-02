@@ -8,7 +8,7 @@
             <div class="flex items-center justify-between mb-4">
               <UButton @click="previousMonth" icon="i-heroicons-chevron-left" variant="ghost" color="neutral"
                 size="sm" />
-              <h3 class="text-lg font-semibold text-white">
+              <h3 class="text-lg font-semibold ">
                 {{ currentMonthYear }}
               </h3>
               <UButton @click="nextMonth" icon="i-heroicons-chevron-right" variant="ghost" color="neutral" size="sm" />
@@ -29,7 +29,7 @@
                   ? 'hover:bg-gray-600'
                   : 'text-neutral-500',
                 date.isSelected
-                  ? 'bg-primary-600 text-white'
+                  ? 'bg-primary-600 '
                   : '',
                 date.isAvailable && date.isCurrentMonth
                   ? 'hover:bg-gray-700'
@@ -51,24 +51,19 @@
 
             <!-- Horarios Disponibles -->
             <div v-if="selectedDate && availableTimeSlotsForSelectedDate.length > 0"
-              class="space-y-3 grid grid-cols-3 gap-2">
+              class="space-y-2 grid grid-cols-1 scrollbar-hide" style="max-height: 40vh; overflow-y: auto;">
               <button v-for="timeSlot in availableTimeSlotsForSelectedDate" :key="timeSlot.range_id"
                 @click="selectTimeSlot(timeSlot)" :class="[
-                  'w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 h-20 flex flex-col justify-center',
+                  'w-full py-1 px-2 rounded-lg font-medium transition-all duration-200 h-10 flex flex-col justify-center',
                   selectedTimeSlot?.range_id === timeSlot.range_id
                     ? 'bg-primary-600 hover:bg-primary-700'
                     : 'bg-gray-600 hover:bg-gray-500'
                 ]">
-                <div class="text-sm font-semibold flex-col items-center  justify-center ">
+                <div class="text-sm font-semibold flex-row items-center  justify-center ">
                   <div>
-                    {{ formatTimeToAMPM(timeSlot.start_time) }}
+                    {{ formatTimeToAMPM(timeSlot.start_time) }} -{{ formatTimeToAMPM(timeSlot.end_time) }}
                   </div>
-                  <div>
-                    -
-                  </div>
-                  <div>
-                    {{ formatTimeToAMPM(timeSlot.end_time) }}
-                  </div>
+                  
                 </div>
 
               </button>
@@ -108,22 +103,22 @@
                 ➡  MAPS: https://maps.app.goo.gl/5raLmkX65nNHB2Fr9 -->
 
                 <span class="text-gray-400">Dirección de recojo:</span>
-                <span class="text-white ml-2">
-                  <div class="flex items-center gap-2 justify-center">
-                    Calle Rio Nazca 243- San Luis. Ref. Al costado de la Agencia Antezana
-                    <a href="https://maps.app.goo.gl/5raLmkX65nNHB2Fr9" target="_blank" class="text-white">
+                <span class=" ml-2">
+                  <div class="flex items-center  justify-end">
+                    <a href="https://maps.app.goo.gl/5raLmkX65nNHB2Fr9" target="_blank" class="">
                       <UButton icon="i-heroicons-map-pin" variant="ghost" color="neutral" size="sm" />
                     </a>
+                     <span class="w-3/5 align-left ">Calle Rio Nazca 243- San Luis. Ref. Al costado de la Agencia Antezana</span>
                   </div>
                 </span>
               </div>
               <div class="flex justify-between">
                 <span class="text-gray-400">Fecha:</span>
-                <span class="text-white">{{ formatSelectedDate }}</span>
+                <span class="">{{ formatSelectedDate }}</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-gray-400">Horario:</span>
-                <span class="text-white">{{ formatTimeToAMPM(selectedTimeSlot.start_time) }} - {{
+                <span class="">{{ formatTimeToAMPM(selectedTimeSlot.start_time) }} - {{
                   formatTimeToAMPM(selectedTimeSlot.end_time) }}</span>
               </div>
 
@@ -354,5 +349,22 @@ onMounted(() => {
 /* Estilos adicionales si son necesarios */
 .grid {
   display: grid;
+}
+
+/* Ocultar scrollbar pero mantener funcionalidad de scroll */
+.scrollbar-hide {
+  /* Para navegadores basados en WebKit (Chrome, Safari, Edge) */
+  -ms-overflow-style: none;  /* IE y Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Edge */
+}
+
+/* Asegurar que el scroll funcione con mouse wheel y touch */
+.scrollbar-hide {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
 }
 </style>

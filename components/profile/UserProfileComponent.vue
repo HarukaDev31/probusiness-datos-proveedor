@@ -1,9 +1,9 @@
 <template>
-    <div class="p-8">
-        <h1 class="text-xl font-medium text-onix-pro">Mi cuenta</h1>
+    <div class="p-4 md:p-8">
+        <h1 class="text-lg md:text-xl font-medium text-onix-pro">Mi cuenta</h1>
     </div>
     
-    <div class="user-profile p-8">
+    <div class="user-profile">
         <!-- Información Personal -->
         <UCard class="profile-header flex" style="grid-area: profile-header;">
             <div class="edit-header flex flex-row w-full justify-end items-end">
@@ -27,34 +27,34 @@
                     <p class="profile-dni">DNI: {{ userProfile.documentNumber || '-' }}</p>
                 </div>
                 <div class="flex flex-col gap-4">
-                    <p class="flex place-content-start">
-                        <strong style="width:80px; font-weight: 300;">Edad:</strong>
-                        <span v-if="!isEditingProfile" class="w-40 word-break break-words">{{ userProfile.age ? `${userProfile.age} años` : '-' }}</span>
-                        <UInput v-else type="number" v-model.number="profileForm.age" class="edit-input w-40" />
+                    <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
+                        <strong class="w-full sm:w-20 font-weight: 300;">Edad:</strong>
+                        <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{ userProfile.age ? `${userProfile.age} años` : '-' }}</span>
+                        <UInput v-else type="number" v-model.number="profileForm.age" class="edit-input w-full sm:w-40" />
                     </p>
-                    <p class="flex place-content-start">
-                        <strong style="width:80px; font-weight: 300;">País:</strong>
-                        <span v-if="!isEditingProfile" class="w-40 word-break break-words">{{ userProfile.country || '-' }}</span>
-                        <UInput v-else v-model="profileForm.country" class="edit-input w-40" />
+                    <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
+                        <strong class="w-full sm:w-20 font-weight: 300;">País:</strong>
+                        <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{ userProfile.country || '-' }}</span>
+                        <UInput v-else v-model="profileForm.country" class="edit-input w-full sm:w-40" />
                     </p>
-                    <p class="flex place-content-start">
-                        <strong style="width:80px; font-weight: 300;">Ciudad:</strong>
-                        <span v-if="!isEditingProfile" class="w-40 word-break break-words">{{ userProfile.city || '-' }}</span>
-                        <UInput v-else v-model="profileForm.city" class="edit-input w-40" />
+                    <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
+                        <strong class="w-full sm:w-20 font-weight: 300;">Ciudad:</strong>
+                        <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{ userProfile.city || '-' }}</span>
+                        <UInput v-else v-model="profileForm.city" class="edit-input w-full sm:w-40" />
                     </p>
-                    <p class="flex place-content-start">
-                        <strong style="width:80px; font-weight: 300;">Correo:</strong>
-                        <span v-if="!isEditingProfile" class="w-40 word-break break-words">{{ userProfile.email || '-' }}</span>
-                        <UInput v-else type="email" v-model="profileForm.email" class="edit-input w-40" />
+                    <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
+                        <strong class="w-full sm:w-20 font-weight: 300;">Correo:</strong>
+                        <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{ userProfile.email || '-' }}</span>
+                        <UInput v-else type="email" v-model="profileForm.email" class="edit-input w-full sm:w-40" />
                     </p>
-                    <p class="flex place-content-start">
-                        <strong style="width:80px; font-weight: 300;">Celular:</strong>
-                        <span v-if="!isEditingProfile" class="w-40 word-break break-words">{{ userProfile.phone || '-' }}</span>
-                        <UInput v-else v-model="profileForm.phone" class="edit-input w-40" />
+                    <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
+                        <strong class="w-full sm:w-20 font-weight: 300;">Celular:</strong>
+                        <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{ userProfile.phone || '-' }}</span>
+                        <UInput v-else v-model="profileForm.phone" class="edit-input w-full sm:w-40" />
                     </p>
                 </div>
                 <!-- Botón de guardar para el perfil -->
-                <UButton v-if="isEditingProfile" @click="saveProfile" :loading="loading" class="w-60 mx-auto mt-4 py-4 flex items-center justify-center text-white" >
+                <UButton v-if="isEditingProfile" @click="saveProfile" :loading="loading" class="w-full sm:w-60 mx-auto mt-4 py-4 flex items-center justify-center text-white" >
                     Guardar
                 </UButton>
             </div>
@@ -78,34 +78,34 @@
                 </UButton>
             </div>
             <div class="flex flex-col gap-4">
-                <p class="flex place-content-start">
-                    <strong style="width:200px; font-weight: 300;">Empresa:</strong>
-                    <span v-if="!isEditingBusiness">{{ userProfile.business?.name }}</span>
-                    <UInput v-else v-model="businessForm.name" class="edit-input" />
+                <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
+                    <strong class="w-full sm:w-48 font-weight: 300;">Empresa:</strong>
+                    <span v-if="!isEditingBusiness" class="w-full sm:flex-1">{{ userProfile.business?.name }}</span>
+                    <UInput v-else v-model="businessForm.name" class="edit-input w-full sm:flex-1" />
                 </p>
-                <p class="flex place-content-start">
-                    <strong style="width:200px; font-weight: 300;">RUC:</strong>
-                    <span v-if="!isEditingBusiness">{{ userProfile.business?.ruc }}</span>
-                    <UInput v-else v-model="businessForm.ruc" class="edit-input" />
+                <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
+                    <strong class="w-full sm:w-48 font-weight: 300;">RUC:</strong>
+                    <span v-if="!isEditingBusiness" class="w-full sm:flex-1">{{ userProfile.business?.ruc }}</span>
+                    <UInput v-else v-model="businessForm.ruc" class="edit-input w-full sm:flex-1" />
                 </p>
-                <p class="flex place-content-start">
-                    <strong style="width:200px; font-weight: 300;">Capacidad Comercial:</strong>
-                    <span v-if="!isEditingBusiness">{{ userProfile.business?.comercialCapacity }}</span>
-                    <UInput v-else v-model="businessForm.comercialCapacity" class="edit-input" />
+                <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
+                    <strong class="w-full sm:w-48 font-weight: 300;">Capacidad Comercial:</strong>
+                    <span v-if="!isEditingBusiness" class="w-full sm:flex-1">{{ userProfile.business?.comercialCapacity }}</span>
+                    <UInput v-else v-model="businessForm.comercialCapacity" class="edit-input w-full sm:flex-1" />
                 </p>
-                <p class="flex place-content-start">
-                    <strong style="width:200px; font-weight: 300;">Rubro:</strong>
-                    <span v-if="!isEditingBusiness">{{ userProfile.business?.rubric }}</span>
-                    <UInput v-else v-model="businessForm.rubric" class="edit-input" />
+                <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
+                    <strong class="w-full sm:w-48 font-weight: 300;">Rubro:</strong>
+                    <span v-if="!isEditingBusiness" class="w-full sm:flex-1">{{ userProfile.business?.rubric }}</span>
+                    <UInput v-else v-model="businessForm.rubric" class="edit-input w-full sm:flex-1" />
                 </p>
-                <p class="flex place-content-start">
-                    <strong style="width:200px; font-weight: 300;">Red social:</strong>
-                    <span v-if="!isEditingBusiness">{{ userProfile.business?.socialAddress }}</span>
-                    <UInput v-else v-model="businessForm.socialAddress" class="edit-input" />
+                <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
+                    <strong class="w-full sm:w-48 font-weight: 300;">Red social:</strong>
+                    <span v-if="!isEditingBusiness" class="w-full sm:flex-1">{{ userProfile.business?.socialAddress }}</span>
+                    <UInput v-else v-model="businessForm.socialAddress" class="edit-input w-full sm:flex-1" />
                 </p>
             </div>
             <!-- Botón de guardar para la empresa -->
-            <UButton v-if="isEditingBusiness" @click="saveBusiness" :loading="loading" class="w-80 mx-auto mt-4 py-4 flex items-center justify-center text-white" >
+            <UButton v-if="isEditingBusiness" @click="saveBusiness" :loading="loading" class="w-full sm:w-80 mx-auto mt-4 py-4 flex items-center justify-center text-white" >
                 Guardar
             </UButton>
         </UCard>
@@ -276,11 +276,7 @@ const saveBusiness = async () => {
     try {
         await withSpinner(async () => {
             const response = await updateBusiness(businessForm.value);
-            if (response.success) {
-                showSuccess('Empresa actualizada exitosamente', 'La empresa se ha actualizado correctamente')
-            } else {
-                showError('Error al guardar la empresa', 'Error al guardar la empresa')
-            }
+            showSuccess('Empresa actualizada exitosamente', 'La empresa se ha actualizado correctamente')
         }, 'Guardando empresa...')
         
         // Actualizar la empresa local
@@ -391,25 +387,55 @@ watch(() => profileForm.value.goals, (newGoals) => {
         "profile-header profile-stats profile-goals"
         "profile-header business-details profile-goals";
     grid-template-columns: 1.2fr 2fr 2fr;
-    /* La primera columna es más estrecha */
     grid-template-rows: auto auto auto;
-    /* Cada fila se ajusta automáticamente */
     gap: 1.5rem;
     padding: 2rem;
 }
 
-.profile-stats,
-.business-details,
-.profile-goals {
- 
+/* Tablet - 2 columnas */
+@media (max-width: 1024px) {
+    .user-profile {
+        grid-template-areas:
+            "profile-header profile-stats"
+            "profile-header business-details"
+            "profile-goals profile-goals";
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 1rem;
+        padding: 1.5rem;
+    }
 }
+
+/* Mobile - 1 columna */
+@media (max-width: 768px) {
+    .user-profile {
+        grid-template-areas:
+            "profile-header"
+            "profile-stats"
+            "business-details"
+            "profile-goals";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        gap: 1rem;
+        padding: 1rem;
+    }
+}
+
+/* Estilos base para las tarjetas */
 
 .profile-header {
     align-items: flex-end;
     height: auto;
-    /* Ajusta la altura automáticamente */
     display: flex;
     flex-direction: column;
+}
+
+/* Responsive para profile-header */
+@media (max-width: 768px) {
+    .profile-header {
+        align-items: center;
+        text-align: center;
+    }
 }
 
 .profile-stats {
@@ -420,6 +446,22 @@ watch(() => profileForm.value.goals, (newGoals) => {
     text-align: center;
 }
 
+/* Responsive para profile-stats */
+@media (max-width: 768px) {
+    .profile-stats {
+        padding: 1rem;
+    }
+    
+    .profile-stats h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .profile-stats .text-7xl {
+        font-size: 3rem;
+    }
+}
+
 .business-details,
 .profile-goals {
     display: flex;
@@ -427,11 +469,41 @@ watch(() => profileForm.value.goals, (newGoals) => {
     padding: 5%;
 }
 
+/* Responsive para business-details y profile-goals */
+@media (max-width: 1024px) {
+    .business-details,
+    .profile-goals {
+        padding: 3%;
+    }
+}
+
+@media (max-width: 768px) {
+    .business-details,
+    .profile-goals {
+        padding: 1rem;
+    }
+    
+    .business-details h3,
+    .profile-goals h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+}
+
 .profile-avatar {
     width: 100px;
     height: 100px;
     border-radius: 50%;
     margin-bottom: 1rem;
+}
+
+/* Responsive para profile-avatar */
+@media (max-width: 768px) {
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 0.5rem;
+    }
 }
 
 .stats-amount {
@@ -457,6 +529,15 @@ textarea {
     overflow: hidden;
     margin-bottom: 1rem;
     z-index: 1;
+}
+
+/* Responsive para profile-avatar__container */
+@media (max-width: 768px) {
+    .profile-avatar__container {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 0.5rem;
+    }
 }
 
 .profile-avatar__overlay {

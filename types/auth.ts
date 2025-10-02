@@ -32,6 +32,7 @@ export interface RegisterCredentials {
   whatsapp: string
   password: string
   repeatPassword: string
+  dni: string
 }
 
 export interface RegisterResponse {

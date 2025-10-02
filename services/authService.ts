@@ -16,6 +16,7 @@ export interface AuthUser {
   avatar?: string | null
   lastLogin?: string
   isActive?: boolean
+  dni?: string
   raw?: any
 }
 
@@ -157,6 +158,7 @@ class AuthService {
           avatar: null,
           lastLogin: response.user.Fe_Creacion,
           isActive: response.user.Nu_Estado === 1,
+          dni: response.user.dni,
           raw: response.user
         }
         const token = response.token
@@ -219,6 +221,7 @@ class AuthService {
           avatar: response.user.photoUrl,
           lastLogin: response.user.Fe_Creacion,
           isActive: response.user.Nu_Estado === 1,
+          dni: response.user.dni,
           raw: response.user.raw
         }
         const token = response.token
@@ -275,7 +278,8 @@ class AuthService {
         email: credentials.email,
         whatsapp: credentials.whatsapp,
         password: credentials.password,
-        repeatPassword: credentials.repeatPassword
+        repeatPassword: credentials.repeatPassword,
+        dni: credentials.dni
       })
       if (response.success && response.token && response.user) {
         console.log(response)

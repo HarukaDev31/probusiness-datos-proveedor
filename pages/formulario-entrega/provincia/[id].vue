@@ -6,6 +6,7 @@
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           Consolidado #{{ carga }}
         </h1>
+       <div v-if="currentStep === 1">
         <p class="text-gray-600 dark:text-gray-300">
           Completa la información para que puedas recoger tu pedido.
         </p>
@@ -13,6 +14,23 @@
           Todos los datos enviados mediante este FORMS son confidenciales y no son de dominio público, únicamente los
           usará la EMPRESA para nuestra base de datos.
         </p>
+       </div>
+       <div v-else-if="currentStep === 2">
+        <p class="text-gray-600 dark:text-gray-300">
+          Ahora necesitamos los datos para realizar tu comprobante
+        </p>
+       </div>
+       <div v-else-if="currentStep === 3">
+        <p class="text-gray-600 dark:text-gray-300">
+          Ahora necesitamos los datos del destinatario para entregar tu pedido, si aún no cuenta con la información dar
+          en continuar
+        </p>
+       </div>
+       <div v-else-if="currentStep === 4">
+        <p class="text-gray-600 dark:text-gray-300">
+          Por favor selecciona la fecha y hora disponible, después culmina el formulario
+        </p>
+       </div>
       </div>
 
       <!-- Stepper -->
@@ -61,14 +79,7 @@
 
           <!-- Paso 2: Datos del cliente -->
           <div v-if="currentStep === 2" class="space-y-6">
-            <div class="text-center mb-6">
-              <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
-                Consolidado #{{ consolidadoNumber }} - {{ consolidadoRange }}
-              </h2>
-              <p class="text-gray-600 dark:text-gray-300 mt-2">
-                Ahora necesitamos los datos para realizar tu comprobante
-              </p>
-            </div>
+            
 
             <!-- Boleta -->
             <div v-if="formData.tipoComprobante.value === 'boleta'" class="space-y-4">
@@ -111,13 +122,7 @@
 
           <!-- Paso 3: Información del destinatario -->
           <div v-if="currentStep === 3" class="space-y-6">
-            <div class="text-center mb-6">
-              <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
-                Llene los datos de la PERSONA NATURAL o EMPRESA que recibirá la carga en provincia y también la agencia
-                de
-                envío.
-              </h2>
-            </div>
+          
 
             <!-- Tipo de destinatario -->
             <UFormField label="¿A quién se envía la carga?" required>
@@ -218,8 +223,7 @@
                 <USelectMenu v-model="formData.agenciaEnvio" :items="agencies"
                   placeholder="Selecciona la agencia de envío" :disabled="loading" class="w-full" />
               </UFormField>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4" v-if="formData.agenciaEnvio?.value == 3">
                 <UFormField label="Nombre de la agencia:" required>
                   <UInput v-model="formData.nombreAgencia" placeholder="Envio cargo sac" :disabled="loading"
                     class="w-full" />
@@ -247,13 +251,6 @@
               </UFormField>
             </div>
 
-            <!-- Programador de Citas -->
-            <div class="mt-8">
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Programar Recogida
-              </h3>
-              <AppointmentScheduler :horarios="horarios" />
-            </div>
           </div>
 
           <!-- Navigation Buttons -->
@@ -271,6 +268,7 @@
 
               <UButton v-if="currentStep === 3" @click="finalizarFormulario" color="error" size="lg"
                 :disabled="!canProceedToNextStep || loading" :loading="loading">
+               
                 Terminar formulario
               </UButton>
             </div>
@@ -291,11 +289,13 @@ import { useSpinner } from '~/composables/commons/useSpinner'
 import { useFormPersistence } from '~/composables/commons/useFormPersistence'
 // Composables
 import {useModal} from '~/composables/commons/useModal'
+import {useUserRole} from '~/composables/auth/useUserRole'
 const { showSuccess, showError } = useModal()
 const { paises, getPaises } = useOptions()
 const { getDeliveryByConsolidadoId, clientes, carga, getDeliveryAgency, agencies, saveDeliveryProvincia, getHorariosDisponibles, horarios, loadingHorarios } = useDelivery()
 const { departamentos, provincias, distritos, getDepartamentos, getProvincias, getDistritos, loadingDepartamentos, loadingProvincias, loadingDistritos } = useLocation()
 const { withSpinner } = useSpinner()
+const { userData } = useUserRole()
 
 // Meta
 definePageMeta({
@@ -393,9 +393,9 @@ const canProceedToNextStep = computed(() => {
         formData.destinatarioDepartamento &&
         formData.destinatarioProvincia &&
         formData.destinatarioDistrito &&
-        formData.agenciaEnvio &&
-        formData.nombreAgencia &&
-        formData.rucAgencia &&
+     ((formData.agenciaEnvio && formData.agenciaEnvio?.value == 3) && 
+       (formData.nombreAgencia && formData.rucAgencia)) ||((
+        formData.agenciaEnvio && formData.agenciaEnvio.value != 3)) &&
         formData.direccionAgenciaLima &&
         formData.direccionAgenciaDestino
     default:
@@ -449,6 +449,7 @@ const finalizarFormulario = async () => {
           // Limpiar estado del localStorage al enviar exitosamente
           clearFormState()
           resetForm()
+          navigateTo(`/`)
         
         } else {
           showError('Error al guardar', response.error || 'Error al guardar los datos')
@@ -519,6 +520,10 @@ watch(() => formData.tipoComprobante, (newValue) => {
 
 // Cargar datos iniciales
 onMounted(async () => {
+  await withSpinner(async () => {
+  formData.clienteCorreo = userData.value?.email || ''
+
+
   // Cargar datos del servidor
   await getDeliveryByConsolidadoId(Number(consolidadoId))
   importadores.value = clientes.value
@@ -541,6 +546,11 @@ onMounted(async () => {
     Object.assign(formData, savedState.formData)
     // Restaurar paso actual
     currentStep.value = savedState.currentStep
+  }
+  }, 'Cargando datos...')
+  if(formData.tipoComprobante.value === 'boleta'){
+    formData.clienteDni = formData.clienteDni!=='' ? formData.clienteDni : userData.value?.dni || ''
+    formData.clienteNombre = formData.clienteNombre!=='' ? formData.clienteNombre : userData.value?.name || ''
   }
 })
 </script>

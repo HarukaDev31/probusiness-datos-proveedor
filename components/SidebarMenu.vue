@@ -12,12 +12,15 @@
       </NuxtLink>
     </div>
 
-
-
-
-    <!-- Nav: scrollable -->
     <nav class="px-2 overflow-y-auto flex-1">
       <div class="space-y-2 pb-4">
+        <!--menu home-->
+        <div class="w-full">
+          <UButton label="Inicio" icon="i-heroicons-home" variant="ghost"
+            :class="isActiveRoute('/') ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/10 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
+            class="w-full justify-start text-sm gap-3 py-2 px-3 rounded-md"
+            @click="handleNavigation('/')" />
+        </div>
         <template v-if="!menuCategories || menuCategories.length === 0">
           <div class="text-center py-6">
             <UIcon name="i-heroicons-arrow-path"

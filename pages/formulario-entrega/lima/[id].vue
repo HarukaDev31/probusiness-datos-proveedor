@@ -6,13 +6,31 @@
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           Consolidado #{{ carga }}
         </h1>
-        <p class="text-gray-600 dark:text-gray-300">
+        <div v-if="currentStep === 1">
+          <p class="text-gray-600 dark:text-gray-300">
           Completa la información para que puedas recoger tu pedido.
         </p>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
           Todos los datos enviados mediante este FORMS son confidenciales y no son de dominio público, únicamente los
           usará la empresa para nuestra base de datos.
         </p>
+        </div>
+        <div v-else-if="currentStep === 2">
+          <p class="text-gray-600 dark:text-gray-300">
+            Ahora necesitamos los datos para realizar tu comprobante
+          </p>
+        </div>
+        <div v-else-if="currentStep === 3">
+          <p class="text-gray-600 dark:text-gray-300">
+            Ahora necesitamos los datos del chofer para entregar tu pedido, si aún no cuenta con la información dar
+            en continuar
+          </p>
+        </div>
+        <div v-else-if="currentStep === 4">
+          <p class="text-gray-600 dark:text-gray-300">
+            Por favor selecciona la fecha y hora disponible, después culmina el formulario
+          </p>
+        </div>
       </div>
 
       <!-- Stepper -->
@@ -79,26 +97,24 @@
           <div v-if="currentStep === 2" class="space-y-6">
             <div class="text-center mb-6">
            
-              <p class="text-gray-600 dark:text-gray-300 mt-2">
-                Ahora necesitamos los datos para realizar tu comprobante
-              </p>
+              
             </div>
             <div v-if="formData.tipoComprobante.value === 'BOLETA'" class="space-y-4">
 
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UFormField label="DNI:" required>
-                  <UInput v-model="formData.clienteDni" placeholder="48558558" :disabled="loading" class="w-full" />
+                  <UInput v-model="formData.clienteDni" placeholder="" :disabled="loading" class="w-full" />
                 </UFormField>
 
                 <UFormField label="Nombre completo:" required>
-                  <UInput v-model="formData.clienteNombre" placeholder="Miguel Villegas Perez" :disabled="loading"
+                  <UInput v-model="formData.clienteNombre" placeholder="" :disabled="loading"
                     class="w-full" />
                 </UFormField>
               </div>
 
               <UFormField label="Correo:" required>
-                <UInput v-model="formData.clienteCorreo" type="email" placeholder="mvillegas@probusiness.pe"
+                <UInput v-model="formData.clienteCorreo" type="email" placeholder=""
                   :disabled="loading" class="w-full" />
               </UFormField>
             </div>
@@ -136,10 +152,7 @@
           <div v-if="currentStep === 3" class="space-y-6">
             <div class="text-center mb-6">
              
-              <p class="text-gray-600 dark:text-gray-300 mt-2">
-                Ahora necesitamos los datos del chofer para entregar tu pedido, si aún no cuenta con la información dar
-                en continuar
-              </p>
+              
             </div>
 
 
@@ -180,9 +193,7 @@
           <div v-if="currentStep === 4" class="space-y-6 w-full">
             <div class="text-center mb-6">
              
-              <p class="text-gray-600 dark:text-gray-300 mt-2">
-                Por favor selecciona la fecha y hora disponible, después culmina el formulario
-              </p>
+              
             </div>
             <AppointmentScheduler :horarios="horarios" @date-selected="handleDateSelected" />
           </div>
@@ -223,12 +234,18 @@ import { useLocation } from '~/composables/commons/useLocation'
 import { useSpinner } from '~/composables/commons/useSpinner'
 import { useFormPersistence } from '~/composables/commons/useFormPersistence'
 import { useRoute } from 'vue-router'
-
+import { useUserRole } from '~/composables/auth/useUserRole'
 const { showSuccess, showError } = useModal()
 const { getDeliveryByConsolidadoId, clientes, carga, getDeliveryAgency, agencies, saveDeliveryProvincia, saveDeliveryLima, getHorariosDisponibles, horarios } = useDelivery()
 const { departamentos, provincias, distritos, getDepartamentos, getProvincias, getDistritos, loadingDepartamentos, loadingProvincias, loadingDistritos } = useLocation()
 const { withSpinner } = useSpinner()
-
+const {
+  userData,
+  currentRole,
+  userName,
+  userEmail,
+  fetchCurrentUser
+} = useUserRole()
 // Meta
 definePageMeta({
   title: 'Formulario de Entrega - Lima',
@@ -372,6 +389,7 @@ const finalizarReserva = async () => {
           // Limpiar estado del localStorage al enviar exitosamente
           clearFormState()
           resetForm()
+          navigateTo(`/`)
         } else {
           showError('Error al guardar', response.error || 'Error al guardar los datos')
         }
@@ -425,20 +443,22 @@ const resetForm = () => {
 watch(() => formData.tipoComprobante, (newValue) => {
   if (newValue.value === 'BOLETA') {
     // Pre-llenar datos para BOLETA
-    formData.clienteDni = formData.dni
-    formData.clienteNombre = formData.nombreCompleto
+    
   } else if (newValue.value === 'FACTURA') {
     // Pre-llenar datos para FACTURA
-    formData.clienteRuc = '20603287721'
-    formData.clienteRazonSocial = 'Grupo Pro Business sac'
+    
   }
 })
 onMounted(async () => {
   // Cargar datos del servidor
   await getDeliveryByConsolidadoId(Number(consolidadoId))
   await getHorariosDisponibles(Number(consolidadoId))
-  
-  // Intentar cargar estado guardado
+  if(formData.tipoComprobante.value === 'BOLETA'){
+    formData.clienteDni = userData.value?.dni || ''
+    formData.clienteNombre = userData.value?.name || ''
+  }
+  formData.clienteCorreo = userData.value?.email || ''
+  //// Intentar cargar estado guardado
   const savedState = loadFormState()
   if (savedState) {
     console.log('Estado guardado encontrado:', savedState)

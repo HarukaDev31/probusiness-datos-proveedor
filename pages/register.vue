@@ -424,7 +424,8 @@ async function handleRegister() {
                 email: registerData.value.email,
                 whatsapp: registerData.value.whatsapp,
                 password: registerData.value.password,
-                repeatPassword: registerData.value.repeatPassword
+                repeatPassword: registerData.value.repeatPassword,
+                dni: registerData.value.dni
             })
             console.log(response,'response')
             if (response.success) {
