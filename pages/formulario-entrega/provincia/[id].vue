@@ -232,12 +232,13 @@
                 <UFormField label="RUC de la agencia:" required>
                   <UInput v-model="formData.rucAgencia" placeholder="20603287721" :disabled="loading" class="w-full" />
                 </UFormField>
-              </div>
-
-              <UFormField label="Dirección de la agencia sede lima:" required>
+                <UFormField label="Dirección de la agencia sede lima:" required>
                 <UInput v-model="formData.direccionAgenciaLima" placeholder="Avenida nicola arriola 314, la victoria"
                   :disabled="loading" class="w-full" />
               </UFormField>
+              </div>
+
+          
 
               <UFormField label="DIRECCIÓN DE LA AGENCIA DE DESTINO (La dirección de la agencia en su provincia):"
                 required>
@@ -394,9 +395,8 @@ const canProceedToNextStep = computed(() => {
         formData.destinatarioProvincia &&
         formData.destinatarioDistrito &&
      ((formData.agenciaEnvio && formData.agenciaEnvio?.value == 3) && 
-       (formData.nombreAgencia && formData.rucAgencia)) ||((
+       (formData.nombreAgencia && formData.rucAgencia && formData.direccionAgenciaLima)) ||((
         formData.agenciaEnvio && formData.agenciaEnvio.value != 3)) &&
-        formData.direccionAgenciaLima &&
         formData.direccionAgenciaDestino
     default:
       return false
