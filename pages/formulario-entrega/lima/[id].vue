@@ -232,7 +232,8 @@ const { withSpinner } = useSpinner()
 // Meta
 definePageMeta({
   title: 'Formulario de Entrega - Lima',
-  layout: 'default'
+  layout: 'default',
+  middleware: 'auth'
 })
 
 // Route

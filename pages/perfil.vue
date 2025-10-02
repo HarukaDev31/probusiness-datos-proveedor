@@ -14,7 +14,6 @@ const { profile, loading, error, getProfile } = useProfile();
 const isLoading = ref(true);
 let userProfile = ref({} as UserProfile);
 onMounted(async () => {
-
   try {
     const response = await getProfile();
     if (!response.success) {

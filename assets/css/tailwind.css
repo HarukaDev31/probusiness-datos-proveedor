@@ -86,6 +86,9 @@
   --ui-warning: var(--ui-color-warning-600);
   --ui-error: var(--ui-color-error-600);
   --ui-transparent: var(--ui-color-transparent);
+ 
+
+  
 }
 
 /* Aplicar la fuente globalmente */

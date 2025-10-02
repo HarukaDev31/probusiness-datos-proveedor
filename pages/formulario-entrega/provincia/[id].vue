@@ -300,7 +300,8 @@ const { withSpinner } = useSpinner()
 // Meta
 definePageMeta({
   title: 'Formulario de Entrega - Provincia',
-  layout: 'default'
+  layout: 'default',
+  middleware: 'auth'
 })
 
 // Route

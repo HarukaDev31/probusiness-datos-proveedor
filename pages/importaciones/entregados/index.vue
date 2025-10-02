@@ -19,6 +19,9 @@
   </div>
 </template>
 <script setup lang="ts">
+definePageMeta({
+    middleware: 'auth'
+})
 import { h, resolveComponent } from 'vue'
 import type { ContainerJourney } from "../../../types/containers"
 import { journeySeeder } from "../../../helpers/datatable-seeder"

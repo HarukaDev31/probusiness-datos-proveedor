@@ -212,6 +212,9 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+    middleware: 'auth'
+})
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useModal } from '~/composables/commons/useModal'

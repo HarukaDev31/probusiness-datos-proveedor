@@ -64,19 +64,34 @@
                 Registrarme</h2>
             <form @submit.prevent="handleRegister" class="space-y-4 sm:space-y-5">
                 <div>
-                    <label class="block text-gray-600 mb-1" for="nombre">Nombres</label>
-                    <UInput id="nombre" v-model="registerData.nombre" type="text" class="w-full "
-                        placeholder="Ingresa tus nombres" required />
+                    <label class="block text-gray-600 mb-1" for="nombre">Nombre Completo</label>
+                    <UInput 
+                        id="nombre" 
+                        v-model="registerData.nombre" 
+                        type="text" 
+                        class="w-full"
+                        :class="{ 'border-red-500': fieldErrors.nombre }"
+                        placeholder="Ingresa tus nombres" 
+                        @blur="validateNombre"
+                        @input="fieldErrors.nombre = ''"
+                    />
+                    <p v-if="fieldErrors.nombre" class="text-red-500 text-xs mt-1">{{ fieldErrors.nombre }}</p>
                 </div>
-                <div>
-                    <label class="block text-gray-600 mb-1" for="apellido">Apellidos</label>
-                    <UInput id="apellido" v-model="registerData.apellido" type="text" class="w-full "
-                        placeholder="Ingresa tus apellidos" required />
-                </div>
+             
                 <div>
                     <label class="block text-gray-600 mb-1" for="email">Correo electrónico</label>
-                    <UInput id="email" v-model="registerData.email" type="email" class="w-full "
-                        placeholder="correo@ejemplo.com" required />
+                    <UInput 
+                        id="email" 
+                        v-model="registerData.email" 
+                        type="email" 
+                        class="w-full"
+                        :class="{ 'border-red-500': fieldErrors.email }"
+                        placeholder="correo@ejemplo.com" 
+                        @blur="validateEmail"
+                        @input="fieldErrors.email = ''"
+                         
+                    />
+                    <p v-if="fieldErrors.email" class="text-red-500 text-xs mt-1">{{ fieldErrors.email }}</p>
                 </div>
                 <div>
                     <label class="block text-gray-600 mb-1" for="whatsapp">
@@ -88,15 +103,52 @@
                             WhatsApp
                         </span>
                     </label>
-                    <UInput id="whatsapp" v-model="registerData.whatsapp" type="tel" class="w-full "
-                        placeholder="999 999 999" @UInput="registerData.whatsapp = formatWhatsApp($event.target.value)"
-                        required />
-                    <p class="text-xs text-gray-500 mt-1">(*) Solo números (9 dígitos)</p>
+                    <UInput 
+                        id="whatsapp" 
+                        v-model="registerData.whatsapp" 
+                        class="w-full"
+                        :class="{ 'border-red-500': fieldErrors.whatsapp }"
+                        placeholder="999 999 999"
+                        v-maska="'#########'"
+                        @UInput="registerData.whatsapp = formatWhatsApp($event.target.value)"
+                        @blur="validateWhatsApp"
+                        @input="fieldErrors.whatsapp = ''"
+                         
+                    />
+                    <p v-if="fieldErrors.whatsapp" class="text-red-500 text-xs mt-1">{{ fieldErrors.whatsapp }}</p>
+                    <p v-else class="text-xs text-gray-500 mt-1">(*) Solo números (9 dígitos)</p>
                 </div>
+                <!--Form Field dni-->
+                <div class="relative">
+                    <label class="block text-gray-600 mb-1" for="dni">DNI</label>
+                    <UInput 
+                        id="dni" 
+                        v-model="registerData.dni" 
+                        type="number"  
+                        class="w-full"
+                        :class="{ 'border-red-500': fieldErrors.dni }"
+                        v-maska="'########'"
+                        placeholder="Ingresa tu DNI" 
+                        @blur="validateDni"
+                        @input="fieldErrors.dni = ''"
+                         
+                    />
+                    <p v-if="fieldErrors.dni" class="text-red-500 text-xs mt-1">{{ fieldErrors.dni }}</p>
+                </div>
+                <!--Form Field password-->
                 <div class="relative">
                     <label class="block text-gray-600 mb-1" for="password">Contraseña</label>
-                    <UInput id="password" v-model="registerData.password" :type="showPassword ? 'text' : 'password'"
-                        class="w-full " placeholder="••••••••" required />
+                    <UInput 
+                        id="password" 
+                        v-model="registerData.password" 
+                        :type="showPassword ? 'text' : 'password'"
+                        class="w-full"
+                        :class="{ 'border-red-500': fieldErrors.password }"
+                        placeholder="••••••••" 
+                        @blur="validatePassword"
+                        @input="fieldErrors.password = ''"
+                         
+                    />
                     <button type="button" @click="showPassword = !showPassword"
                         class="absolute right-3 top-10 sm:top-8 text-gray-400 hover:text-gray-600">
                         <svg v-if="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,14 +162,24 @@
                                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                     </button>
-                    <p class="text-xs text-gray-500 mt-1">(*) La contraseña debe tener al menos 6 caracteres.</p>
+                    <p v-if="fieldErrors.password" class="text-red-500 text-xs mt-1">{{ fieldErrors.password }}</p>
+                    <p v-else class="text-xs text-gray-500 mt-1">(*) La contraseña debe tener al menos 6 caracteres.</p>
                 </div>
                 <div>
                     <label class="block text-gray-600 mb-1" for="repeatPassword">Repetir contraseña</label>
-                    <UInput id="repeatPassword" v-model="registerData.repeatPassword"
-                        :type="showPassword ? 'text' : 'password'" class="w-full " placeholder="Repite tu contraseña"
-                        required />
-                    <p class="text-xs text-gray-500 mt-1">(*) Debe coincidir con la contraseña.</p>
+                    <UInput 
+                        id="repeatPassword" 
+                        v-model="registerData.repeatPassword"
+                        :type="showPassword ? 'text' : 'password'" 
+                        class="w-full"
+                        :class="{ 'border-red-500': fieldErrors.repeatPassword }"
+                        placeholder="Repite tu contraseña"
+                        @blur="validateRepeatPassword"
+                        @input="fieldErrors.repeatPassword = ''"
+                         
+                    />
+                    <p v-if="fieldErrors.repeatPassword" class="text-red-500 text-xs mt-1">{{ fieldErrors.repeatPassword }}</p>
+                    <p v-else class="text-xs text-gray-500 mt-1">(*) Debe coincidir con la contraseña.</p>
                 </div>
                 <button type="submit" :disabled="loading"
                     class="w-full bg-orange-500 text-white py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg hover:bg-orange-600 transition disabled:opacity-60">
@@ -160,7 +222,7 @@
                     <form v-if="!forgotSuccess" @submit.prevent="handleForgot" class="space-y-4">
                         <UInput v-model="forgotEmail" type="email" placeholder="Tu dirección de E-mail"
                             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                            required />
+                             />
                         <button :disabled="forgotLoading" type="submit"
                             class="w-full bg-red-500 text-white py-3 rounded-lg font-semibold text-lg hover:bg-red-600 transition disabled:opacity-60">Enviar
                             instrucciones</button>
@@ -183,11 +245,13 @@
 
 </template>
 
-<script setup>
+<script setup lang="ts">
 //use auth layout
 definePageMeta({
     layout: 'auth'
 })
+import { vMaska } from 'maska/vue'
+
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 const { login, loading, error } = useAuth()
@@ -206,12 +270,24 @@ const registerData = ref({
     email: '',
     whatsapp: '',
     password: '',
-    repeatPassword: ''
+    repeatPassword: '',
+    dni: ''
+})
+
+// Estados de validación para cada campo
+const fieldErrors = ref({
+    nombre: '',
+    email: '',
+    whatsapp: '',
+    password: '',
+    repeatPassword: '',
+    dni: ''
 })
 
 const showForgot = ref(false)
 const forgotEmail = ref('')
 const forgotLoading = ref(false)
+const forgotSuccess = ref(false)
 
 const { showError, showSuccess } = useModal()
 
@@ -233,37 +309,123 @@ const formatWhatsApp = (value) => {
     return cleaned
 }
 
+// Funciones de validación
+const validateNombre = () => {
+    if (!registerData.value.nombre.trim()) {
+        fieldErrors.value.nombre = 'El nombre es requerido'
+        return false
+    }
+    if (registerData.value.nombre.trim().length < 2) {
+        fieldErrors.value.nombre = 'El nombre debe tener al menos 2 caracteres'
+        return false
+    }
+    fieldErrors.value.nombre = ''
+    return true
+}
+
+const validateEmail = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!registerData.value.email.trim()) {
+        fieldErrors.value.email = 'El correo electrónico es requerido'
+        return false
+    }
+    if (!emailRegex.test(registerData.value.email)) {
+        fieldErrors.value.email = 'Ingresa un correo electrónico válido'
+        return false
+    }
+    fieldErrors.value.email = ''
+    return true
+}
+
+const validateWhatsApp = () => {
+    const whatsappRegex = /^\d{9}$/
+    if (!registerData.value.whatsapp.trim()) {
+        fieldErrors.value.whatsapp = 'El número de WhatsApp es requerido'
+        return false
+    }
+    if (!whatsappRegex.test(registerData.value.whatsapp)) {
+        fieldErrors.value.whatsapp = 'Ingresa un número de WhatsApp válido de 9 dígitos'
+        return false
+    }
+    fieldErrors.value.whatsapp = ''
+    return true
+}
+
+const validateDni = () => {
+    const dniValue = registerData.value.dni.toString()
+    if (!dniValue || dniValue.trim() === '') {
+        fieldErrors.value.dni = 'El DNI es requerido'
+        return false
+    }
+    if (dniValue.length !== 8) {
+        fieldErrors.value.dni = 'El DNI debe tener 8 dígitos'
+        return false
+    }
+    fieldErrors.value.dni = ''
+    return true
+}
+
+const validatePassword = () => {
+    if (!registerData.value.password) {
+        fieldErrors.value.password = 'La contraseña es requerida'
+        return false
+    }
+    if (registerData.value.password.length < 6) {
+        fieldErrors.value.password = 'La contraseña debe tener al menos 6 caracteres'
+        return false
+    }
+    fieldErrors.value.password = ''
+    return true
+}
+
+const validateRepeatPassword = () => {
+    if (!registerData.value.repeatPassword) {
+        fieldErrors.value.repeatPassword = 'Confirma tu contraseña'
+        return false
+    }
+    if (registerData.value.password !== registerData.value.repeatPassword) {
+        fieldErrors.value.repeatPassword = 'Las contraseñas no coinciden'
+        return false
+    }
+    fieldErrors.value.repeatPassword = ''
+    return true
+}
+
+// Función para validar todos los campos
+const validateAllFields = () => {
+    // Ejecutar todas las validaciones para mostrar todos los errores
+    const nombreValid = validateNombre()
+    const emailValid = validateEmail()
+    const whatsappValid = validateWhatsApp()
+    const dniValid = validateDni()
+    const passwordValid = validatePassword()
+    const repeatPasswordValid = validateRepeatPassword()
+    
+    // Retornar true solo si todos los campos son válidos
+    return nombreValid && emailValid && whatsappValid && dniValid && passwordValid && repeatPasswordValid
+}
+
 
 
 async function handleRegister() {
-    // Validaciones
-    if (!registerData.value.nombre || !registerData.value.apellido || !registerData.value.email || !registerData.value.whatsapp || !registerData.value.password) {
-        showError('Por favor completa todos los campos obligatorios', 'Campos Requeridos')
+    // Validar todos los campos
+    if (!validateAllFields()) {
         return
     }
 
-    if (registerData.value.password.length < 6) {
-        showWarning('La contraseña debe tener al menos 6 caracteres', 'Contraseña Inválida')
-        return
-    }
-
-    if (registerData.value.password !== registerData.value.repeatPassword) {
-        showWarning('Las contraseñas no coinciden', 'Contraseña')
-        return
-    }
-
-    // Validar formato de WhatsApp
-    const whatsappRegex = /^\d{9}$/
-    if (!whatsappRegex.test(registerData.value.whatsapp)) {
-        showWarning('Por favor ingresa un número de WhatsApp válido de 9 dígitos', 'WhatsApp Inválido')
-        return
-    }
-
-    loading.value = true
+    // loading.value = true
     await withSpinner(async () => {
         try {
 
-            const response = await register(registerData.value)
+            const response = await register({
+                name: registerData.value.nombre,
+                nombre: registerData.value.nombre,
+                apellido: registerData.value.apellido,
+                email: registerData.value.email,
+                whatsapp: registerData.value.whatsapp,
+                password: registerData.value.password,
+                repeatPassword: registerData.value.repeatPassword
+            })
             console.log(response,'response')
             if (response.success) {
                 showSuccess('¡Cuenta creada exitosamente! Redirigiendo...', 'Registro Exitoso')
@@ -279,20 +441,21 @@ async function handleRegister() {
                     }
                 }, 1000)
             } else {
-                showError(response.error || 'Error al registrar usuario')
+                showError(response.error || 'Error al registrar usuario', 'Error al registrar usuario')
             }
         } catch (error) {
             console.error('Error during register:', error)
             showError(error.data?.message || 'Error al registrar usuario', 'Error al registrar usuario')
         } finally {
-            loading.value = false
+            // loading.value = false
         }
     })
 }
 function closeRegister() {
     showRegister.value = false
-    loading.value = false
-    registerData.value = { nombre: '', apellido: '', email: '', whatsapp: '', password: '' }
+    // loading.value = false
+    registerData.value = { nombre: '', apellido: '', email: '', whatsapp: '', password: '', repeatPassword: '', dni: '' }
+    fieldErrors.value = { nombre: '', email: '', whatsapp: '', password: '', repeatPassword: '', dni: '' }
     showPassword.value = false
 }
 function handleForgot() {
@@ -307,30 +470,24 @@ function closeForgot() {
     showForgot.value = false
     forgotLoading.value = false
     forgotEmail.value = ''
+    forgotSuccess.value = false
 }
-const handleLogin = async () => {
-    loginLoading.value = true
-    loginError.value = ''
-    await withSpinner(async () => {
-        try {
-            const data = await login(registerData.value.email, registerData.value.password)
-            if (data.access_token) {
-                showSuccess('¡Has iniciado sesión exitosamente! Redirigiendo...', 'Inicio de Sesión Exitoso')
-                const checkingRoute = localStorage.getItem('checkingRoute')
-                if (checkingRoute) {
-                    router.push(checkingRoute)
-                } else {
-                    router.push('/')
-                }
-            } else {
-                showError(data.message || 'Credenciales incorrectas', 'Error de Autenticación')
-            }
-        } catch (error) {
-            showError(error.message || 'Error de conexión con el servidor', 'Error de Conexión')
-        } finally {
-            loading.value = false
-        }
-    })
-}
+// Función de login removida - no se usa en esta página
 
 </script>
+<style>
+input[type="number"] {
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+</style>

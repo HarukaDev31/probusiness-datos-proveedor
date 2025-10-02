@@ -20,6 +20,9 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+    middleware: 'auth'
+})
 import ShipTracker from '@/components/commons/ShipTracker.vue';
 import ShipTrackerSkeleton from '~/components/commons/ShipTrackerSkeleton.vue';
 import type { ContainerJourneyStatus } from '~/types/containers';
