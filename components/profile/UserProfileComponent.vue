@@ -342,14 +342,7 @@ onUnmounted(() => {
 });
 
 // Watcher para guardar metas automáticamente
-watch(() => profileForm.value.goals, (newGoals) => {
-    if (newGoals !== userProfile.value.goals) {
-        // Debounce para evitar muchas llamadas
-        setTimeout(() => {
-            saveGoals();
-        }, 1000);
-    }
-});
+
 </script>
 <style scoped>
 .save-btn {
