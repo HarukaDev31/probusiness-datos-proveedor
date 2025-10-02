@@ -280,14 +280,14 @@ class AuthService {
       if (response.success && response.token && response.user) {
         console.log(response)
         const user: AuthUser = {
-          id: response.user.ID_Usuario,
-          email: response.user.Txt_Email || response.user.No_Usuario,
-          name: response.user.No_Usuario,
-          role: response.user.role || 'user',
-          avatar: null,
-          lastLogin: response.user.Fe_Creacion,
-          isActive: response.user.Nu_Estado === 1,
-          raw: response.user
+          id: response.user.id,
+          email: response.user.email || response.user.No_Usuario,
+          name: response.user.fullName,
+          role: 'Cliente',
+          avatar: response.user.photoUrl,
+          lastLogin: response.user.createdAt,
+          isActive: response.user.isActive,
+          raw: response.user.raw
         }
         const token = response.token
         const menu: AuthMenu[] = response.menus || []
