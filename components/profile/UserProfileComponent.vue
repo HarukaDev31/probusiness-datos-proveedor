@@ -24,7 +24,7 @@
                     </div>
 
                     <h2 class="profile-name">{{ userProfile.fullName || '-' }}</h2>
-                    <p class="profile-dni">DNI: {{ userProfile.documentNumber || '-' }}</p>
+                    <p class="profile-dni">DNI: {{ userData.dni || '-' }}</p>
                 </div>
                 <div class="flex flex-col gap-4">
                     <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
@@ -133,6 +133,7 @@ import SimpleUploadFile from '~/components/commons/SimpleUploadFile.vue';
 import { useOverlay } from '#imports';
 import { useProfile } from '~/composables/clientes/commons/profile';
 import { useSpinner } from '~/composables/commons/useSpinner';
+import { useUserRole } from '~/composables/auth/useUserRole';
 const { withSpinner } = useSpinner();
 import { useModal } from '~/composables/commons/useModal';
 const { showSuccess, showError } = useModal();
@@ -141,6 +142,7 @@ const { showSuccess, showError } = useModal();
 const overlay = useOverlay();
 const simpleUploadFile = overlay.create(SimpleUploadFile);
 const { updateProfile, updateBusiness, uploadProfilePhoto, loading } = useProfile();
+const { userData } = useUserRole();
 
 const props = defineProps({
     userProfile: {
