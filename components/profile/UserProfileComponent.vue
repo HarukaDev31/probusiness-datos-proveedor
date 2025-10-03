@@ -30,7 +30,7 @@
                 </div>
                 <div class="flex flex-col gap-4">
                     <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0 r">
-                        <strong class="w-full sm:w-20 font-weight: 300; break-words">Fecha de Nacimiento:</strong>
+                        <strong class="w-full sm:w-20 font-weight: 300; break-words">F. de Nacimiento:</strong>
                         <span v-if="!isEditingProfile"
                             class="w-full sm:w-40 word-break break-words">{{
                                 userData.fechaNacimiento ? `${formatDateTimeToDmy(userData.fechaNacimiento)}` : '-'
