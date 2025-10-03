@@ -35,7 +35,7 @@
                     <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
                         <strong class="w-full sm:w-20 font-weight: 300;">País:</strong>
                         <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{ userProfile.country || '-' }}</span>
-                        <UInput v-else v-model="profileForm.country" class="edit-input w-full sm:w-40" />
+                        <USelect v-else v-model="profileForm.country" class="edit-input w-full sm:w-40" :items="paises" option-key="No_Pais" option-value="ID_Pais" />
                     </p>
                     <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
                         <strong class="w-full sm:w-20 font-weight: 300;">Ciudad:</strong>
@@ -134,9 +134,11 @@ import { useOverlay } from '#imports';
 import { useProfile } from '~/composables/clientes/commons/profile';
 import { useSpinner } from '~/composables/commons/useSpinner';
 import { useUserRole } from '~/composables/auth/useUserRole';
+import { useOptions } from '~/composables/commons/useOptions';
 const { withSpinner } = useSpinner();
 import { useModal } from '~/composables/commons/useModal';
 const { showSuccess, showError } = useModal();
+const { paises, getPaises } = useOptions()
 
 
 const overlay = useOverlay();
@@ -179,9 +181,11 @@ const businessForm = ref({
 });
 
 // Inicializar datos
-onMounted(() => {
+onMounted(async     () => {
     userProfile.value = props.userProfile;
-    initializeForms();
+    await initializeForms();
+    await getPaises();
+        
 });
 
 const initializeForms = () => {
@@ -240,7 +244,12 @@ const toggleEditBusiness = () => {
 const saveProfile = async () => {
     try {
         const profileData = { ...profileForm.value };
-        
+        //remove fields empties or null
+        Object.keys(profileData).forEach(key => {
+            if (profileData[key as keyof typeof profileData] === null || profileData[key as keyof typeof profileData] === '') {
+                delete profileData[key as keyof typeof profileData];
+            }
+        });
         // Enviar datos del perfil y foto en la misma petición
         await withSpinner(async () => {
             const response = await updateProfile(profileData, pendingPhotoFile.value || undefined);
