@@ -32,7 +32,7 @@
                     <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0 r">
                         <strong class="w-full sm:w-20 font-weight: 300; break-words">Fecha de Nacimiento:</strong>
                         <span v-if="!isEditingProfile"
-                            class="w-full sm:w- word-break  align-middle items-center flex ">{{
+                            class="w-full sm:w-40 word-break break-words">{{
                                 userData.fechaNacimiento ? `${formatDateTimeToDmy(userData.fechaNacimiento)}` : '-'
                             }}</span>
                         <UInput v-else type="date" v-model="profileForm.fechaNacimiento"
