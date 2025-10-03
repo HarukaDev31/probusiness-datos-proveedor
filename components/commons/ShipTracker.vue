@@ -1,14 +1,15 @@
 <template>
-    <div class="h-1/2  w-full flex items-center justify-center relative overflow-hidden">
+    <div class="w-full flex items-center justify-center relative overflow-hidden h-auto">
       <div class="w-full relative">
 
         <!-- Map Container -->
-        <div ref="mapContainerRef" class="relative w-full bg-white/80 rounded-xl p-4 h-[400px] overflow-hidden">
+        <div ref="mapContainerRef" class="relative bg-white/80 w-full rounded-xl overflow-hidden aspect-[5/3]  lg:aspect-[2/1]">
           <!-- World Map Background -->
           <img 
             src="/assets/img/map.png"
             alt="World Map"
-            class="absolute inset-0 w-full h-full object-cover opacity-30"
+            class="absolute inset-0 w-full h-full opacity-30 transition-all duration-300"
+            :class="mapObjectFit"
           />
           
           <!-- SVG container para todo: path, barco y marcadores -->
@@ -76,6 +77,27 @@
   const currentProgress = ref(props.progress);
   const isResetInProgress = ref(false);
   const resizeObserver = ref<ResizeObserver | null>(null);
+  
+  // Estado para responsive del mapa
+  const containerWidth = ref(0);
+  
+  // Computed para el ajuste del mapa según el ancho
+  const mapObjectFit = computed(() => {
+    // Solo en móvil muy estrecho usar object-contain
+    // En tablet y desktop mantener object-cover
+    if (containerWidth.value <= 500) {
+      return 'object-contain object-center';
+    } else {
+      return 'object-cover object-center';
+    }
+  });
+  
+  // Función para actualizar el ancho del contenedor
+  const updateContainerWidth = () => {
+    if (mapContainerRef.value) {
+      containerWidth.value = mapContainerRef.value.clientWidth;
+    }
+  };
   
   // Extraer los puntos de inicio y fin del path
   const extractPathEndpoints = () => {
@@ -268,6 +290,10 @@
       // Solo nos preocupamos por el contenedor del mapa
       for (const entry of entries) {
         if (entry.target === mapContainerRef.value) {
+          // Actualizar el ancho del contenedor
+          updateContainerWidth();
+          
+          // Resetear animaciones
           resetAnimationsWithDelay();
           break;
         }
@@ -279,8 +305,11 @@
   };
   
   onMounted(() => {
-    // Iniciar secuencia de animaciones cuando el componente se monta
+    // Inicializar el ancho del contenedor
     nextTick(() => {
+      updateContainerWidth();
+      
+      // Iniciar secuencia de animaciones cuando el componente se monta
       initAnimations();
       setupResizeObserver();
     });

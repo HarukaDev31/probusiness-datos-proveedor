@@ -24,7 +24,7 @@
         <div v-for="stat in stats" :key="stat.id" :data-stat-id="stat.id"
              class="group col-span-1 h-full px-1 transition-all duration-700"
              :class="stat.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
-          <div class="card stat-card bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 h-40 relative overflow-hidden">
+          <div class="card stat-card bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 h-40 relative overflow-hidden">
             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-orange-500/5 via-transparent to-orange-500/10 pointer-events-none" />
             <div class="card-body flex justify-between items-center px-4 h-full">
               <div class="icon-container px-2 relative">
@@ -173,6 +173,9 @@ onMounted(() => {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .hero-section {
+    height: 30vh;
+  }
   .main-text {
     font-size: 2rem;
   }
@@ -180,16 +183,28 @@ onMounted(() => {
   .stat-card .card-body {
     flex-direction: column;
     gap: 1rem;
+    padding: 0.25rem;
   }
   
   .icon-container {
     order: -1;
+  }
+  .counter {
+    font-size: 2.5rem !important;
   }
 }
 
 @media (max-width: 640px) {
   .main-text {
     font-size: 1.75rem;
+  }
+  
+  .counter {
+    font-size: 2rem !important;
+  }
+  
+  .stat-card .card-body p {
+    font-size: 0.75rem;
   }
 }
 </style> 

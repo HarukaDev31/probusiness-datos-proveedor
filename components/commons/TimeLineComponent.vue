@@ -5,9 +5,9 @@
       :default-value="activeItemIndex"
       color="success"
       size="md"
-      orientation="vertical"
+      :orientation="orientation"
       
-      class="w-full max-w-2xl mx-auto"
+      :class="orientation === 'horizontal' ? 'w-full overflow-x-auto' : 'w-full max-w-2xl mx-auto'"
     />
   </div>
 </template>
@@ -24,6 +24,10 @@ const props = defineProps({
   completed: {
     type: Boolean,
     default: false,
+  },
+  orientation: {
+    type: String as () => 'vertical' | 'horizontal',
+    default: 'vertical',
   }
 })
 
@@ -86,6 +90,11 @@ const getItemClass = (status: string) => {
   padding: 1rem;
 }
 
+/* Estilos para timeline horizontal */
+.timeline-container:has(.overflow-x-auto) {
+  padding: 1rem 0;
+}
+
 /* Personalización adicional para el timeline */
 :deep(.timeline-item) {
   transition: all 0.3s ease;
@@ -93,6 +102,16 @@ const getItemClass = (status: string) => {
 
 :deep(.timeline-item:hover) {
   transform: translateX(4px);
+}
+
+/* Estilos específicos para timeline horizontal */
+:deep(.overflow-x-auto .timeline-item) {
+  min-width: 200px;
+  text-align: center;
+}
+
+:deep(.overflow-x-auto .timeline-item:hover) {
+  transform: translateY(-2px);
 }
 
 /* Estilos para diferentes estados */

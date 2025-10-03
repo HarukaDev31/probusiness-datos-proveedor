@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useAuth } from '../composables/auth/useAuth'
 import { useWebSocketNotifications } from '../composables/useWebSocketNotifications'
 import { useWebSocketRole } from '../composables/websocket/useWebSocketRole'
@@ -56,8 +56,15 @@ import GlobalSpinner from '../components/GlobalSpinner.vue'
 import type { AuthMenu } from '../services/authService'
 import type { SidebarCategory } from '../types/module'
 
+// Detectar si es dispositivo móvil y ocultar sidebar por defecto en móviles
+const isMobile = () => {
+  if (process.client) {
+    return window.innerWidth < 1024 // lg breakpoint de Tailwind
+  }
+  return false
+}
 
-const sidebarVisible = ref(true)
+const sidebarVisible = ref(!isMobile())
 
 const pageTitle = computed(() => {
   const route = useRoute()
@@ -140,6 +147,18 @@ const pageTitle = computed(() => {
   // Páginas de prueba
   if (route.path === '/ejemplo-modales') return 'Ejemplo de Modales'
   if (route.path === '/test-spinner') return 'Test Spinner'
+
+  //Seguimiento
+  if (route.path.includes('/importaciones/entregados/seguimiento/')) return 'Seguimiento de Importación'
+  if (route.path.includes('/importaciones/trayecto/seguimiento/')) return 'Seguimiento de Trayecto'
+
+  //Inspección
+  if (route.path.includes('/importaciones/entregados/inspeccion/')) return 'Inspección de Importación'
+  if (route.path.includes('/importaciones/trayecto/inspeccion/')) return 'Inspección de Trayecto'
+
+  //Formulario entrega
+  if (route.path.includes('/formulario-entrega/provincia/')) return 'Formulario de Entrega Provincia'
+  if (route.path.includes('/formulario-entrega/lima/')) return 'Formulario de Entrega Lima'
 
   // Título por defecto basado en el path
   const pathSegments = route.path.split('/').filter(segment => segment)
@@ -307,5 +326,25 @@ onMounted(async () => {
   await initializeAuth()
   console.log('Auth initialized, menu loaded:', menu.value)
   console.log('Sidebar categories:', sidebarCategories.value)
+
+  // Listener para cambios de tamaño de ventana
+  if (process.client) {
+    const handleResize = () => {
+      // Si cambia de móvil a desktop, mostrar sidebar
+      // Si cambia de desktop a móvil, ocultar sidebar
+      if (window.innerWidth >= 1024 && !sidebarVisible.value) {
+        sidebarVisible.value = true
+      } else if (window.innerWidth < 1024 && sidebarVisible.value) {
+        sidebarVisible.value = false
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    
+    // Cleanup al desmontar
+    onUnmounted(() => {
+      window.removeEventListener('resize', handleResize)
+    })
+  }
 })
 </script>

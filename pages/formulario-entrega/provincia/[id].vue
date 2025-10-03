@@ -35,7 +35,8 @@
 
       <!-- Stepper -->
       <div class="mb-8">
-        <div class="flex items-center justify-center">
+        <!-- Desktop stepper -->
+        <div class="hidden md:flex items-center justify-center">
           <div class="flex items-center space-x-4">
             <div v-for="(step, index) in steps" :key="step.id" class="flex items-center">
               <div :class="[
@@ -53,8 +54,34 @@
             </div>
           </div>
         </div>
+        
+        <!-- Mobile stepper -->
+        <div class="md:hidden">
+          <div class="flex items-center justify-between px-4">
+            <div v-for="(step, index) in steps" :key="step.id" class="flex flex-col items-center flex-1">
+              <div :class="[
+                'flex items-center justify-center w-8 h-8 rounded-full text-white font-semibold text-sm mb-2',
+                currentStep >= index + 1 ? 'bg-primary-500' : 'bg-gray-300 dark:bg-gray-600'
+              ]">
+                {{ index + 1 }}
+              </div>
+              <div class="text-xs text-center text-gray-600 dark:text-gray-300 max-w-16">
+                {{ step.title}}
+              </div>
+            </div>
+          </div>
+          
+          <!-- Progress bar móvil -->
+          <div class="mt-4 px-4">
+            <div class="w-full bg-gray-300 dark:bg-gray-600 h-1 rounded-full">
+              <div 
+                class="bg-primary-500 h-full rounded-full transition-all duration-300"
+                :style="{ width: `${(currentStep / steps.length) * 100}%` }"
+              ></div>
+            </div>
+          </div>
+        </div>
       </div>
-
       <!-- Form Container -->
       <UCard class="max-w-4xl mx-auto">
         <form @submit.prevent="handleSubmit">
@@ -322,7 +349,7 @@ const consolidadoRange = ref('25')
 const steps = [
   { id: 1, title: 'Información básica' },
   { id: 2, title: 'Datos del cliente' },
-  { id: 3, title: 'Información del destinatario' }
+  { id: 3, title: 'Información del envío' }
 ]
 
 // Datos del formulario

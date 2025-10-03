@@ -22,7 +22,7 @@
             @click="handleNavigation('/')" />
         </div>
         <div class="w-full">
-          <UButton label="Mi Perfil" icon="i-heroicons-home" variant="ghost"
+          <UButton label="Mi Perfil" icon="i-heroicons-user" variant="ghost"
             :class="isActiveRoute('/perfil') ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/10 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
             class="w-full justify-start text-sm gap-3 py-2 px-3 rounded-md"
             @click="handleNavigation('/perfil')" />
@@ -126,7 +126,6 @@
         </template>
 
         <!-- Preferencias -->
-        
       </div>
     </nav>
     <!-- Bottom: user info + logout -->

@@ -41,24 +41,31 @@
     </div>
   </template>
   
-  <script setup lang="ts">
-  import { ref, computed, onMounted } from 'vue'
-  import { useAuth } from '../composables/auth/useAuth'
-  import { useWebSocketNotifications } from '../composables/useWebSocketNotifications'
-  import { useWebSocketRole } from '../composables/websocket/useWebSocketRole'
-  import SidebarMenu from '../components/SidebarMenu.vue'
-  import Breadcrumbs from '../components/Breadcrumbs.vue'
-  import SessionExpiredModal from '../components/SessionExpiredModal.vue'
-  import GlobalNotifications from '../components/GlobalNotifications.vue'
-  import ModalContainer from '../components/ModalContainer.vue'
-  import GlobalSpinner from '../components/GlobalSpinner.vue'
-  import type { AuthMenu } from '../services/authService'
-  import type { SidebarCategory } from '../types/module'
-  
-  
-  const sidebarVisible = ref(true)
-  
-  const pageTitle = computed(() => {
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useAuth } from '../composables/auth/useAuth'
+import { useWebSocketNotifications } from '../composables/useWebSocketNotifications'
+import { useWebSocketRole } from '../composables/websocket/useWebSocketRole'
+import SidebarMenu from '../components/SidebarMenu.vue'
+import Breadcrumbs from '../components/Breadcrumbs.vue'
+import SessionExpiredModal from '../components/SessionExpiredModal.vue'
+import GlobalNotifications from '../components/GlobalNotifications.vue'
+import ModalContainer from '../components/ModalContainer.vue'
+import GlobalSpinner from '../components/GlobalSpinner.vue'
+import type { AuthMenu } from '../services/authService'
+import type { SidebarCategory } from '../types/module'
+
+// Detectar si es dispositivo móvil y ocultar sidebar por defecto en móviles
+const isMobile = () => {
+  if (process.client) {
+    return window.innerWidth < 1024 // lg breakpoint de Tailwind
+  }
+  return false
+}
+
+const sidebarVisible = ref(!isMobile())
+
+const pageTitle = computed(() => {
     const route = useRoute()
   
     // Ruta raíz
@@ -306,5 +313,25 @@
     await initializeAuth()
     console.log('Auth initialized, menu loaded:', menu.value)
     console.log('Sidebar categories:', sidebarCategories.value)
+
+    // Listener para cambios de tamaño de ventana
+    if (process.client) {
+      const handleResize = () => {
+        // Si cambia de móvil a desktop, mostrar sidebar
+        // Si cambia de desktop a móvil, ocultar sidebar
+        if (window.innerWidth >= 1024 && !sidebarVisible.value) {
+          sidebarVisible.value = true
+        } else if (window.innerWidth < 1024 && sidebarVisible.value) {
+          sidebarVisible.value = false
+        }
+      }
+
+      window.addEventListener('resize', handleResize)
+      
+      // Cleanup al desmontar
+      onUnmounted(() => {
+        window.removeEventListener('resize', handleResize)
+      })
+    }
   })
   </script>

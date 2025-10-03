@@ -13,7 +13,7 @@
             </div>
             <div class="profile-info px-4">
                 <div class="pb-10">
-                    <div class="profile-avatar__container">
+                    <div class="profile-avatar__container flex justify-center items-center mx-auto">
                         <UAvatar :src="previewImage || userProfile.photoUrl" alt="Foto de perfil" class="profile-avatar" />
                     
                         <div class="profile-avatar__overlay" v-if="isEditingProfile" @click="openSimpleUploadFile()">
@@ -23,8 +23,8 @@
                         </div>
                     </div>
 
-                    <h2 class="profile-name">{{ userProfile.fullName || '-' }}</h2>
-                    <p class="profile-dni">DNI: {{ userData.dni || '-' }}</p>
+                    <h2 class="profile-name text-center">{{ userProfile.fullName || '-' }}</h2>
+                    <p class="profile-dni text-center">DNI: {{ userProfile.documentNumber || '-' }}</p>
                 </div>
                 <div class="flex flex-col gap-4">
                     <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
@@ -524,14 +524,18 @@ textarea {
     overflow: hidden;
     margin-bottom: 1rem;
     z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Responsive para profile-avatar__container */
 @media (max-width: 768px) {
     .profile-avatar__container {
-        width: 80px;
-        height: 80px;
         margin-bottom: 0.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 
