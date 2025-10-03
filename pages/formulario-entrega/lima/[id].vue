@@ -148,15 +148,7 @@
             </div>
 
             <div v-else-if="formData.tipoComprobante.value === 'FACTURA'" class="space-y-4">
-              <div
-                class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                <p class="text-green-800 dark:text-green-200 text-sm">
-                  Si le sale para llenar este formulario, es porque seleccionó FACTURA
-                </p>
-                <p class="text-green-700 dark:text-green-300 text-sm font-medium mt-1">
-                  Correo: Puede salirle la data de su perfil
-                </p>
-              </div>
+              
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UFormField label="RUC:" required>
