@@ -5,6 +5,7 @@ import type { Provider, FileAlmacenInspection } from "~/types/clientes/importaci
 import type { Seguimiento } from "~/types/clientes/importaciones/seguimiento"
 export const useTrayecto = () => {
     const trayectos = ref<Trayecto[]>([])
+    const entregados = ref<Trayecto[]>([])
     const loading = ref(false)
     const error = ref<string | null>(null)
     const pagination = ref<PaginationInfo>({
@@ -84,6 +85,18 @@ export const useTrayecto = () => {
             console.error('Error en getSeguimiento:', err)
         }
     }
+    const getEntregados = async () => {
+        try {
+            const response = await TrayectoService.getEntregados({
+                page: pagination.value.current_page,
+                limit: pagination.value.per_page
+            })
+            entregados.value = response.data
+        }catch(err: any) {
+            error.value = err.message
+            console.error('Error en getEntregados:', err)
+        }
+    }
     return {
         trayectos,
         loading,
@@ -99,6 +112,8 @@ export const useTrayecto = () => {
         activeFilesAlmacenInspection,
         cambiarProveedor,
         getSeguimiento,
-        seguimientos
+        seguimientos,
+        getEntregados,
+        entregados
     }
 }

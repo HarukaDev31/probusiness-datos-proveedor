@@ -216,12 +216,18 @@ class AuthService {
         const user: AuthUser = {
           id: response.user.id,
           email: response.user.email || response.user.No_Usuario,
-          name: response.user.fullName,
+          name: response.user.name,
           role: response.user.role || 'user',
           avatar: response.user.photoUrl,
           lastLogin: response.user.Fe_Creacion,
           isActive: response.user.Nu_Estado === 1,
           dni: response.user.dni,
+          phone: response.user.phone,
+          country: response.user.country,
+          city: response.user.city,
+          goals: response.user.goals,
+          empresa: response.user.empresa,
+          fechaNacimiento: response.user.fechaNacimiento, 
           raw: response.user.raw
         }
         const token = response.token
@@ -279,14 +285,21 @@ class AuthService {
         whatsapp: credentials.whatsapp,
         password: credentials.password,
         repeatPassword: credentials.repeatPassword,
-        dni: credentials.dni
+        dni: credentials.dni,
+        fechaNacimiento: credentials.fechaNacimiento
       })
       if (response.success && response.token && response.user) {
         console.log(response)
         const user: AuthUser = {
           id: response.user.id,
           email: response.user.email || response.user.No_Usuario,
-          name: response.user.fullName,
+          name: response.user.name,
+          phone: response.user.phone,
+          fechaNacimiento: response.user.fechaNacimiento,
+          country: response.user.country,
+          city: response.user.city,
+          goals: response.user.goals,
+          empresa: response.user.empresa,
           role: 'Cliente',
           avatar: response.user.photoUrl,
           lastLogin: response.user.createdAt,

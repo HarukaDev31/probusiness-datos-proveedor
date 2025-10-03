@@ -135,6 +135,22 @@
                     />
                     <p v-if="fieldErrors.dni" class="text-red-500 text-xs mt-1">{{ fieldErrors.dni }}</p>
                 </div>
+                <!--FILDL FECHA DE NACIMIENTO-->
+                <div class="relative">
+                    <label class="block text-gray-600 mb-1" for="fechaNacimiento">Fecha de Nacimiento</label>
+                    <UInput 
+                        id="fechaNacimiento" 
+                        v-model="registerData.fechaNacimiento" 
+                        type="date"
+                        class="w-full"
+                        :class="{ 'border-red-500': fieldErrors.fechaNacimiento }"
+                        placeholder="DD/MM/YYYY"
+                        @blur="validateFechaNacimiento"
+                        @input="fieldErrors.fechaNacimiento = ''"
+                         
+                    />
+                    <p v-if="fieldErrors.fechaNacimiento" class="text-red-500 text-xs mt-1">{{ fieldErrors.fechaNacimiento }}</p>
+                </div>  
                 <!--Form Field password-->
                 <div class="relative">
                     <label class="block text-gray-600 mb-1" for="password">Contraseña</label>
@@ -271,7 +287,8 @@ const registerData = ref({
     whatsapp: '',
     password: '',
     repeatPassword: '',
-    dni: ''
+    dni: '',
+    fechaNacimiento: ''
 })
 
 // Estados de validación para cada campo
@@ -281,7 +298,8 @@ const fieldErrors = ref({
     whatsapp: '',
     password: '',
     repeatPassword: '',
-    dni: ''
+    dni: '',
+    fechaNacimiento: ''
 })
 
 const showForgot = ref(false)
@@ -400,9 +418,9 @@ const validateAllFields = () => {
     const dniValid = validateDni()
     const passwordValid = validatePassword()
     const repeatPasswordValid = validateRepeatPassword()
-    
+    const fechaNacimientoValid = validateFechaNacimiento()
     // Retornar true solo si todos los campos son válidos
-    return nombreValid && emailValid && whatsappValid && dniValid && passwordValid && repeatPasswordValid
+    return nombreValid && emailValid && whatsappValid && dniValid && passwordValid && repeatPasswordValid && fechaNacimientoValid
 }
 
 
@@ -425,7 +443,8 @@ async function handleRegister() {
                 whatsapp: registerData.value.whatsapp,
                 password: registerData.value.password,
                 repeatPassword: registerData.value.repeatPassword,
-                dni: registerData.value.dni
+                dni: registerData.value.dni,
+                fechaNacimiento: registerData.value.fechaNacimiento
             })
             console.log(response,'response')
             if (response.success) {
@@ -455,9 +474,17 @@ async function handleRegister() {
 function closeRegister() {
     showRegister.value = false
     // loading.value = false
-    registerData.value = { nombre: '', apellido: '', email: '', whatsapp: '', password: '', repeatPassword: '', dni: '' }
-    fieldErrors.value = { nombre: '', email: '', whatsapp: '', password: '', repeatPassword: '', dni: '' }
+    registerData.value = { nombre: '', apellido: '', email: '', whatsapp: '', password: '', repeatPassword: '', dni: '', fechaNacimiento: '' }
+    fieldErrors.value = { nombre: '', email: '', whatsapp: '', password: '', repeatPassword: '', dni: '', fechaNacimiento: '' }
     showPassword.value = false
+}
+function validateFechaNacimiento() {
+    if (!registerData.value.fechaNacimiento) {
+        fieldErrors.value.fechaNacimiento = 'La fecha de nacimiento es requerida'
+        return false
+    }
+    fieldErrors.value.fechaNacimiento = ''
+    return true
 }
 function handleForgot() {
     forgotLoading.value = true

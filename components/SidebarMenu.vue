@@ -22,7 +22,7 @@
             @click="handleNavigation('/')" />
         </div>
         <div class="w-full">
-          <UButton label="Mi Perfil" icon="i-heroicons-home" variant="ghost"
+          <UButton label="Mi Perfil" icon="i-heroicons-user" variant="ghost"
             :class="isActiveRoute('/perfil') ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/10 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
             class="w-full justify-start text-sm gap-3 py-2 px-3 rounded-md"
             @click="handleNavigation('/perfil')" />
@@ -125,7 +125,28 @@
           </template>
         </template>
 
-        <!-- Preferencias -->
+       <!-- Preferencias -->
+       <div class="py-5 border-t border-b border-gray-100 dark:border-gray-700"
+          v-if="currentRole !== ROLES.CONTENEDOR_ALMACEN">
+          <div class="p-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Preferencias
+          </div>
+          <div class="mt-2 space-y-1 px-2">
+          
+
+            <div class="flex items-center justify-between py-4">
+              <div class="flex items-center gap-3">
+                <UIcon name="i-heroicons-moon" class="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                <div class="text-sm text-gray-700 dark:text-gray-300">Modo oscuro</div>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" class="sr-only peer" :checked="isDark" @change="toggleDarkMode" />
+                <div class="w-9 h-5 bg-gray-200 rounded-full peer-checked:bg-primary-600 transition-colors"></div>
+                <div
+                  class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transform peer-checked:translate-x-4 transition-transform" />
+              </label>
+            </div>
+          </div>
+        </div>
         
       </div>
     </nav>

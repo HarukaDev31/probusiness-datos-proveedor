@@ -43,6 +43,13 @@ interface UserData {
   estado: number
   id: number
   nombre: string
+  name: string
+  dni: string
+  fechaNacimiento: string
+  phone: string
+  country: string
+  city: string
+  goals: string
   organizacion: UserOrganization
 }
 
@@ -137,7 +144,7 @@ const currentId = computed(() => {
 
   return {
     // Estado
-    userData: readonly(userData),
+    userData: userData,
     loading: readonly(loading),
     error: readonly(error),
 
