@@ -2,13 +2,13 @@ import type { AuthMenu } from "~/services/authService";
 
 export interface UserProfile{
     id:number,
-    fullName:string,
+    name:string,
     photoUrl:string,
     email:string,
-    documentNumber:string,
-    age:number,
+    dni:string,
+    fechaNacimiento:string,
     country:string,
-    city?:string,
+    city?:number,
     phone?:string,
     business?:UserBusiness,   
     importedAmount:number,

@@ -33,6 +33,7 @@ export interface RegisterCredentials {
   password: string
   repeatPassword: string
   dni: string
+  fechaNacimiento: string
 }
 
 export interface RegisterResponse {

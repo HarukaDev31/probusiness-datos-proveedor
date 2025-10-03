@@ -18,7 +18,7 @@ export class LocationService extends BaseService {
     static async getProvincias(departamentoId) {
         try {
             const response = await this.apiCall<any>(`${this.baseUrl}/provincias/${departamentoId}`, {
-                
+
             })
             return response
         } catch (error) {
@@ -26,11 +26,21 @@ export class LocationService extends BaseService {
             throw error
         }
     }
+    static async getAllProvincias() {
+        try {
+            const response = await this.apiCall<any>(`${this.baseUrl}/provincias`, {
 
+            })
+            return response
+        } catch (error) {
+            console.error('Error al obtener provincias:', error)
+            throw error
+        }
+    }
     static async getDistritos(provinciaId) {
         try {
             const response = await this.apiCall<any>(`${this.baseUrl}/distritos/${provinciaId}`, {
-                
+
             })
             return response
         } catch (error) {

@@ -35,6 +35,15 @@ export const useLocation = () => {
             loadingProvincias.value = false
         }
     }
+    const getAllProvincias = async () => {
+        try {
+            const response = await LocationService.getAllProvincias()
+            provincias.value = response.data
+            return response
+        } catch (error) {
+            console.error('Error en getAllProvincias:', error)
+        }
+    }
     const getDistritos = async (provinciaId: string) => {
         try {
             loadingDistritos.value = true
@@ -50,5 +59,16 @@ export const useLocation = () => {
             loadingDistritos.value = false
         }
     }
-    return { getDepartamentos, getProvincias, getDistritos, departamentos, provincias, distritos, loadingDepartamentos, loadingProvincias, loadingDistritos }
+    return {
+        getDepartamentos,
+        getProvincias,
+        getAllProvincias,
+        getDistritos,
+        departamentos,
+        provincias,
+        distritos,
+        loadingDepartamentos,
+        loadingProvincias,
+        loadingDistritos
+    }
 }   

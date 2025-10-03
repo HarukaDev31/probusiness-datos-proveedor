@@ -1,7 +1,7 @@
 <template>
   <div class="entregados-container">
     <DataTable
-      :data="trayectos"
+      :data="entregados"
       :columns="tableColumns"
       :loading="loading"
       :total-records="pagination.total"
@@ -28,7 +28,7 @@ import { journeySeeder } from "../../../helpers/datatable-seeder"
 import type { TableColumn } from '@nuxt/ui'
 import { USelect, UBadge, UButton } from '#components'
 import { useTrayecto } from '~/composables/clientes/importaciones/useTrayecto'
-const { trayectos, loading, error, pagination, search, getTrayectos } = useTrayecto()
+const { trayectos, loading, error, pagination, search, getTrayectos,getEntregados,entregados } = useTrayecto()
 const NuxtLink = resolveComponent('NuxtLink')
 const UIcon = resolveComponent('UIcon')
 
@@ -78,6 +78,11 @@ const tableColumns: ref<TableColumn<any>[]> = ref([
     cell: ({ row }) => h('span', { class: 'font-medium text-blue-600' }, formatCurrency(row.getValue('logistica')))
   },
   {
+    accessorKey: 'impuestos',
+    header: 'Impuestos',
+    cell: ({ row }) => h('span', { class: 'font-medium text-red-600' }, formatCurrency(row.getValue('impuestos')))
+  },
+  {
     id: 'actions',
     header: 'Seguimiento',
     cell: ({ row }) => {
@@ -117,7 +122,7 @@ const formatDate = (dateString: string) => {
 }
 
 onMounted(() => {
-  getTrayectos()
+  getEntregados()
   
 })
 

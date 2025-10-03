@@ -4,7 +4,7 @@ import type { TrayectoResponse } from "~/types/clientes/importaciones/trayecto"
 import type { InspeccionResponse } from "~/types/clientes/importaciones/inspeccion"
 import type { SeguimientoResponse } from "~/types/clientes/importaciones/seguimiento"
 export class TrayectoService extends BaseService {
-    private static baseUrl = '/api/clientes/importaciones/trayecto'
+    private static baseUrl = '/api/clientes/importaciones'
     constructor() {
       super()
     }
@@ -14,16 +14,28 @@ export class TrayectoService extends BaseService {
             if (params.page) queryParams.append('page', params.page.toString())
             if (params.limit) queryParams.append('limit', params.limit.toString())
             if (params.search) queryParams.append('search', params.search)
-            const response = await this.apiCall<TrayectoResponse>(`${this.baseUrl}?${queryParams.toString()}`)
+            const response = await this.apiCall<TrayectoResponse>(`${this.baseUrl}/trayecto?${queryParams.toString()}`)
             return response
         } catch (error) {
             console.error('Error en getTrayectos:', error)
             throw error
         }
     }
+    static async getEntregados(params: any): Promise<TrayectoResponse> {
+        try {
+            const queryParams = new URLSearchParams()
+            if (params.page) queryParams.append('page', params.page.toString())
+            if (params.limit) queryParams.append('limit', params.limit.toString())
+            const response = await this.apiCall<TrayectoResponse>(`${this.baseUrl}/entregados?${queryParams.toString()}`)
+            return response
+        }catch(error) {
+            console.error('Error en getEntregados:', error)
+            throw error
+        }
+    }
     static async getInspeccion(uuid: string): Promise<InspeccionResponse> {
         try {
-            const response = await this.apiCall<InspeccionResponse>(`${this.baseUrl}/inspeccion/${uuid}`)
+            const response = await this.apiCall<InspeccionResponse>(`${this.baseUrl}/trayecto/inspeccion/${uuid}`)
             return response
         } catch (error) {
             console.error('Error en getInspeccion:', error)
@@ -32,7 +44,7 @@ export class TrayectoService extends BaseService {
     }
     static async getSeguimiento(uuid: string): Promise<SeguimientoResponse> {
         try {
-            const response = await this.apiCall<SeguimientoResponse>(`${this.baseUrl}/seguimiento/${uuid}`)
+            const response = await this.apiCall<SeguimientoResponse>(`${this.baseUrl}/trayecto/seguimiento/${uuid}`)
             return response
         } catch (error) {
             console.error('Error en getSeguimiento:', error)

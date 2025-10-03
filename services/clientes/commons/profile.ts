@@ -30,9 +30,9 @@ export class ProfileService extends BaseService {
             if (profileData.fullName !== undefined) formData.append('full_name', profileData.fullName)
             if (profileData.email !== undefined) formData.append('email', profileData.email)
             if (profileData.documentNumber !== undefined) formData.append('document_number', profileData.documentNumber)
-            if (profileData.age !== undefined) formData.append('age', profileData.age.toString())
+            if (profileData.fechaNacimiento !== undefined) formData.append('fecha_nacimiento', profileData.fechaNacimiento)
             if (profileData.country !== undefined) formData.append('country', profileData.country)
-            if (profileData.city !== undefined) formData.append('city', profileData.city)
+            if (profileData.city !== undefined) formData.append('city', profileData.city.toString())
             if (profileData.phone !== undefined) formData.append('phone', profileData.phone)
             if (profileData.goals !== undefined) formData.append('goals', profileData.goals)
             

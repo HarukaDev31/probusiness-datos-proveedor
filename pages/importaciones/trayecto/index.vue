@@ -75,6 +75,12 @@ const tableColumns: ref<TableColumn<any>[]> = ref([
     cell: ({ row }) => h('span', { class: 'font-medium text-blue-600' }, formatCurrency(row.getValue('logistica')))
   },
   {
+    accessorKey: 'impuestos',
+    header: 'Impuestos',
+    cell: ({ row }) => h('span', { class: 'font-medium text-red-600' }, formatCurrency(row.getValue('impuestos')))
+  },
+
+  {
     id: 'actions',
     header: 'Seguimiento',
     cell: ({ row }) => {
