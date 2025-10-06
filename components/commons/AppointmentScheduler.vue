@@ -1,30 +1,30 @@
 <template>
   <UCard class="h-auto" variant="soft">
-    <div class="max-w-6xl mx-auto p-6">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="max-w-6xl mx-auto p-4 md:p-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
 
-        <div class="space-y-6">
-          <div class="rounded-lg p-6">
+        <div class="space-y-4 md:space-y-6">
+          <div class="rounded-lg p-4 md:p-6">
             <div class="flex items-center justify-between mb-4">
               <UButton @click="previousMonth" icon="i-heroicons-chevron-left" variant="ghost" color="neutral"
                 size="sm" />
-              <h3 class="text-lg font-semibold ">
+              <h3 class="text-base md:text-lg font-semibold">
                 {{ currentMonthYear }}
               </h3>
               <UButton @click="nextMonth" icon="i-heroicons-chevron-right" variant="ghost" color="neutral" size="sm" />
             </div>
 
             <!-- Días de la semana -->
-            <div class="grid grid-cols-7 gap-2 mb-3">
+            <div class="grid grid-cols-7 gap-1 md:gap-2 mb-3">
               <div v-for="day in daysOfWeek" :key="day" class="text-center text-xs text-gray-400 py-2">
                 {{ day }}
               </div>
             </div>
 
             <!-- Días del mes -->
-            <div class="grid grid-cols-7 gap-2">
+            <div class="grid grid-cols-7 gap-1 md:gap-2">
               <button v-for="date in calendarDays" :key="date.value" @click="selectDate(date)" :class="[
-                'w-10 h-10 rounded-full text-sm font-medium transition-all duration-200',
+                'w-8 h-8 md:w-10 md:h-10 rounded-full text-xs md:text-sm font-medium transition-all duration-200',
                 date.isCurrentMonth
                   ? 'hover:bg-gray-600'
                   : 'text-neutral-500',
@@ -42,10 +42,10 @@
         </div>
 
         <!-- Sección Derecha: Selección de Horario -->
-        <div class="space-y-6">
+        <div class="space-y-4 md:space-y-6">
 
-          <div class="rounded-lg p-6">
-            <h3 class="text-lg font-semibold mb-4">
+          <div class="rounded-lg p-4 md:p-6">
+            <h3 class="text-base md:text-lg font-semibold mb-4">
               Escoge tu horario:
             </h3>
 
@@ -54,12 +54,12 @@
               class="space-y-2 grid grid-cols-1 scrollbar-hide" style="max-height: 40vh; overflow-y: auto;">
               <button v-for="timeSlot in availableTimeSlotsForSelectedDate" :key="timeSlot.range_id"
                 @click="selectTimeSlot(timeSlot)" :class="[
-                  'w-full py-1 px-2 rounded-lg font-medium transition-all duration-200 h-10 flex flex-col justify-center',
+                  'w-full py-2 md:py-1 px-3 md:px-2 rounded-lg font-medium transition-all duration-200 h-12 md:h-10 flex flex-col justify-center',
                   selectedTimeSlot?.range_id === timeSlot.range_id
                     ? 'bg-primary-600 hover:bg-primary-700'
                     : 'bg-gray-600 hover:bg-gray-500'
                 ]">
-                <div class="text-sm font-semibold flex-row items-center  justify-center ">
+                <div class="text-sm font-semibold flex-row items-center justify-center">
                   <div>
                     {{ formatTimeToAMPM(timeSlot.start_time) }} -{{ formatTimeToAMPM(timeSlot.end_time) }}
                   </div>
@@ -92,31 +92,28 @@
           </div>
 
           <!-- Resumen de la Cita -->
-          <div v-if="selectedDate && selectedTimeSlot" class="rounded-lg p-6">
-            <h4 class="text-lg font-semibold mb-4">
+          <div v-if="selectedDate && selectedTimeSlot" class="rounded-lg p-4 md:p-6">
+            <h4 class="text-base md:text-lg font-semibold mb-4">
               Resumen de tu recogida
             </h4>
 
             <div class="space-y-3 text-sm">
-              <div class="flex justify-between">
-                <!--Dirección de recojo: Calle Rio Nazca 243- San Luis. Ref. Al costado de la Agencia Antezana
-                ➡  MAPS: https://maps.app.goo.gl/5raLmkX65nNHB2Fr9 -->
-
-                <span class="text-gray-400">Dirección de recojo:</span>
-                <span class=" ml-2">
-                  <div class="flex items-center  justify-end">
-                    <a href="https://maps.app.goo.gl/5raLmkX65nNHB2Fr9" target="_blank" class="">
+              <div class="flex flex-col md:flex-row md:justify-between gap-2">
+                <span class="text-gray-400 flex-shrink-0">Dirección de recojo:</span>
+                <span class="ml-0 md:ml-2">
+                  <div class="flex items-start md:items-center justify-start md:justify-end gap-2">
+                    <a href="https://maps.app.goo.gl/5raLmkX65nNHB2Fr9" target="_blank" class="flex-shrink-0">
                       <UButton icon="i-heroicons-map-pin" variant="ghost" color="neutral" size="sm" />
                     </a>
-                     <span class="w-3/5 align-left ">Calle Rio Nazca 243- San Luis. Ref. Al costado de la Agencia Antezana</span>
+                     <span class="text-left md:text-right flex-1 md:w-3/5">Calle Rio Nazca 243- San Luis. Ref. Al costado de la Agencia Antezana</span>
                   </div>
                 </span>
               </div>
-              <div class="flex justify-between">
+              <div class="flex flex-col md:flex-row md:justify-between gap-1 md:gap-2">
                 <span class="text-gray-400">Fecha:</span>
                 <span class="">{{ formatSelectedDate }}</span>
               </div>
-              <div class="flex justify-between">
+              <div class="flex flex-col md:flex-row md:justify-between gap-1 md:gap-2">
                 <span class="text-gray-400">Horario:</span>
                 <span class="">{{ formatTimeToAMPM(selectedTimeSlot.start_time) }} - {{
                   formatTimeToAMPM(selectedTimeSlot.end_time) }}</span>

@@ -30,7 +30,7 @@
                 </div>
                 <div class="flex flex-col gap-4">
                     <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0 r">
-                        <strong class="w-full sm:w-20 font-weight: 300; break-words">F. de Nacimiento:</strong>
+                        <strong class="w-full sm:w-30 font-weight: 300; break-words">F. Nacimiento:</strong>
                         <span v-if="!isEditingProfile"
                             class="w-full sm:w-40 word-break break-words">{{
                                 userData.fechaNacimiento ? `${formatDateTimeToDmy(userData.fechaNacimiento)}` : '-'
@@ -39,7 +39,7 @@
                             class="edit-input w-full sm:w-40" />
                     </p>
                     <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
-                        <strong class="w-full sm:w-20 font-weight: 300;">País:</strong>
+                        <strong class="w-full sm:w-30 font-weight: 300;">País:</strong>
                         <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{
                             paises.find(p => p.value == userData.country)?.label || '-'}}</span>
                         <USelect v-else v-model="profileForm.country" class="edit-input w-full sm:w-40"
@@ -47,7 +47,7 @@
 
                     </p>
                     <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
-                        <strong class="w-full sm:w-20 font-weight: 300;">Ciudad:</strong>
+                        <strong class="w-full sm:w-30 font-weight: 300;">Ciudad:</strong>
 
                         <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{
                             provincias.find(p => p.value == userData.city)?.label || '-'}}
@@ -56,13 +56,13 @@
                             :items="provincias" option-key="label" option-value="value" />
                     </p>
                     <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
-                        <strong class="w-full sm:w-20 font-weight: 300;">Correo:</strong>
+                        <strong class="w-full sm:w-30 font-weight: 300;">Correo:</strong>
                         <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{
                             userData.email || '-' }}</span>
                         <UInput v-else type="email" v-model="profileForm.email" class="edit-input w-full sm:w-40" />
                     </p>
                     <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
-                        <strong class="w-full sm:w-20 font-weight: 300;">Celular:</strong>
+                        <strong class="w-full sm:w-30 font-weight: 300;">Celular:</strong>
                         <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{
                             userData.phone || '-' }}</span>
                         <UInput v-else v-model="profileForm.phone" class="edit-input w-full sm:w-40" />
@@ -105,7 +105,10 @@
                     <span v-if="!isEditingBusiness" class="w-full sm:flex-1">{{ userData.empresa?.ruc }}</span>
                     <UInput v-else v-model="businessForm.ruc" class="edit-input w-full sm:flex-1" />
                 </p>
+<<<<<<< HEAD
            
+=======
+>>>>>>> 4d5fe1c785b37481b9d0b0b92fbd47d7e39a15d3
                 <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
                     <strong class="w-full sm:w-48 font-weight: 300;">Rubro:</strong>
                     <span v-if="!isEditingBusiness" class="w-full sm:flex-1">{{ userData.empresa?.rubric }}</span>
@@ -218,7 +221,6 @@ const initializeForms = () => {
         businessForm.value = {
             name: userProfile.value.business.name || '',
             ruc: userProfile.value.business.ruc || '',
-            comercialCapacity: userProfile.value.business.comercialCapacity || '',
             rubric: userProfile.value.business.rubric || '',
             socialAddress: userProfile.value.business.socialAddress || ''
         };
@@ -245,7 +247,6 @@ const toggleEditBusiness = () => {
             businessForm.value = {
                 name: userProfile.value.business.name || '',
                 ruc: userProfile.value.business.ruc || '',
-                comercialCapacity: userProfile.value.business.comercialCapacity || '',
                 rubric: userProfile.value.business.rubric || '',
                 socialAddress: userProfile.value.business.socialAddress || ''
             };
@@ -402,7 +403,7 @@ onUnmounted(() => {
     cursor: pointer;
 }
 
-.edit-inpu|t {
+.edit-input {
     border-radius: 4px;
     padding: 0.5rem;
     font-size: 1rem;
@@ -529,7 +530,6 @@ onUnmounted(() => {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    margin-bottom: 1rem;
 }
 
 /* Responsive para profile-avatar */
