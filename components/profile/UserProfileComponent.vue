@@ -105,10 +105,7 @@
                     <span v-if="!isEditingBusiness" class="w-full sm:flex-1">{{ userData.empresa?.ruc }}</span>
                     <UInput v-else v-model="businessForm.ruc" class="edit-input w-full sm:flex-1" />
                 </p>
-<<<<<<< HEAD
            
-=======
->>>>>>> 4d5fe1c785b37481b9d0b0b92fbd47d7e39a15d3
                 <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
                     <strong class="w-full sm:w-48 font-weight: 300;">Rubro:</strong>
                     <span v-if="!isEditingBusiness" class="w-full sm:flex-1">{{ userData.empresa?.rubric }}</span>
