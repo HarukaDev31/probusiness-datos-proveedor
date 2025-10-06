@@ -286,7 +286,8 @@ class AuthService {
         password: credentials.password,
         repeatPassword: credentials.repeatPassword,
         dni: credentials.dni,
-        fechaNacimiento: credentials.fechaNacimiento
+        fechaNacimiento: credentials.fechaNacimiento,
+        medioEncontrado: credentials.medioEncontrado
       })
       if (response.success && response.token && response.user) {
         console.log(response)
