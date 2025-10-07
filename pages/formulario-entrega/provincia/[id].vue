@@ -579,6 +579,10 @@ onMounted(async () => {
     formData.clienteDni = formData.clienteDni!=='' ? formData.clienteDni : userData.value?.dni || ''
     formData.clienteNombre = formData.clienteNombre!=='' ? formData.clienteNombre : userData.value?.name || ''
   }
+  if(formData.tipoComprobante.value === 'factura'){
+    formData.clienteRuc = formData.clienteRuc!=='' ? formData.clienteRuc : userData.value?.empresa?.ruc || ''
+    formData.clienteRazonSocial = formData.clienteRazonSocial!=='' ? formData.clienteRazonSocial : userData.value?.empresa?.name || ''
+  }
 })
 </script>
 
