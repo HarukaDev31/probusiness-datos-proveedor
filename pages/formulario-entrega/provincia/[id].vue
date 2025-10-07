@@ -122,17 +122,17 @@
             <div v-if="formData.tipoComprobante.value === 'boleta'" class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UFormField label="DNI:" required>
-                  <UInput v-model="formData.clienteDni" placeholder="48558558" :disabled="loading" class="w-full" />
+                  <UInput v-model="formData.clienteDni" placeholder="" :disabled="loading" class="w-full" />
                 </UFormField>
 
                 <UFormField label="Nombre completo:" required>
-                  <UInput v-model="formData.clienteNombre" placeholder="Miguel Villegas Perez" :disabled="loading"
+                  <UInput v-model="formData.clienteNombre" placeholder="" :disabled="loading"
                     class="w-full" />
                 </UFormField>
               </div>
 
               <UFormField label="Correo:" required>
-                <UInput v-model="formData.clienteCorreo" type="email" placeholder="mvillegas@probusiness.pe"
+                <UInput v-model="formData.clienteCorreo" type="email" placeholder=""
                   :disabled="loading" class="w-full" />
               </UFormField>
             </div>
@@ -141,17 +141,17 @@
             <div v-else-if="formData.tipoComprobante.value === 'factura'" class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UFormField label="RUC:" required>
-                  <UInput v-model="formData.clienteRuc" placeholder="20603287721" :disabled="loading" class="w-full" />
+                  <UInput v-model="formData.clienteRuc" placeholder="" :disabled="loading" class="w-full" />
                 </UFormField>
 
                 <UFormField label="Razón social:" required>
-                  <UInput v-model="formData.clienteRazonSocial" placeholder="Grupo Pro Business sac" :disabled="loading"
+                  <UInput v-model="formData.clienteRazonSocial" placeholder="" :disabled="loading"
                     class="w-full" />
                 </UFormField>
               </div>
 
               <UFormField label="Correo:" required>
-                <UInput v-model="formData.clienteCorreo" type="email" placeholder="mvillegas@probusiness.pe"
+                <UInput v-model="formData.clienteCorreo" type="email" placeholder=""
                   :disabled="loading" class="w-full" />
               </UFormField>
             </div>
@@ -218,18 +218,18 @@
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UFormField label="RUC:" required>
-                  <UInput v-model="formData.destinatarioRuc" placeholder="20603287721" :disabled="loading"
+                  <UInput v-model="formData.destinatarioRuc" placeholder="" :disabled="loading"
                     class="w-full" />
                 </UFormField>
 
                 <UFormField label="Razón social:" required>
-                  <UInput v-model="formData.destinatarioRazonSocial" placeholder="Grupo Pro Business sac"
+                  <UInput v-model="formData.destinatarioRazonSocial" placeholder=""
                     :disabled="loading" class="w-full" />
                 </UFormField>
               </div>
 
               <UFormField label="Celular:" required>
-                <UInput v-model="formData.destinatarioCelular" placeholder="949359599" :disabled="loading"
+                <UInput v-model="formData.destinatarioCelular" placeholder="" :disabled="loading"
                   class="w-full" />
               </UFormField>
 
@@ -262,15 +262,15 @@
               </UFormField>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4" v-if="formData.agenciaEnvio?.value == 3">
                 <UFormField label="Nombre de la agencia:" required>
-                  <UInput v-model="formData.nombreAgencia" placeholder="Envio cargo sac" :disabled="loading"
+                  <UInput v-model="formData.nombreAgencia" placeholder="" :disabled="loading"
                     class="w-full" />
                 </UFormField>
 
                 <UFormField label="RUC de la agencia:" required>
-                  <UInput v-model="formData.rucAgencia" placeholder="20603287721" :disabled="loading" class="w-full" />
+                  <UInput v-model="formData.rucAgencia" placeholder="" :disabled="loading" class="w-full" />
                 </UFormField>
                 <UFormField label="Dirección de la agencia sede lima:" required>
-                <UInput v-model="formData.direccionAgenciaLima" placeholder="Avenida nicola arriola 314, la victoria"
+                <UInput v-model="formData.direccionAgenciaLima" placeholder=""
                   :disabled="loading" class="w-full" />
               </UFormField>
               </div>
@@ -627,6 +627,10 @@ onMounted(async () => {
   if(formData.tipoComprobante.value === 'boleta'){
     formData.clienteDni = formData.clienteDni!=='' ? formData.clienteDni : userData.value?.dni || ''
     formData.clienteNombre = formData.clienteNombre!=='' ? formData.clienteNombre : userData.value?.name || ''
+  }
+  if(formData.tipoComprobante.value === 'factura'){
+    formData.clienteRuc = formData.clienteRuc!=='' ? formData.clienteRuc : userData.value?.empresa?.ruc || ''
+    formData.clienteRazonSocial = formData.clienteRazonSocial!=='' ? formData.clienteRazonSocial : userData.value?.empresa?.name || ''
   }
 })
 </script>

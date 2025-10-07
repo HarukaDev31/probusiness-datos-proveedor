@@ -34,6 +34,7 @@ export interface RegisterCredentials {
   repeatPassword: string
   dni: string
   fechaNacimiento: string
+  medioEncontrado: string
 }
 
 export interface RegisterResponse {

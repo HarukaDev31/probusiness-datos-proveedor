@@ -203,6 +203,23 @@
                     
                     <p v-if="fieldErrors.fechaNacimiento" class="text-red-500 text-xs mt-1">{{ fieldErrors.fechaNacimiento }}</p>
                 </div>  
+                
+                <!-- Campo Por qué medio nos encontraste -->
+                <div>
+                    <label class="block text-gray-600 mb-1" for="medioEncontrado">Por qué medio nos encontraste:</label>
+                    <USelect 
+                        id="medioEncontrado"
+                        v-model="registerData.medioEncontrado"
+                        :items="medioEncontradoOptions"
+                        class="w-full"
+                        :class="{ 'border-red-500': fieldErrors.medioEncontrado }"
+                        placeholder="Selecciona una opción"
+                        @blur="validateMedioEncontrado"
+                        @change="fieldErrors.medioEncontrado = ''"
+                    />
+                    <p v-if="fieldErrors.medioEncontrado" class="text-red-500 text-xs mt-1">{{ fieldErrors.medioEncontrado }}</p>
+                </div>
+                
                 <!--Form Field password-->
                 <div class="relative">
                     <label class="block text-gray-600 mb-1" for="password">Contraseña</label>
@@ -340,7 +357,8 @@ const registerData = ref({
     password: '',
     repeatPassword: '',
     dni: '',
-    fechaNacimiento: ''
+    fechaNacimiento: '',
+    medioEncontrado: ''
 })
 
 // Estados de validación para cada campo
@@ -351,7 +369,8 @@ const fieldErrors = ref({
     password: '',
     repeatPassword: '',
     dni: '',
-    fechaNacimiento: ''
+    fechaNacimiento: '',
+    medioEncontrado: ''
 })
 
 const showForgot = ref(false)
@@ -411,6 +430,16 @@ const formattedDate = computed(() => {
 })
 
 const { showError, showSuccess } = useModal()
+
+// Opciones para el campo "Por qué medio nos encontraste"
+const medioEncontradoOptions = [
+    { label: 'Facebook', value: 'facebook' },
+    { label: 'Instagram', value: 'instagram' },
+    { label: 'TikTok', value: 'tiktok' },
+    { label: 'Youtube', value: 'youtube' },
+    { label: 'Google', value: 'google' },
+    { label: 'Recomendación', value: 'recomendacion' }
+]
 
 // Agrega esta función para mostrar advertencias
 function showWarning(message, title = 'Advertencia') {
@@ -579,8 +608,9 @@ const validateAllFields = () => {
     const passwordValid = validatePassword()
     const repeatPasswordValid = validateRepeatPassword()
     const fechaNacimientoValid = validateFechaNacimiento()
+    const medioEncontradoValid = validateMedioEncontrado()
     // Retornar true solo si todos los campos son válidos
-    return nombreValid && emailValid && whatsappValid && dniValid && passwordValid && repeatPasswordValid && fechaNacimientoValid
+    return nombreValid && emailValid && whatsappValid && dniValid && passwordValid && repeatPasswordValid && fechaNacimientoValid && medioEncontradoValid
 }
 
 
@@ -604,7 +634,8 @@ async function handleRegister() {
                 password: registerData.value.password,
                 repeatPassword: registerData.value.repeatPassword,
                 dni: registerData.value.dni,
-                fechaNacimiento: registerData.value.fechaNacimiento
+                fechaNacimiento: registerData.value.fechaNacimiento,
+                medioEncontrado: registerData.value.medioEncontrado
             })
             console.log(response,'response')
             if (response.success) {
@@ -634,8 +665,8 @@ async function handleRegister() {
 function closeRegister() {
     showRegister.value = false
     // loading.value = false
-    registerData.value = { nombre: '', apellido: '', email: '', whatsapp: '', password: '', repeatPassword: '', dni: '', fechaNacimiento: '' }
-    fieldErrors.value = { nombre: '', email: '', whatsapp: '', password: '', repeatPassword: '', dni: '', fechaNacimiento: '' }
+    registerData.value = { nombre: '', apellido: '', email: '', whatsapp: '', password: '', repeatPassword: '', dni: '', fechaNacimiento: '', medioEncontrado: '' }
+    fieldErrors.value = { nombre: '', email: '', whatsapp: '', password: '', repeatPassword: '', dni: '', fechaNacimiento: '', medioEncontrado: '' }
     // Limpiar también el DatePicker personalizado
     selectedDay.value = ''
     selectedMonth.value = ''
@@ -670,6 +701,15 @@ function validateFechaNacimiento() {
     }
     
     fieldErrors.value.fechaNacimiento = ''
+    return true
+}
+
+const validateMedioEncontrado = () => {
+    if (!registerData.value.medioEncontrado) {
+        fieldErrors.value.medioEncontrado = 'Por favor selecciona cómo nos encontraste'
+        return false
+    }
+    fieldErrors.value.medioEncontrado = ''
     return true
 }
 function handleForgot() {
