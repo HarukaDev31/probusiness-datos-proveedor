@@ -208,18 +208,18 @@
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UFormField label="RUC:" required>
-                  <UInput v-model="formData.destinatarioRuc" placeholder="20603287721" :disabled="loading"
+                  <UInput v-model="formData.destinatarioRuc" placeholder="" :disabled="loading"
                     class="w-full" />
                 </UFormField>
 
                 <UFormField label="Razón social:" required>
-                  <UInput v-model="formData.destinatarioRazonSocial" placeholder="Grupo Pro Business sac"
+                  <UInput v-model="formData.destinatarioRazonSocial" placeholder=""
                     :disabled="loading" class="w-full" />
                 </UFormField>
               </div>
 
               <UFormField label="Celular:" required>
-                <UInput v-model="formData.destinatarioCelular" placeholder="949359599" :disabled="loading"
+                <UInput v-model="formData.destinatarioCelular" placeholder="" :disabled="loading"
                   class="w-full" />
               </UFormField>
 
@@ -252,12 +252,12 @@
               </UFormField>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4" v-if="formData.agenciaEnvio?.value == 3">
                 <UFormField label="Nombre de la agencia:" required>
-                  <UInput v-model="formData.nombreAgencia" placeholder="Envio cargo sac" :disabled="loading"
+                  <UInput v-model="formData.nombreAgencia" placeholder="" :disabled="loading"
                     class="w-full" />
                 </UFormField>
 
                 <UFormField label="RUC de la agencia:" required>
-                  <UInput v-model="formData.rucAgencia" placeholder="20603287721" :disabled="loading" class="w-full" />
+                  <UInput v-model="formData.rucAgencia" placeholder="" :disabled="loading" class="w-full" />
                 </UFormField>
                 <UFormField label="Dirección de la agencia sede lima:" required>
                 <UInput v-model="formData.direccionAgenciaLima" placeholder=""
