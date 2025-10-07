@@ -1,6 +1,6 @@
 <template>
-  <UCard class="h-auto" variant="soft">
-    <div class="max-w-6xl mx-auto p-4 md:p-6">
+  <UCard class="h-auto [&>div]:p-0 [&>div]:md:p-6" variant="soft">
+    <div class="max-w-6xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
 
         <div class="space-y-4 md:space-y-6">
@@ -29,10 +29,9 @@
                   ? 'hover:bg-gray-600'
                   : 'text-neutral-500',
                 date.isSelected
-                  ? 'bg-primary-600 '
-                  : '',
-                date.isAvailable && date.isCurrentMonth
-                  ? 'hover:bg-gray-700'
+                  ? 'bg-primary-600 text-white'
+                  : date.isAvailable && date.isCurrentMonth
+                  ? 'hover:bg-green-700 bg-green-400 text-white'
                   : 'text-neutral-500'
               ]" :disabled="!date.isCurrentMonth || !date.isAvailable">
                 {{ date.day }}
@@ -42,7 +41,7 @@
         </div>
 
         <!-- Sección Derecha: Selección de Horario -->
-        <div class="space-y-4 md:space-y-6">
+        <div class="space-y-4 md:space-y-6" ref="horarioSection">
 
           <div class="rounded-lg p-4 md:p-6">
             <h3 class="text-base md:text-lg font-semibold mb-4">
@@ -56,8 +55,8 @@
                 @click="selectTimeSlot(timeSlot)" :class="[
                   'w-full py-2 md:py-1 px-3 md:px-2 rounded-lg font-medium transition-all duration-200 h-12 md:h-10 flex flex-col justify-center',
                   selectedTimeSlot?.range_id === timeSlot.range_id
-                    ? 'bg-primary-600 hover:bg-primary-700'
-                    : 'bg-gray-600 hover:bg-gray-500'
+                    ? 'bg-primary-600 hover:bg-primary-700 text-white'
+                    : 'bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-500'
                 ]">
                 <div class="text-sm font-semibold flex-row items-center justify-center">
                   <div>
@@ -92,7 +91,7 @@
           </div>
 
           <!-- Resumen de la Cita -->
-          <div v-if="selectedDate && selectedTimeSlot" class="rounded-lg p-4 md:p-6">
+          <div v-if="selectedDate && selectedTimeSlot" class="rounded-lg p-4 md:p-6" ref="resumenSection">
             <h4 class="text-base md:text-lg font-semibold mb-4">
               Resumen de tu recogida
             </h4>
@@ -128,7 +127,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import { useModal } from '~/composables/commons/useModal'
 import type { Horario, HorarioTime } from '~/types/clientes/delivery/horario'
 
@@ -149,6 +148,10 @@ const emit = defineEmits<{
 const currentDate = ref(new Date())
 const selectedDate = ref<Date | null>(null)
 const selectedTimeSlot = ref<HorarioTime | null>(null)
+
+// Referencias para el auto-scroll
+const horarioSection = ref<HTMLDivElement | null>(null)
+const resumenSection = ref<HTMLDivElement | null>(null)
 
 // Días de la semana en español
 const daysOfWeek = ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá']
@@ -296,6 +299,43 @@ const formatTimeToAMPM = (time24: string): string => {
   return `${hour12}:${minutes} ${ampm}`
 }
 
+// Función para auto-scroll ultra suave en móvil
+const scrollToSection = (element: HTMLDivElement | null, offset = 80, delay = 300) => {
+  if (element && window.innerWidth < 1024) { // Solo en móvil/tablet
+    setTimeout(() => {
+      const elementPosition = element.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - offset
+      
+      // Scroll más suave con animación personalizada
+      const startPosition = window.pageYOffset
+      const distance = offsetPosition - startPosition
+      const duration = 800 // Duración más larga para suavidad
+      let startTime: number | null = null
+      
+      const easeInOutCubic = (t: number): number => {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+      }
+      
+      const animateScroll = (currentTime: number) => {
+        if (startTime === null) startTime = currentTime
+        const timeElapsed = currentTime - startTime
+        const progress = Math.min(timeElapsed / duration, 1)
+        
+        const ease = easeInOutCubic(progress)
+        const currentPosition = startPosition + (distance * ease)
+        
+        window.scrollTo(0, currentPosition)
+        
+        if (progress < 1) {
+          requestAnimationFrame(animateScroll)
+        }
+      }
+      
+      requestAnimationFrame(animateScroll)
+    }, delay) // Delay configurable para que se renderice el contenido
+  }
+}
+
 const selectDate = (date: any) => {
   if (date.isCurrentMonth && date.isAvailable) {
     selectedDate.value = date.value
@@ -303,6 +343,9 @@ const selectDate = (date: any) => {
     selectedTimeSlot.value = null
     // Emitir evento
     emit('date-selected', selectedDate.value, selectedTimeSlot.value)
+    
+    // Auto-scroll a la sección de horarios en móvil con animación suave
+    scrollToSection(horarioSection.value, 100, 350)
   }
 }
 
@@ -310,6 +353,11 @@ const selectTimeSlot = (timeSlot: HorarioTime) => {
   selectedTimeSlot.value = timeSlot
   // Emitir evento cuando se selecciona un horario
   emit('date-selected', selectedDate.value, selectedTimeSlot.value)
+  
+  // Auto-scroll al resumen en móvil con animación ultra suave
+  nextTick(() => {
+    scrollToSection(resumenSection.value, 120, 400)
+  })
 }
 
 const confirmAppointment = async () => {

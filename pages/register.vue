@@ -124,31 +124,83 @@
                     <UInput 
                         id="dni" 
                         v-model="registerData.dni" 
-                        type="number"  
+                        type="text"  
                         class="w-full"
                         :class="{ 'border-red-500': fieldErrors.dni }"
                         v-maska="'########'"
                         placeholder="Ingresa tu DNI" 
                         @blur="validateDni"
-                        @input="fieldErrors.dni = ''"
+                        @input="handleDniInput"
                          
                     />
                     <p v-if="fieldErrors.dni" class="text-red-500 text-xs mt-1">{{ fieldErrors.dni }}</p>
                 </div>
-                <!--FILDL FECHA DE NACIMIENTO-->
+                <!--FIELD FECHA DE NACIMIENTO-->
                 <div class="relative">
                     <label class="block text-gray-600 mb-1" for="fechaNacimiento">Fecha de Nacimiento</label>
-                    <UInput 
-                        id="fechaNacimiento" 
-                        v-model="registerData.fechaNacimiento" 
-                        type="date"
-                        class="w-full"
-                        :class="{ 'border-red-500': fieldErrors.fechaNacimiento }"
-                        placeholder="DD/MM/YYYY"
-                        @blur="validateFechaNacimiento"
-                        @input="fieldErrors.fechaNacimiento = ''"
-                         
-                    />
+                    <div class="relative">
+                        <UInput 
+                            id="fechaNacimiento" 
+                            v-model="formattedDate"
+                            readonly
+                            class="w-full cursor-pointer"
+                            :class="{ 'border-red-500': fieldErrors.fechaNacimiento }"
+                            placeholder="DD/MM/YYYY"
+                            @click="toggleDatePicker"
+                        />
+                        <UIcon 
+                            name="i-heroicons-calendar-days" 
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" 
+                        />
+                        
+                        <!-- Calendario Personalizado -->
+                        <div v-if="showDatePicker" class="absolute z-50 mt-1 w-full sm:w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-2 sm:p-4 left-0 sm:left-auto">
+                            <div class="grid grid-cols-3 gap-1 sm:gap-3 mb-2 sm:mb-4">
+                                <select 
+                                    v-model="selectedDay"
+                                    class="px-1 sm:px-3 py-1 sm:py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm w-full"
+                                >
+                                    <option value="">Día</option>
+                                    <option v-for="day in dayOptions" :key="day.value" :value="day.value">
+                                        {{ day.label }}
+                                    </option>
+                                </select>
+                                
+                                <select 
+                                    v-model="selectedMonth"
+                                    class="px-1 sm:px-3 py-1 sm:py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm w-full"
+                                >
+                                    <option value="">Mes</option>
+                                    <option v-for="month in monthOptions" :key="month.value" :value="month.value">
+                                        {{ month.label }}
+                                    </option>
+                                </select>
+                                
+                                <select 
+                                    v-model="selectedYear"
+                                    class="px-1 sm:px-3 py-1 sm:py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm w-full"
+                                >
+                                    <option value="">Año</option>
+                                    <option v-for="year in yearOptions" :key="year.value" :value="year.value">
+                                        {{ year.label }}
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <div class="flex justify-end gap-1 sm:gap-2">
+                                <UButton variant="outline" size="xs" @click="clearDate" class="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2">
+                                    Limpiar
+                                </UButton>
+                                <UButton size="xs" @click="confirmDate" class="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2">
+                                    Confirmar
+                                </UButton>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Overlay para cerrar el calendario -->
+                    <div v-if="showDatePicker" class="fixed inset-0 z-40" @click="closeDatePicker"></div>
+                    
                     <p v-if="fieldErrors.fechaNacimiento" class="text-red-500 text-xs mt-1">{{ fieldErrors.fechaNacimiento }}</p>
                 </div>  
                 <!--Form Field password-->
@@ -268,7 +320,7 @@ definePageMeta({
 })
 import { vMaska } from 'maska/vue'
 
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 const { login, loading, error } = useAuth()
 import { useModal } from '@/composables/commons/useModal'
@@ -307,6 +359,57 @@ const forgotEmail = ref('')
 const forgotLoading = ref(false)
 const forgotSuccess = ref(false)
 
+// Variables para el DatePicker personalizado
+const showDatePicker = ref(false)
+const selectedDay = ref('')
+const selectedMonth = ref('')
+const selectedYear = ref('')
+
+// Opciones para los selectores
+const dayOptions = computed(() => {
+    const days = []
+    for (let i = 1; i <= 31; i++) {
+        const dayStr = i.toString().padStart(2, '0')
+        days.push({ label: dayStr, value: dayStr })
+    }
+    return days
+})
+
+const monthOptions = [
+    { label: 'Enero', value: '1' },
+    { label: 'Febrero', value: '2' },
+    { label: 'Marzo', value: '3' },
+    { label: 'Abril', value: '4' },
+    { label: 'Mayo', value: '5' },
+    { label: 'Junio', value: '6' },
+    { label: 'Julio', value: '7' },
+    { label: 'Agosto', value: '8' },
+    { label: 'Septiembre', value: '9' },
+    { label: 'Octubre', value: '10' },
+    { label: 'Noviembre', value: '11' },
+    { label: 'Diciembre', value: '12' }
+]
+
+const yearOptions = computed(() => {
+    const years = []
+    const currentYear = new Date().getFullYear()
+    for (let i = currentYear; i >= 1900; i--) {
+        years.push({ label: i.toString(), value: i.toString() })
+    }
+    return years
+})
+
+// Computed para mostrar la fecha formateada
+const formattedDate = computed(() => {
+    if (!selectedDay.value || !selectedMonth.value || !selectedYear.value) return ''
+    
+    const day = selectedDay.value.padStart(2, '0')
+    const month = selectedMonth.value.padStart(2, '0')
+    const year = selectedYear.value
+    
+    return `${day}/${month}/${year}`
+})
+
 const { showError, showSuccess } = useModal()
 
 // Agrega esta función para mostrar advertencias
@@ -325,6 +428,54 @@ const formatWhatsApp = (value) => {
     }
 
     return cleaned
+}
+
+// Función para manejar el input del DNI
+const handleDniInput = () => {
+    // Limpiar cualquier carácter que no sea número
+    const cleaned = registerData.value.dni.replace(/[^\d]/g, '')
+    
+    // Limitar a 8 dígitos máximo
+    if (cleaned.length <= 8) {
+        registerData.value.dni = cleaned
+    } else {
+        registerData.value.dni = cleaned.substring(0, 8)
+    }
+    
+    // Limpiar error de validación
+    fieldErrors.value.dni = ''
+}
+
+// Funciones para el DatePicker
+const toggleDatePicker = () => {
+    showDatePicker.value = !showDatePicker.value
+}
+
+const closeDatePicker = () => {
+    showDatePicker.value = false
+}
+
+const confirmDate = () => {
+    if (selectedDay.value && selectedMonth.value && selectedYear.value) {
+        // Convertir a formato YYYY-MM-DD para el backend
+        const day = selectedDay.value.padStart(2, '0')
+        const month = selectedMonth.value.padStart(2, '0')
+        const year = selectedYear.value
+        
+        registerData.value.fechaNacimiento = `${year}-${month}-${day}`
+        
+        // Limpiar errores de validación
+        fieldErrors.value.fechaNacimiento = ''
+        showDatePicker.value = false
+    }
+}
+
+const clearDate = () => {
+    selectedDay.value = ''
+    selectedMonth.value = ''
+    selectedYear.value = ''
+    registerData.value.fechaNacimiento = ''
+    fieldErrors.value.fechaNacimiento = ''
 }
 
 // Funciones de validación
@@ -370,15 +521,24 @@ const validateWhatsApp = () => {
 }
 
 const validateDni = () => {
-    const dniValue = registerData.value.dni.toString()
-    if (!dniValue || dniValue.trim() === '') {
+    const dniValue = registerData.value.dni.trim()
+    
+    if (!dniValue) {
         fieldErrors.value.dni = 'El DNI es requerido'
         return false
     }
-    if (dniValue.length !== 8) {
-        fieldErrors.value.dni = 'El DNI debe tener 8 dígitos'
+    
+    // Verificar que solo contenga números
+    if (!/^\d+$/.test(dniValue)) {
+        fieldErrors.value.dni = 'El DNI debe contener solo números'
         return false
     }
+    
+    if (dniValue.length !== 8) {
+        fieldErrors.value.dni = 'El DNI debe tener exactamente 8 dígitos'
+        return false
+    }
+    
     fieldErrors.value.dni = ''
     return true
 }
@@ -476,13 +636,39 @@ function closeRegister() {
     // loading.value = false
     registerData.value = { nombre: '', apellido: '', email: '', whatsapp: '', password: '', repeatPassword: '', dni: '', fechaNacimiento: '' }
     fieldErrors.value = { nombre: '', email: '', whatsapp: '', password: '', repeatPassword: '', dni: '', fechaNacimiento: '' }
+    // Limpiar también el DatePicker personalizado
+    selectedDay.value = ''
+    selectedMonth.value = ''
+    selectedYear.value = ''
+    showDatePicker.value = false
     showPassword.value = false
 }
 function validateFechaNacimiento() {
-    if (!registerData.value.fechaNacimiento) {
+    if (!registerData.value.fechaNacimiento || !selectedDay.value || !selectedMonth.value || !selectedYear.value) {
         fieldErrors.value.fechaNacimiento = 'La fecha de nacimiento es requerida'
         return false
     }
+    
+    // Validar edad mínima (18 años)
+    const today = new Date()
+    const birth = new Date(parseInt(selectedYear.value), parseInt(selectedMonth.value) - 1, parseInt(selectedDay.value))
+    let age = today.getFullYear() - birth.getFullYear()
+    const monthDiff = today.getMonth() - birth.getMonth()
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--
+    }
+    
+    if (age < 18) {
+        fieldErrors.value.fechaNacimiento = 'Debes ser mayor de 18 años para registrarte'
+        return false
+    }
+    
+    if (age > 120) {
+        fieldErrors.value.fechaNacimiento = 'Por favor, ingresa una fecha de nacimiento válida'
+        return false
+    }
+    
     fieldErrors.value.fechaNacimiento = ''
     return true
 }

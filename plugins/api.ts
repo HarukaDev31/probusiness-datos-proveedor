@@ -52,7 +52,11 @@ export default defineNuxtPlugin(() => {
 
       return await $fetch<T>(endpoint, config)
     } catch (error: any) {
-      if ((error.status === 401 || error.statusCode === 401) && !endpoint.includes('/api/auth/login')) {
+      // No activar sesión expirada para endpoints de login
+      const isLoginEndpoint = endpoint.includes('/api/auth/login') || 
+                             endpoint.includes('/api/auth/clientes/login')
+      
+      if ((error.status === 401 || error.statusCode === 401) && !isLoginEndpoint) {
         handleSessionExpired()
       }
 

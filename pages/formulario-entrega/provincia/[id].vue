@@ -39,12 +39,17 @@
         <div class="hidden md:flex items-center justify-center">
           <div class="flex items-center space-x-4">
             <div v-for="(step, index) in steps" :key="step.id" class="flex items-center">
-              <div :class="[
-                'flex items-center justify-center w-10 h-10 rounded-full text-white font-semibold',
-                currentStep >= index + 1 ? 'bg-primary-500' : 'bg-gray-300 dark:bg-gray-600'
-              ]">
+              <button 
+                @click="goToStep(index + 1)"
+                :disabled="!canNavigateToStep(index + 1)"
+                :class="[
+                  'flex items-center justify-center w-10 h-10 rounded-full text-white font-semibold transition-all duration-200',
+                  currentStep >= index + 1 ? 'bg-primary-500 hover:bg-primary-600' : 'bg-gray-300 dark:bg-gray-600',
+                  canNavigateToStep(index + 1) ? 'cursor-pointer hover:scale-105' : 'cursor-not-allowed opacity-75'
+                ]"
+              >
                 {{ index + 1 }}
-              </div>
+              </button>
               <div v-if="index < steps.length - 1" class="w-16 h-1 bg-gray-300 dark:bg-gray-600 mx-2">
                 <div :class="[
                   'h-full transition-all duration-300',
@@ -59,12 +64,17 @@
         <div class="md:hidden">
           <div class="flex items-center justify-between px-4">
             <div v-for="(step, index) in steps" :key="step.id" class="flex flex-col items-center flex-1">
-              <div :class="[
-                'flex items-center justify-center w-8 h-8 rounded-full text-white font-semibold text-sm mb-2',
-                currentStep >= index + 1 ? 'bg-primary-500' : 'bg-gray-300 dark:bg-gray-600'
-              ]">
+              <button 
+                @click="goToStep(index + 1)"
+                :disabled="!canNavigateToStep(index + 1)"
+                :class="[
+                  'flex items-center justify-center w-8 h-8 rounded-full text-white font-semibold text-sm mb-2 transition-all duration-200',
+                  currentStep >= index + 1 ? 'bg-primary-500 hover:bg-primary-600' : 'bg-gray-300 dark:bg-gray-600',
+                  canNavigateToStep(index + 1) ? 'cursor-pointer hover:scale-105' : 'cursor-not-allowed opacity-75'
+                ]"
+              >
                 {{ index + 1 }}
-              </div>
+              </button>
               <div class="text-xs text-center text-gray-600 dark:text-gray-300 max-w-16">
                 {{ step.title}}
               </div>
@@ -445,6 +455,45 @@ const previousStep = () => {
     // Guardar estado después de cambiar de paso
     saveFormState(formData, currentStep.value)
   }
+}
+
+// Función para navegar directamente a un paso específico
+const goToStep = (stepNumber: number) => {
+  if (canNavigateToStep(stepNumber)) {
+    currentStep.value = stepNumber
+    // Guardar estado después de cambiar de paso
+    saveFormState(formData, currentStep.value)
+  }
+}
+
+// Función para verificar si se puede navegar a un paso específico
+const canNavigateToStep = (stepNumber: number) => {
+  // Siempre puede ir al paso 1
+  if (stepNumber === 1) return true
+  
+  // Para ir al paso 2, debe completar el paso 1
+  if (stepNumber === 2) {
+    return formData.importador?.value &&
+      formData.tipoComprobante &&
+      formData.tiposProductos
+  }
+  
+  // Para ir al paso 3, debe completar el paso 2
+  if (stepNumber === 3) {
+    const step1Valid = formData.importador?.value &&
+      formData.tipoComprobante &&
+      formData.tiposProductos
+      
+    const step2Valid = formData.tipoComprobante?.value === 'boleta'
+      ? (formData.clienteDni && formData.clienteNombre && formData.clienteCorreo)
+      : formData.tipoComprobante?.value === 'factura'
+      ? (formData.clienteRuc && formData.clienteRazonSocial && formData.clienteCorreo)
+      : false
+      
+    return step1Valid && step2Valid
+  }
+  
+  return false
 }
 
 // Manejo del formulario

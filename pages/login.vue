@@ -96,13 +96,25 @@
               contraseña?</button>
           </div>
         </div>
-        <UButton :disabled="loginClienteLoading" color="primary"
-        @click="handleLoginClloginCliente"
-          class="w-full flex items-center justify-center py-4 text-white text-xl" label="Ingresar">
-
+        <UButton :disabled="loginClienteLoading" color="primary" type="submit"
+          class="w-full flex items-center justify-center py-4 text-white text-xl hover:bg-primary-600 hover:scale-[1.02] hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+          <svg v-if="loginClienteLoading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          {{ loginClienteLoading ? 'Iniciando sesión...' : 'Ingresar' }}
         </UButton>
-        <div v-if="loginClienteError" class="text-red-500 text-sm text-center mt-2">{{ loginClienteError }}</div>
-        <div v-if="loginClienteSuccess" class="text-green-500 text-sm text-center mt-2">¡Has iniciado sesión exitosamente!
+        <div v-if="loginClienteError" class="flex items-center justify-center gap-2 text-red-500 text-sm text-center mt-2 bg-red-50 border border-red-200 rounded-md p-3">
+          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+          <span>{{ loginClienteError }}</span>
+        </div>
+        <div v-if="loginClienteSuccess" class="flex items-center justify-center gap-2 text-green-600 text-sm text-center mt-2 bg-green-50 border border-green-200 rounded-md p-3">
+          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          </svg>
+          <span>¡Has iniciado sesión exitosamente!</span>
         </div>
       </form>
       <div class="flex items-center my-4 sm:my-6">
@@ -116,7 +128,7 @@
       </div>
       <div class="text-center">
         <button @click="navigateTo('/register')"
-          class="ml-2 text-black-500 border w-full border-black rounded-lg px-4 py-3 sm:py-2 font-semibold hover:underline">Registrarme</button>
+          class="ml-2 text-black-500 dark:text-gray-300 border w-full border-primary dark:border-primary-400 rounded-lg px-4 py-3 sm:py-4 font-semibold hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:border-primary-600 dark:hover:border-primary-400 hover:scale-[1.02] hover:shadow-md transition-all duration-200">Registrarme</button>
 
       </div>
       <!-- add Al registrarte aceptas nuestra política de privacidad y términos y condiciones-->
@@ -230,19 +242,129 @@ const email = ref('admin')
 const password = ref('')
 const showPassword = ref(false)
 
+// Variables para manejar el estado del login
+const loginClienteLoading = ref(false)
+const loginClienteError = ref('')
+const loginClienteSuccess = ref(false)
+
+// Limpiar errores cuando el usuario escriba
+watch([email, password], () => {
+  if (loginClienteError.value) {
+    loginClienteError.value = ''
+  }
+})
+
+// Variables para "olvidaste tu contraseña"
+const showForgot = ref(false)
+const forgotEmail = ref('')
+const forgotLoading = ref(false)
+const forgotSuccess = ref(false)
+
+// Función para cerrar modal de recuperar contraseña
+const closeForgot = () => {
+  showForgot.value = false
+  forgotEmail.value = ''
+  forgotSuccess.value = false
+}
+
+// Función para manejar recuperación de contraseña
+const handleForgot = async () => {
+  if (!forgotEmail.value) {
+    return
+  }
+  
+  forgotLoading.value = true
+  
+  try {
+    // Aquí iría la lógica para enviar email de recuperación
+    // Simulamos un delay
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    forgotSuccess.value = true
+    
+    // Cerrar modal después de 3 segundos
+    setTimeout(() => {
+      closeForgot()
+    }, 3000)
+  } catch (err) {
+    console.error('Error en recuperación:', err)
+  } finally {
+    forgotLoading.value = false
+  }
+}
+
+// Función para validar campos
+const validateFields = () => {
+  if (!email.value || !password.value) {
+    loginClienteError.value = 'Por favor completa todos los campos'
+    return false
+  }
+  
+  if (email.value.trim().length === 0 || password.value.trim().length === 0) {
+    loginClienteError.value = 'Los campos no pueden estar vacíos'
+    return false
+  }
+  
+  // Validación básica de email solo si no está vacío
+  if (email.value && email.value !== 'admin') {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email.value)) {
+      loginClienteError.value = 'Por favor ingresa un email válido'
+      return false
+    }
+  }
+  
+  return true
+}
+
 // LoginClloginCliente handler
 const handleLoginClloginCliente = async () => {
-  await withSpinner(async () => {
-    const success = await loginCliente({
+  // Limpiar mensajes previos
+  loginClienteError.value = ''
+  loginClienteSuccess.value = false
+  
+  // Validar campos antes de enviar
+  if (!validateFields()) {
+    return
+  }
+  
+  loginClienteLoading.value = true
+  
+  try {
+    const response = await loginCliente({
       email: email.value,
       password: password.value
     })
 
-    if (success) {
+    if (response?.success) {
+      loginClienteSuccess.value = true
       // Redirect to dashboard on success
-      await navigateTo('/')
+      setTimeout(() => {
+        navigateTo('/')
+      }, 1000)
+    } else {
+      loginClienteError.value = response?.message || 'Credenciales incorrectas. Por favor verifica tu email y contraseña.'
     }
-  })
+  } catch (err: any) {
+    console.error('Error en login:', err)
+    
+    // Verificar si es un error 401 (Unauthorized)
+    const isUnauthorized = err?.status === 401 || 
+                          err?.response?.status === 401 || 
+                          err?.statusCode === 401 ||
+                          err?.data?.status === 401
+    
+    if (isUnauthorized) {
+      // Para errores 401, mostrar solo nuestro mensaje (no activar modal)
+      loginClienteError.value = err?.data?.message || err?.message || 'Credenciales incorrectas. Por favor verifica tu email y contraseña.'
+    } else {
+      // Para otros errores, permitir que se muestre el modal si es necesario
+      loginClienteError.value = 'Error de conexión. Por favor intenta nuevamente.'
+      // Re-lanzar el error para que el sistema maneje otros tipos de errores
+      throw err
+    }
+  } finally {
+    loginClienteLoading.value = false
+  }
 }
 
 // Theme toggle handler
