@@ -63,7 +63,7 @@ const tableColumns: ref<TableColumn<any>[]> = ref([
   {
     accessorKey: 'cbm',
     header: 'CBM',
-    cell: ({ row }) => h('span', {}, formatNumber(row.getValue('cbm')), 2)
+    cell: ({ row }) => h('span', {}, formatNumber(row.getValue('cbm'), 2))
   },
   {
     accessorKey: 'fob',
