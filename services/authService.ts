@@ -17,6 +17,12 @@ export interface AuthUser {
   lastLogin?: string
   isActive?: boolean
   dni?: string
+  phone?: string
+  country?: string
+  city?: string
+  goals?: string
+  empresa?: string
+  fechaNacimiento?: string
   raw?: any
 }
 
@@ -39,6 +45,7 @@ export interface AuthMenu {
   Nu_Cantidad_Menu_Padre: number
   Hijos: AuthMenu[]
   SubHijos?: AuthMenu[]
+  route?: string
 }
 
 class AuthService {
@@ -144,7 +151,7 @@ class AuthService {
     try {
       if (!this.nuxtApp) throw new Error('Nuxt app not initialized')
 
-      const response = await this.nuxtApp.$api.auth<any>('/api/auth/login', {
+      const response = await this.nuxtApp.$api.auth('/api/auth/login', {
         No_Usuario: credentials.email,
         No_Password: credentials.password
       })
@@ -207,7 +214,7 @@ class AuthService {
     try {
       if (!this.nuxtApp) throw new Error('Nuxt app not initialized')
 
-      const response = await this.nuxtApp.$api.auth<any>('/api/auth/clientes/login', {
+      const response = await this.nuxtApp.$api.auth('/api/auth/clientes/login', {
         No_Usuario: credentials.email,
         No_Password: credentials.password
       })
@@ -299,6 +306,7 @@ class AuthService {
           fechaNacimiento: response.user.fechaNacimiento,
           country: response.user.country,
           city: response.user.city,
+          dni: response.user.dni,
           goals: response.user.goals,
           empresa: response.user.empresa,
           role: 'Cliente',
@@ -332,6 +340,101 @@ class AuthService {
       throw error
     }
   }
+  async forgotPassword(email: string): Promise<{ success: boolean; message?: string; error?: string }> {
+    try {
+      if (!this.nuxtApp) throw new Error('Nuxt app not initialized')
+
+      const response = await this.nuxtApp.$api.auth('/api/auth/clientes/forgot-password', {
+        email: email
+      })
+
+      if (response.success) {
+        return {
+          success: true,
+          message: response.message || 'Se ha enviado un correo con las instrucciones para restablecer tu contraseña'
+        }
+      } else {
+        return {
+          success: false,
+          error: response.message || 'Error al enviar el correo de recuperación'
+        }
+      }
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.data?.message || error.message || 'Error de conexión'
+      }
+    }
+  }
+
+  async resetPassword(token: string, password: string, passwordConfirmation: string): Promise<{ success: boolean; message?: string; error?: string }> {
+    try {
+      if (!this.nuxtApp) throw new Error('Nuxt app not initialized')
+
+      const response = await this.nuxtApp.$api.auth('/api/auth/clientes/reset-password', {
+        token: token,
+        password: password,
+        password_confirmation: passwordConfirmation
+      })
+
+      if (response.success) {
+        return {
+          success: true,
+          message: response.message || 'Tu contraseña ha sido restablecida exitosamente'
+        }
+      } else {
+        return {
+          success: false,
+          error: response.message || 'Error al restablecer la contraseña'
+        }
+      }
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.data?.message || error.message || 'Error de conexión'
+      }
+    }
+  }
+
+  async updateUserAccount(data: any): Promise<any> {
+    try {
+      if (!this.nuxtApp) throw new Error('Nuxt app not initialized')
+
+      const response = await this.nuxtApp.$api.call('/api/auth/clientes/update-account', {
+        method: 'PUT',
+        body: data
+      })
+
+      if (response.success && response.user) {
+        // Actualizar el usuario en el storage
+        const updatedUser: AuthUser = {
+          ...this.currentUser,
+          ...response.user
+        }
+        this.currentUser = updatedUser
+        this.saveToStorage()
+      }
+
+      return response
+    } catch (error: any) {
+      throw error
+    }
+  }
+
+  async me(): Promise<any> {
+    try {
+      if (!this.nuxtApp) throw new Error('Nuxt app not initialized')
+
+      const response = await this.nuxtApp.$api.call('/api/auth/clientes/me', {
+        method: 'GET'
+      })
+
+      return response
+    } catch (error: any) {
+      throw error
+    }
+  }
+
   async logout(): Promise<void> {
     try {
       if (this.isEchoInitialized) {

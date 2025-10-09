@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex flex-col-reverse md:flex-row justify-between items-center  py-4 sm:py-8 px-4 sm:px-10"
+  <div class="min-h-screen flex flex-col-reverse md:flex-row justify-between items-center py-4 sm:py-8 px-4 sm:px-10"
     style="background-image: url('https://intranet.probusiness.pe/assets/tienda/fondo_auth.webp'); background-size: cover; background-position: center;">
     <button @click="navigateTo('/')" class="focus:outline-none">
       <svg width="177" height="52" viewBox="0 0 177 52" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -56,204 +56,240 @@
         </defs>
       </svg>
     </button>
-    <UCard class="w-full max-w-md sm:max-w-lg md:max-w-md  rounded-md shadow-lg p-6 sm:p-8 mx-4 sm:mx-0">
 
-      <h2 class="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6 border-b border-gray-200 pb-3 sm:pb-4">
-        Iniciar sesión</h2>
-      <form @submit.prevent="handleLoginClloginCliente" class="space-y-4 sm:space-y-5">
-        <div>
-          <UFormField label="Email">
-            <UInput id="email" v-model="email" type="email" class="w-full " placeholder="correo@ejemplo.com" />
-          </UFormField>
-        </div>
-        <div class="relative">
-          <UFormField label="Contraseña">
-            <UInput id="password" v-model="password" :type="showPassword ? 'text' : 'password'" trailing-icon=""
-              class="w-full" placeholder="••••••••" :ui="{ trailing: 'pe-1' }">
-              <template #trailing>
-                <UButton color="neutral" variant="link" size="sm" icon="i-heroicons-eye" aria-label="Clear input"
-                  @click="showPassword = !showPassword" />
-              </template>
-            </UInput>
-
-          </UFormField>
-          <!--Form Field-->
-          <!---<button type="button" @click="showPassword = !showPassword" class="absolute right-3 top-10 sm:top-8  hover:">
-            <svg v-if="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
-            </svg>
-            <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-          </button>-->
-          <div class="text-right mt-1">
-            <button type="button" @click="navigateTo('/recuperar-contrasena')"
-              class="text-sm text-red-500 hover:underline bg-transparent p-0">¿Olvidaste tu
-              contraseña?</button>
+    <UCard class="w-full max-w-md sm:max-w-lg md:max-w-md rounded-md shadow-lg p-6 sm:p-8 mx-4 sm:mx-0">
+      <h2 class="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6 border-b border-gray-200 dark:border-gray-700 pb-3 sm:pb-4">
+        Restablecer contraseña
+      </h2>
+      
+      <div v-if="!tokenValid && !isValidating" class="text-center mb-6">
+        <div class="flex flex-col items-center space-y-4 py-8">
+          <svg class="w-12 h-12 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          <div class="text-red-700 dark:text-red-400 text-center text-lg font-semibold">
+            {{ tokenError || 'El enlace de recuperación es inválido o ha expirado' }}
+          </div>
+          <div class="text-center text-sm sm:text-base">
+            Por favor solicita un nuevo enlace de recuperación.
           </div>
         </div>
-        <UButton :disabled="loginClienteLoading" color="primary" type="submit"
-          class="w-full flex items-center justify-center py-4 text-white text-xl hover:bg-primary-600 hover:scale-[1.02] hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-          <svg v-if="loginClienteLoading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      </div>
+
+      <div v-else-if="isValidating" class="text-center py-8">
+        <svg class="animate-spin h-10 w-10 mx-auto text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <p class="mt-4">Validando enlace...</p>
+      </div>
+
+      <form v-else-if="!resetSuccess" @submit.prevent="handleResetPassword" class="space-y-4 sm:space-y-5">
+        <div>
+          <UFormField label="Nueva contraseña">
+            <UInput 
+              id="password" 
+              v-model="password" 
+              :type="showPassword ? 'text' : 'password'" 
+              class="w-full" 
+              placeholder="••••••••"
+              required
+              :ui="{ trailing: 'pe-1' }"
+            >
+              <template #trailing>
+                <UButton 
+                  color="neutral" 
+                  variant="link" 
+                  size="sm" 
+                  :icon="showPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" 
+                  aria-label="Mostrar/Ocultar contraseña"
+                  @click="showPassword = !showPassword" 
+                />
+              </template>
+            </UInput>
+          </UFormField>
+          <p class="text-xs mt-1">La contraseña debe tener al menos 8 caracteres.</p>
+        </div>
+
+        <div>
+          <UFormField label="Confirmar contraseña">
+            <UInput 
+              id="password-confirmation" 
+              v-model="passwordConfirmation" 
+              :type="showPasswordConfirmation ? 'text' : 'password'" 
+              class="w-full" 
+              placeholder="••••••••"
+              required
+              :ui="{ trailing: 'pe-1' }"
+            >
+              <template #trailing>
+                <UButton 
+                  color="neutral" 
+                  variant="link" 
+                  size="sm" 
+                  :icon="showPasswordConfirmation ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" 
+                  aria-label="Mostrar/Ocultar contraseña"
+                  @click="showPasswordConfirmation = !showPasswordConfirmation" 
+                />
+              </template>
+            </UInput>
+          </UFormField>
+        </div>
+
+        <UButton 
+          :disabled="resetLoading" 
+          color="primary" 
+          type="submit"
+          class="w-full flex items-center justify-center py-4 text-white text-xl hover:bg-primary-600 hover:scale-[1.02] hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <svg v-if="resetLoading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          {{ loginClienteLoading ? 'Iniciando sesión...' : 'Ingresar' }}
+          {{ resetLoading ? 'Restableciendo...' : 'Restablecer contraseña' }}
         </UButton>
-        <div v-if="loginClienteError" class="flex items-center justify-center gap-2 text-red-500 text-sm text-center mt-2 bg-red-50 border border-red-200 rounded-md p-3">
+
+        <div v-if="resetError" class="flex items-center justify-center gap-2 text-red-500 text-sm text-center mt-2 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-md p-3">
           <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
           </svg>
-          <span>{{ loginClienteError }}</span>
-        </div>
-        <div v-if="loginClienteSuccess" class="flex items-center justify-center gap-2 text-green-600 text-sm text-center mt-2 bg-green-50 border border-green-200 rounded-md p-3">
-          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-          </svg>
-          <span>¡Has iniciado sesión exitosamente!</span>
+          <span>{{ resetError }}</span>
         </div>
       </form>
-      <div class="flex items-center my-4 sm:my-6">
-        <div class="flex-grow h-px bg-gray-200"></div>
-        <span class="mx-3  text-sm">o</span>
-        <div class="flex-grow h-px bg-gray-200"></div>
-      </div>
-      <!-- Registro -->
-      <div class="text-center mb-4 sm:mb-6">
-        <span class=" text-sm sm:text-base">¿Aún no tienes una cuenta?</span>
-      </div>
-      <div class="text-center">
-        <button @click="navigateTo('/register')"
-          class="ml-2 text-black-500 dark:text-gray-300 border w-full border-primary dark:border-primary-400 rounded-lg px-4 py-3 sm:py-4 font-semibold hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:border-primary-600 dark:hover:border-primary-400 hover:scale-[1.02] hover:shadow-md transition-all duration-200">Registrarme</button>
 
+      <div v-else class="flex flex-col items-center space-y-4 py-8">
+        <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        <div class="text-green-700 dark:text-green-400 text-center text-lg font-semibold">
+          ¡Contraseña restablecida!
+        </div>
+        <div class="text-center">
+          Tu contraseña ha sido restablecida exitosamente. Ahora puedes iniciar sesión con tu nueva contraseña.
+        </div>
       </div>
-      <!-- add Al registrarte aceptas nuestra política de privacidad y términos y condiciones-->
-      <div class="text-xs text-center  mt-4 text-left px-2">
-        Al registrarte aceptas nuestra <a href="#" class="text-blue-600 underline">Política de Privacidad</a> y los <a
-          href="#" class="text-blue-600 underline">Términos y Condiciones</a>.
+
+      <div class="flex items-center my-4 sm:my-6">
+        <div class="flex-grow h-px bg-gray-200 dark:border-gray-700"></div>
+        <span class="mx-3 text-sm">o</span>
+        <div class="flex-grow h-px bg-gray-200 dark:border-gray-700"></div>
+      </div>
+
+      <div class="text-center">
+        <button 
+          @click="navigateTo('/login')"
+          class="w-full border border-primary dark:border-primary-400 rounded-lg px-4 py-3 sm:py-4 font-semibold hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:border-primary-600 dark:hover:border-primary-400 hover:scale-[1.02] hover:shadow-md transition-all duration-200"
+        >
+          Volver al inicio de sesión
+        </button>
       </div>
     </UCard>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useAuth } from '../composables/auth/useAuth'
+
 // Define layout for this page
 definePageMeta({
   layout: 'auth'
 })
-import { useAuth } from '../composables/auth/useAuth'
-import { useSpinner } from '../composables/commons/useSpinner'
-const { withSpinner } = useSpinner()
+
 // Auth composable
-const { loginCliente, loading, error } = useAuth()
+const { resetPassword } = useAuth()
 
-// Color mode composable
-const colorMode = useColorMode()
-const isDark = computed(() => colorMode.value === 'dark')
+// Router
+const route = useRoute()
 
-const email = ref('admin')
+// State
+const token = ref('')
 const password = ref('')
+const passwordConfirmation = ref('')
 const showPassword = ref(false)
+const showPasswordConfirmation = ref(false)
+const resetLoading = ref(false)
+const resetSuccess = ref(false)
+const resetError = ref('')
+const tokenValid = ref(false)
+const isValidating = ref(true)
+const tokenError = ref('')
 
-// Variables para manejar el estado del login
-const loginClienteLoading = ref(false)
-const loginClienteError = ref('')
-const loginClienteSuccess = ref(false)
-
-// Limpiar errores cuando el usuario escriba
-watch([email, password], () => {
-  if (loginClienteError.value) {
-    loginClienteError.value = ''
+// Obtener el token de la URL
+onMounted(() => {
+  token.value = (route.query.token as string) || ''
+  
+  // Validar que existe el token
+  if (!token.value) {
+    tokenError.value = 'No se proporcionó un token de recuperación'
+    tokenValid.value = false
+    isValidating.value = false
+  } else {
+    // Token existe, asumimos que es válido por ahora
+    tokenValid.value = true
+    isValidating.value = false
   }
 })
 
-// Función para validar campos
-const validateFields = () => {
-  if (!email.value || !password.value) {
-    loginClienteError.value = 'Por favor completa todos los campos'
+// Limpiar errores cuando el usuario escriba
+watch([password, passwordConfirmation], () => {
+  if (resetError.value) {
+    resetError.value = ''
+  }
+})
+
+// Función para validar contraseñas
+const validatePasswords = () => {
+  if (!password.value || !passwordConfirmation.value) {
+    resetError.value = 'Por favor completa todos los campos'
     return false
   }
   
-  if (email.value.trim().length === 0 || password.value.trim().length === 0) {
-    loginClienteError.value = 'Los campos no pueden estar vacíos'
+  if (password.value.length < 8) {
+    resetError.value = 'La contraseña debe tener al menos 8 caracteres'
     return false
   }
   
-  // Validación básica de email solo si no está vacío
-  if (email.value && email.value !== 'admin') {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email.value)) {
-      loginClienteError.value = 'Por favor ingresa un email válido'
-      return false
-    }
+  if (password.value !== passwordConfirmation.value) {
+    resetError.value = 'Las contraseñas no coinciden'
+    return false
   }
   
   return true
 }
 
-// LoginClloginCliente handler
-const handleLoginClloginCliente = async () => {
-  // Limpiar mensajes previos
-  loginClienteError.value = ''
-  loginClienteSuccess.value = false
-  
-  // Validar campos antes de enviar
-  if (!validateFields()) {
+// Función para manejar el reset de contraseña
+const handleResetPassword = async () => {
+  if (!validatePasswords()) {
     return
   }
   
-  loginClienteLoading.value = true
+  resetLoading.value = true
+  resetError.value = ''
   
   try {
-    const response = await loginCliente({
-      email: email.value,
-      password: password.value
-    })
-
-    if (response?.success) {
-      loginClienteSuccess.value = true
-      // Redirect to dashboard on success
+    const response = await resetPassword(token.value, password.value, passwordConfirmation.value)
+    
+    if (response.success) {
+      resetSuccess.value = true
+      
+      // Redirigir al login después de 3 segundos
       setTimeout(() => {
-        navigateTo('/')
-      }, 1000)
+        navigateTo('/login')
+      }, 3000)
     } else {
-      loginClienteError.value = response?.message || 'Credenciales incorrectas. Por favor verifica tu email y contraseña.'
+      resetError.value = response.error || 'Hubo un error al restablecer la contraseña. Por favor intenta nuevamente.'
     }
   } catch (err: any) {
-    console.error('Error en login:', err)
-    
-    // Verificar si es un error 401 (Unauthorized)
-    const isUnauthorized = err?.status === 401 || 
-                          err?.response?.status === 401 || 
-                          err?.statusCode === 401 ||
-                          err?.data?.status === 401
-    
-    if (isUnauthorized) {
-      // Para errores 401, mostrar solo nuestro mensaje (no activar modal)
-      loginClienteError.value = err?.data?.message || err?.message || 'Credenciales incorrectas. Por favor verifica tu email y contraseña.'
-    } else {
-      // Para otros errores, permitir que se muestre el modal si es necesario
-      loginClienteError.value = 'Error de conexión. Por favor intenta nuevamente.'
-      // Re-lanzar el error para que el sistema maneje otros tipos de errores
-      throw err
-    }
+    console.error('Error al restablecer contraseña:', err)
+    resetError.value = err?.data?.message || err?.message || 'Hubo un error al restablecer la contraseña. Por favor intenta nuevamente.'
   } finally {
-    loginClienteLoading.value = false
+    resetLoading.value = false
   }
-}
-
-// Theme toggle handler
-const toggleTheme = () => {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
 }
 
 // Set page title
 useHead({
-  title: 'Iniciar Sesión - Probusiness'
+  title: 'Restablecer Contraseña - Probusiness'
 })
 </script>
 
@@ -263,313 +299,5 @@ useHead({
 * {
   font-family: 'Epilogue', sans-serif;
 }
-
-.fondo_pantalla {
-  min-height: 100vh;
-  position: relative;
-  overflow: hidden;
-  background-color: #FF6700;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 5%;
-}
-
-.bg-image {
-  position: relative;
-  width: 55%;
-  height: 100%;
-  z-index: 1;
-  opacity: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.image {
-  max-width: 90%;
-  max-height: 90%;
-  object-fit: contain;
-}
-
-.panel-container {
-  background-color: white;
-  position: relative;
-  width: 40%;
-  height: 90%;
-  z-index: 2;
-  border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  max-width: 600px;
-  min-height: 700px;
-}
-
-/* Dark mode styles for panel */
-.dark .panel-container {
-  background-color: #1f2937;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
-
-.panel {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.panel-heading {
-  padding: 20px;
-  border-bottom: 1px solid #eee;
-}
-
-/* Dark mode styles for panel heading */
-.dark .panel-heading {
-  border-bottom: 1px solid #374151;
-}
-
-.panel-body {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-}
-
-.img-logo {
-  width: 70%;
-  max-width: 250px;
-  height: auto;
-}
-
-.Welcome h2 {
-  color: #333;
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-/* Dark mode styles for welcome text */
-.dark .Welcome h2 {
-  color: #f9fafb;
-}
-
-.Welcome p {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 0;
-}
-
-/* Dark mode styles for welcome paragraph */
-.dark .Welcome p {
-  color: #d1d5db;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.input-group {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-/* Dark mode styles for input group */
-.dark .input-group {
-  border: 1px solid #4b5563;
-}
-
-.input-group-addon {
-  background-color: #f8f9fa;
-  border-right: 1px solid #ddd;
-  padding: 10px 12px;
-  color: #666;
-}
-
-/* Dark mode styles for input group addon */
-.dark .input-group-addon {
-  background-color: #374151;
-  border-right: 1px solid #4b5563;
-  color: #d1d5db;
-}
-
-.form-control {
-  flex: 1;
-  border: none;
-  padding: 12px;
-  font-size: 14px;
-  outline: none;
-  background-color: white;
-  color: #333;
-}
-
-/* Dark mode styles for form control */
-.dark .form-control {
-  background-color: #374151;
-  color: #f9fafb;
-}
-
-.dark .form-control::placeholder {
-  color: #9ca3af;
-}
-
-.form-control:focus {
-  box-shadow: none;
-  border-color: #FF6700;
-}
-
-.input-group:focus-within {
-  border-color: #FF6700;
-  box-shadow: 0 0 0 2px rgba(255, 103, 0, 0.2);
-}
-
-/* Dark mode focus styles */
-.dark .input-group:focus-within {
-  border-color: #FF6700;
-  box-shadow: 0 0 0 2px rgba(255, 103, 0, 0.3);
-}
-
-.btn {
-  padding: 12px 16px;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-success {
-  background-color: #FF6700;
-  color: white;
-}
-
-.btn-success:hover {
-  background-color: #E55A00;
-}
-
-.btn-success:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
-}
-
-.btn-link {
-  background: none;
-  color: #585858;
-  text-decoration: none;
-  text-align: start;
-  padding-top: 2%;
-  padding-bottom: 2%;
-  border: none;
-  font-size: 14px;
-}
-
-/* Dark mode styles for link button */
-.dark .btn-link {
-  color: #d1d5db;
-}
-
-.btn-link:hover {
-  color: #FF6700;
-  text-decoration: none;
-}
-
-.btn-block {
-  width: 100%;
-}
-
-.toggle-password {
-  padding: 10px 12px;
-  background-color: #f8f9fa;
-  border-left: 1px solid #ddd;
-  color: #666;
-}
-
-/* Dark mode styles for toggle password */
-.dark .toggle-password {
-  background-color: #374151;
-  border-left: 1px solid #4b5563;
-  color: #d1d5db;
-}
-
-.help-block {
-  color: #dc3545;
-  font-size: 12px;
-  margin-top: 4px;
-}
-
-/* Dark mode styles for help block */
-.dark .help-block {
-  color: #f87171;
-}
-
-.div-msg {
-  min-height: 20px;
-}
-
-/* Responsive Design */
-@media (min-width: 992px) and (max-width: 1199px) {
-  .panel-container {
-    width: 40%;
-    right: 5%;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  .panel-container {
-    width: 100%;
-    right: 0%;
-    top: 0%;
-    height: 100%;
-    border-radius: 0;
-  }
-}
-
-@media (min-width: 576px) and (max-width: 767px) {
-  .panel-container {
-    width: 100%;
-    right: 0%;
-    top: 0%;
-    height: 100%;
-    border-radius: 0;
-  }
-}
-
-@media (max-width: 575px) {
-  .panel-container {
-    width: 100%;
-    right: 0%;
-    top: 0%;
-    height: 100%;
-    border-radius: 0;
-  }
-}
-
-/* Font Awesome Icons */
-.fa-solid {
-  font-family: 'Font Awesome 6 Free';
-  font-weight: 900;
-}
-
-/* Spinner for loading state */
-.spinner-border {
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  vertical-align: text-bottom;
-  border: 0.125em solid currentColor;
-  border-right-color: transparent;
-  border-radius: 50%;
-  animation: spinner-border 0.75s linear infinite;
-}
-
-@keyframes spinner-border {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.me-2 {
-  margin-right: 0.5rem;
-}
 </style>
+

@@ -104,7 +104,34 @@ export const useAuth = () => {
     } catch (err) {
       console.error('Error during me:', err)
     }
-    return response
+  }
+
+  const forgotPassword = async (email: string) => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await authService.forgotPassword(email)
+      return response
+    } catch (err) {
+      error.value = 'Error al enviar el correo de recuperación'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const resetPassword = async (token: string, password: string, passwordConfirmation: string) => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await authService.resetPassword(token, password, passwordConfirmation)
+      return response
+    } catch (err) {
+      error.value = 'Error al restablecer la contraseña'
+      throw err
+    } finally {
+      loading.value = false
+    }
   }
 
   // Get current user
@@ -148,6 +175,8 @@ export const useAuth = () => {
     register,
     loginCliente,
     updateUserAccount,
-    me
+    me,
+    forgotPassword,
+    resetPassword
   }
 } 
