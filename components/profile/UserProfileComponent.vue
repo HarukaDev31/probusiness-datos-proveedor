@@ -415,11 +415,27 @@ const saveGoals = async () => {
     try {
         await withSpinner(async () => {
             try {
-                const response = await updateProfile({ 
+                // Incluir email y otros campos esenciales junto con goals
+                const updateData = {
                     goals: profileForm.value.goals || '',
-                });
+                    email: profileForm.value.email || userData.value.email || '',
+                    fullName: profileForm.value.fullName || userData.value.name || ''
+                };
+                
+                console.log('🔍 Debug GOALS - Datos a enviar:', updateData);
+                
+                const response = await updateProfile(updateData);
                 if (response.success) {
                     showSuccess('Metas actualizadas exitosamente', 'Las metas se han actualizado correctamente')
+                    
+                    // Actualizar localStorage
+                    const authUser = localStorage.getItem('auth_user');
+                    const authUserJson = JSON.parse(authUser || '{}');
+                    authUserJson.goals = profileForm.value.goals;
+                    localStorage.setItem('auth_user', JSON.stringify(authUserJson));
+                    userData.value = authUserJson;
+                    
+                    isEditingGoals.value = false;
                 } else {
                     showError('Error al guardar las metas', 'Error al guardar las metas')
                 }
