@@ -25,6 +25,7 @@ import { journeySeeder } from "../../../helpers/datatable-seeder"
 import type { TableColumn } from '@nuxt/ui'
 import { USelect, UBadge, UButton } from '#components'
 import { useTrayecto } from '~/composables/clientes/importaciones/useTrayecto'
+import { format } from 'path'
 const { trayectos, loading, error, pagination, search, getTrayectos } = useTrayecto()
 const NuxtLink = resolveComponent('NuxtLink')
 const UIcon = resolveComponent('UIcon')
@@ -62,7 +63,7 @@ const tableColumns: ref<TableColumn<any>[]> = ref([
   {
     accessorKey: 'cbm',
     header: 'CBM',
-    cell: ({ row }) => h('span', {}, row.getValue('cbm'))
+    cell: ({ row }) => h('span', {}, formatNumber(row.getValue('cbm')))
   },
   {
     accessorKey: 'fob',

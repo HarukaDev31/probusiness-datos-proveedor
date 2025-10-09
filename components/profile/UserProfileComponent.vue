@@ -215,6 +215,8 @@ onMounted(async () => {
 });
 
 const initializeForms = () => {
+    console.log('🔍 Debug INIT - userData.value.email:', userData.value.email);
+    
     // Convertir country y city a números para que coincidan con los valores del array
     const countryAsNumber = parseInt(userData.value.country) || null;
     const cityAsNumber = parseInt(userData.value.city) || null;
@@ -230,6 +232,8 @@ const initializeForms = () => {
         phone: userData.value.phone || '',
         goals: userData.value.goals || ''
     };
+    
+    console.log('🔍 Debug INIT - profileForm.value.email después de init:', profileForm.value.email);
 
     // Inicializar formulario de empresa
     if (userProfile.value.business) {
@@ -312,14 +316,33 @@ const saveProfile = async () => {
         // Preparar datos del perfil para envío al API
         const apiData: any = { ...profileForm.value };
         
-        // Los valores ya son números, no necesitamos conversión adicional
+        console.log('🔍 Debug - profileForm.value.email:', profileForm.value.email);
+        console.log('🔍 Debug - Datos antes de limpiar:', apiData);
         
-        //remove fields empties or null
+        // Asegurar que siempre se incluya el email, incluso si está vacío
+        if (profileForm.value.email !== undefined) {
+            apiData.email = profileForm.value.email;
+        }
+        
+        // Solo eliminar campos que sean null o undefined, EXCEPTO email que siempre debe ir
         Object.keys(apiData).forEach(key => {
-            if (apiData[key] === null || apiData[key] === '' || apiData[key] === undefined) {
+            // NUNCA eliminar el email
+            if (key === 'email') {
+                return; // Mantener siempre el email
+            }
+            
+            if (apiData[key] === null || apiData[key] === undefined) {
+                delete apiData[key];
+            }
+            // Solo eliminar strings vacíos para campos no críticos
+            if (apiData[key] === '' && !['fullName'].includes(key)) {
                 delete apiData[key];
             }
         });
+        
+        console.log('🔍 Debug - Datos después de limpiar:', apiData);
+        console.log('🔍 Debug - Email final que se enviará:', apiData.email);
+        
         // Enviar datos del perfil y foto en la misma petición
         await withSpinner(async () => {
             const response = await updateProfile(apiData, pendingPhotoFile.value || undefined);
