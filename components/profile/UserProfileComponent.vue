@@ -43,7 +43,7 @@
                         <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{
                             paises.find(p => p.value == userData.country)?.label || '-'}}</span>
                         <USelect v-else v-model="profileForm.country" class="edit-input w-full sm:w-40"
-                            :items="paises" />
+                            :items="paises" placeholder="Seleccionar país" />
 
                     </p>
                     <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
@@ -52,8 +52,8 @@
                         <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{
                             provincias.find(p => p.value == userData.city)?.label || '-'}}
                         </span>
-                        <UInputMenu v-else v-model="profileForm.city" class="edit-input w-full sm:w-40"
-                            :items="provincias" option-key="label" option-value="value" />
+                        <USelect v-else v-model="profileForm.city" class="edit-input w-full sm:w-40"
+                            :items="provincias" placeholder="Seleccionar ciudad" />
                     </p>
                     <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
                         <strong class="w-full sm:w-30 font-weight: 300;">Correo:</strong>
@@ -128,13 +128,24 @@
 
         <!-- Metas -->
         <UCard class=" profile-goals" style="grid-area: profile-goals;">
-            <div class="flex flex-row gap-2 items-center mb-4">
-                <h3>Mis metas</h3>
-                <img src="/assets/icon/star.svg" alt="Metas" class="business-icon" />
+            <div class="flex flex-row gap-2 items-center justify-between mb-4">
+                <div class="flex flex-row gap-2 items-center">
+                    <h3>Mis metas</h3>
+                    <img src="/assets/icon/star.svg" alt="Metas" class="business-icon" />
+                </div>
+                <UButton variant="ghost" @click="toggleEditGoals"
+                    :icon="isEditingGoals ? 'i-heroicons-x-mark' : 'i-heroicons-pencil'" class="h-8 w-8">
+                </UButton>
             </div>
 
             <UTextarea v-model="profileForm.goals" placeholder="Ingresa tus metas personales o las de tu empresa"
-                :disabled="!isEditingProfile" class="w-full" :rows="4"/>
+                :disabled="!isEditingGoals" class="w-full" :rows="4"/>
+            
+            <!-- Botón de guardar para las metas -->
+            <UButton v-if="isEditingGoals" @click="saveGoals" :loading="loading"
+                class="w-full sm:w-80 mx-auto mt-4 py-4 flex items-center justify-center text-white">
+                Guardar
+            </UButton>
         </UCard>
     </div>
 </template>
@@ -147,6 +158,7 @@ import { useSpinner } from '~/composables/commons/useSpinner';
 import { useUserRole } from '~/composables/auth/useUserRole';
 import { useOptions } from '~/composables/commons/useOptions';
 import { useLocation } from '~/composables/commons/useLocation';
+import { formatCurrency, formatDateTimeToDmy } from '~/utils/formatters';
 const { withSpinner } = useSpinner();
 import { useModal } from '~/composables/commons/useModal';
 const { showSuccess, showError } = useModal();
@@ -169,6 +181,7 @@ const props = defineProps({
 const userProfile = ref({} as UserProfile);
 const isEditingProfile = ref(false);
 const isEditingBusiness = ref(false);
+const isEditingGoals = ref(false);
 const previewImage = ref<string | null>(null);
 const pendingPhotoFile = ref<File | null>(null);
 const formKey = ref(0);
@@ -178,8 +191,8 @@ const profileForm = ref({
     email: '',
     documentNumber: '',
     fechaNacimiento: '',
-    country: '',
-    city: '',
+    country: null as number | null,
+    city: null as number | null,
     phone: '',
     goals: ''
 });
@@ -194,21 +207,26 @@ const businessForm = ref({
 // Inicializar datos
 onMounted(async () => {
     userProfile.value = props.userProfile;
-    await initializeForms();
+    // Cargar datos de países y provincias primero
     await getPaises();
     await getAllProvincias();
-
+    // Luego inicializar los formularios después de que los datos estén cargados
+    await initializeForms();
 });
 
 const initializeForms = () => {
+    // Convertir country y city a números para que coincidan con los valores del array
+    const countryAsNumber = parseInt(userData.value.country) || null;
+    const cityAsNumber = parseInt(userData.value.city) || null;
+
     // Inicializar formulario de perfil
     profileForm.value = {
         fullName: userData.value.name || '',
         email: userData.value.email || '',
         documentNumber: userData.value.dni || '',
-        fechaNacimiento: userData.value.fechaNacimiento || '',
-        country: userData.value.country || '',
-        city: userData.value.city || null,
+        fechaNacimiento: formatDateForInput(userData.value.fechaNacimiento) || '',
+        country: countryAsNumber,
+        city: cityAsNumber,
         phone: userData.value.phone || '',
         goals: userData.value.goals || ''
     };
@@ -221,6 +239,35 @@ const initializeForms = () => {
             rubric: userProfile.value.business.rubric || '',
             socialAddress: userProfile.value.business.socialAddress || ''
         };
+    }
+};
+
+// Función para formatear fecha para input type="date"
+const formatDateForInput = (dateString: string): string => {
+    if (!dateString) return '';
+    
+    try {
+        // Si la fecha ya está en formato YYYY-MM-DD, devolverla tal como está
+        if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+            return dateString;
+        }
+        
+        // Si la fecha está en formato DD/MM/YYYY, convertirla
+        if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
+            const [day, month, year] = dateString.split('/');
+            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        }
+        
+        // Intentar parsear como fecha y formatear
+        const date = new Date(dateString);
+        if (!isNaN(date.getTime())) {
+            return date.toISOString().split('T')[0];
+        }
+        
+        return '';
+    } catch (error) {
+        console.error('Error al formatear fecha:', error);
+        return '';
     }
 };
 
@@ -251,19 +298,31 @@ const toggleEditBusiness = () => {
     }
 };
 
+const toggleEditGoals = () => {
+    isEditingGoals.value = !isEditingGoals.value;
+    if (!isEditingGoals.value) {
+        // Cancelar cambios al salir del modo de edición
+        profileForm.value.goals = userData.value.goals || '';
+    }
+};
+
 // Funciones de guardado
 const saveProfile = async () => {
     try {
-        const profileData = { ...profileForm.value, city: profileForm.value.city?.value };
+        // Preparar datos del perfil para envío al API
+        const apiData: any = { ...profileForm.value };
+        
+        // Los valores ya son números, no necesitamos conversión adicional
+        
         //remove fields empties or null
-        Object.keys(profileData).forEach(key => {
-            if (profileData[key as keyof typeof profileData] === null || profileData[key as keyof typeof profileData] === '') {
-                delete profileData[key as keyof typeof profileData];
+        Object.keys(apiData).forEach(key => {
+            if (apiData[key] === null || apiData[key] === '' || apiData[key] === undefined) {
+                delete apiData[key];
             }
         });
         // Enviar datos del perfil y foto en la misma petición
         await withSpinner(async () => {
-            const response = await updateProfile(profileData, pendingPhotoFile.value || undefined);
+            const response = await updateProfile(apiData, pendingPhotoFile.value || undefined);
             //update local storage auth user  with response.user
             //get auth_user  to json and modify avatar email name  and save it
             const authUser = localStorage.getItem('auth_user');
@@ -285,7 +344,7 @@ const saveProfile = async () => {
         }, 'Guardando perfil...')
 
         // Actualizar el perfil local
-        userProfile.value = { ...userProfile.value, ...profileData };
+        userProfile.value = { ...userProfile.value, ...apiData };
         formKey.value++;
         //re read local storage auth user
         const authUser = localStorage.getItem('auth_user');
@@ -333,7 +392,9 @@ const saveGoals = async () => {
     try {
         await withSpinner(async () => {
             try {
-                const response = await updateProfile({ goals: profileForm.value.goals });
+                const response = await updateProfile({ 
+                    goals: profileForm.value.goals || '',
+                });
                 if (response.success) {
                     showSuccess('Metas actualizadas exitosamente', 'Las metas se han actualizado correctamente')
                 } else {
@@ -341,12 +402,14 @@ const saveGoals = async () => {
                 }
             } catch (error) {
                 console.error('Error al guardar las metas:', error);
+                showError('Error al guardar las metas', 'Error al guardar las metas')
             }
         }, 'Guardando metas...')
         userProfile.value.goals = profileForm.value.goals;
         console.log('Metas actualizadas exitosamente');
     } catch (error) {
         console.error('Error al guardar las metas:', error);
+        showError('Error al guardar las metas', 'Error al guardar las metas')
     }
 };
 

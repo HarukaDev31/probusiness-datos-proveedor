@@ -26,13 +26,13 @@
               <button v-for="date in calendarDays" :key="date.value" @click="selectDate(date)" :class="[
                 'w-8 h-8 md:w-10 md:h-10 rounded-full text-xs md:text-sm font-medium transition-all duration-200',
                 date.isCurrentMonth
-                  ? 'hover:bg-gray-600'
-                  : 'text-neutral-500',
+                  ? 'hover:bg-gray-600 hover:text-white'
+                  : 'text-gray-400',
                 date.isSelected
-                  ? 'bg-primary-600 text-white'
+                  ? 'bg-primary-600 hover:bg-primary-700 hover:text-white text-white'
                   : date.isAvailable && date.isCurrentMonth
-                  ? 'hover:bg-green-700 bg-green-400 text-white'
-                  : 'text-neutral-500'
+                  ? 'hover:bg-green-500 bg-green-400 text-white cursor-pointer'
+                  : 'text-gray-400'
               ]" :disabled="!date.isCurrentMonth || !date.isAvailable">
                 {{ date.day }}
               </button>
@@ -55,7 +55,7 @@
                 @click="selectTimeSlot(timeSlot)" :class="[
                   'w-full py-2 md:py-1 px-3 md:px-2 rounded-lg font-medium transition-all duration-200 h-12 md:h-10 flex flex-col justify-center',
                   selectedTimeSlot?.range_id === timeSlot.range_id
-                    ? 'bg-primary-600 hover:bg-primary-700 text-white'
+                    ? 'bg-primary-600 hover:bg-primary-700 text-white hover:text-white'
                     : 'bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-500'
                 ]">
                 <div class="text-sm font-semibold flex-row items-center justify-center">

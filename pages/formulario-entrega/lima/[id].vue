@@ -10,10 +10,6 @@
           <p class="text-gray-600 dark:text-gray-300">
           Completa la información para que puedas recoger tu pedido.
         </p>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
-          Todos los datos enviados mediante este FORMS son confidenciales y no son de dominio público, únicamente los
-          usará la empresa para nuestra base de datos.
-        </p>
         </div>
         <div v-else-if="currentStep === 2">
           <p class="text-gray-600 dark:text-gray-300">
@@ -22,7 +18,7 @@
         </div>
         <div v-else-if="currentStep === 3">
           <p class="text-gray-600 dark:text-gray-300">
-            Ahora necesitamos los datos del chofer para entregar tu pedido, si aún no cuenta con la información dar
+            Ahora necesitamos los datos del chofer para entregar tu pedido
             en continuar
           </p>
         </div>
@@ -34,7 +30,7 @@
       </div>
 
       <!-- Stepper -->
-      <div class="mb-8">
+      <div class="mb-5">
         <!-- Desktop stepper -->
         <div class="hidden md:flex items-center justify-center">
           <div class="flex items-center space-x-4">
@@ -91,6 +87,28 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="text-center mb-8">
+        <!-- Mensaje de información importante -->
+        <div v-if="currentStep === 1" class="max-w-4xl mx-auto">
+          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+            <div class="flex items-start">
+              <div class="flex-shrink-0">
+                <UIcon name="i-heroicons-information-circle" class="h-5 w-5 text-yellow-600" />
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-yellow-800">
+                  <strong>Los datos que ingreses en este formulario son totalmente confidenciales.</strong> ProBusiness los utilizará únicamente para fines internos y la gestión de tu pedido, no serán compartidos ni divulgados públicamente.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+       <div v-else-if="currentStep === 3">
+        <p class="text-gray-600 dark:text-gray-300">
+          Si aún no cuenta con la información dar en continuar
+        </p>
+       </div>
       </div>
 
       <!-- Form Container -->

@@ -6,31 +6,6 @@
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           Consolidado #{{ carga }}
         </h1>
-       <div v-if="currentStep === 1">
-        <p class="text-gray-600 dark:text-gray-300">
-          Completa la información para que puedas recoger tu pedido.
-        </p>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
-          Todos los datos enviados mediante este FORMS son confidenciales y no son de dominio público, únicamente los
-          usará la EMPRESA para nuestra base de datos.
-        </p>
-       </div>
-       <div v-else-if="currentStep === 2">
-        <p class="text-gray-600 dark:text-gray-300">
-          Ahora necesitamos los datos para realizar tu comprobante
-        </p>
-       </div>
-       <div v-else-if="currentStep === 3">
-        <p class="text-gray-600 dark:text-gray-300">
-          Ahora necesitamos los datos del destinatario para entregar tu pedido, si aún no cuenta con la información dar
-          en continuar
-        </p>
-       </div>
-       <div v-else-if="currentStep === 4">
-        <p class="text-gray-600 dark:text-gray-300">
-          Por favor selecciona la fecha y hora disponible, después culmina el formulario
-        </p>
-       </div>
       </div>
 
       <!-- Stepper -->
@@ -91,6 +66,33 @@
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        <div v-if="currentStep === 1">
+        <p class="text-gray-600 dark:text-gray-300">
+          Completa la información para que puedas recoger tu pedido.
+        </p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+          Todos los datos enviados mediante este FORMS son confidenciales y no son de dominio público, únicamente los
+          usará la EMPRESA para nuestra base de datos.
+        </p>
+       </div>
+       <div v-else-if="currentStep === 2">
+        <p class="text-gray-600 dark:text-gray-300">
+          Ahora necesitamos los datos para realizar tu comprobante
+        </p>
+       </div>
+       <div v-else-if="currentStep === 3">
+        <p class="text-gray-600 dark:text-gray-300">
+          Ahora necesitamos los datos del destinatario para entregar tu pedido, si aún no cuenta con la información dar
+          en continuar
+        </p>
+       </div>
+       <div v-else-if="currentStep === 4">
+        <p class="text-gray-600 dark:text-gray-300">
+          Por favor selecciona la fecha y hora disponible, después culmina el formulario
+        </p>
+       </div>
       </div>
       <!-- Form Container -->
       <UCard class="max-w-4xl mx-auto">
