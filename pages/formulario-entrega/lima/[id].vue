@@ -169,17 +169,17 @@
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UFormField label="DNI:" required>
-                  <UInput v-model="formData.clienteDni" placeholder="" :disabled="loading" class="w-full" />
+                  <UInput v-model="formData.clienteDni" placeholder="Ingrese DNI" :disabled="loading" class="w-full" />
                 </UFormField>
 
                 <UFormField label="Nombre completo:" required>
-                  <UInput v-model="formData.clienteNombre" placeholder="" :disabled="loading"
+                  <UInput v-model="formData.clienteNombre" placeholder="Ingrese nombre completo" :disabled="loading"
                     class="w-full" />
                 </UFormField>
               </div>
 
               <UFormField label="Correo:" required>
-                <UInput v-model="formData.clienteCorreo" type="email" placeholder=""
+                <UInput v-model="formData.clienteCorreo" type="email" placeholder="Ingrese correo"
                   :disabled="loading" class="w-full" />
               </UFormField>
             </div>
@@ -189,17 +189,17 @@
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UFormField label="RUC:" required>
-                  <UInput v-model="formData.clienteRuc" placeholder="20603287721" :disabled="loading" class="w-full" />
+                  <UInput v-model="formData.clienteRuc" placeholder="Ingrese RUC" :disabled="loading" class="w-full" />
                 </UFormField>
 
                 <UFormField label="Razón social:" required>
-                  <UInput v-model="formData.clienteRazonSocial" placeholder="Grupo Pro Business sac" :disabled="loading"
+                  <UInput v-model="formData.clienteRazonSocial" placeholder="Ingrese razón social" :disabled="loading"
                     class="w-full" />
                 </UFormField>
               </div>
 
               <UFormField label="Correo:" required>
-                <UInput v-model="formData.clienteCorreo" type="email" placeholder="mvillegas@probusiness.pe"
+                <UInput v-model="formData.clienteCorreo" type="email" placeholder="Ingrese correo"
                   :disabled="loading" class="w-full" />
               </UFormField>
             </div>

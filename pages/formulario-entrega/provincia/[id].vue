@@ -224,18 +224,18 @@
               <div v-if="formData.tipoDestinatario.value === 'PERSONA NATURAL'" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <UFormField label="DNI/ID:" required>
-                    <UInput v-model="formData.destinatarioDni" placeholder="48585858" :disabled="loading"
+                    <UInput v-model="formData.destinatarioDni" placeholder="Ingrese DNI/ID" :disabled="loading"
                       class="w-full" />
                   </UFormField>
 
                   <UFormField label="Nombre completo:" required>
-                    <UInput v-model="formData.destinatarioNombre" placeholder="Miguel Villegas Perez" :disabled="loading"
+                    <UInput v-model="formData.destinatarioNombre" placeholder="Ingrese nombre completo" :disabled="loading"
                       class="w-full" />
                   </UFormField>
                 </div>
 
                 <UFormField label="Celular:" required>
-                  <UInput v-model="formData.destinatarioCelular" placeholder="949359599" :disabled="loading"
+                  <UInput v-model="formData.destinatarioCelular" placeholder="Ingrese celular" :disabled="loading"
                     class="w-full" />
                 </UFormField>
 
@@ -282,7 +282,7 @@
                 </div>
 
                 <UFormField label="Celular:" required>
-                  <UInput v-model="formData.destinatarioCelular" placeholder="949359599" :disabled="loading"
+                  <UInput v-model="formData.destinatarioCelular" placeholder="Ingrese celular" :disabled="loading"
                     class="w-full" />
                 </UFormField>
 
@@ -324,16 +324,16 @@
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4" v-if="formData.agenciaEnvio?.value == 3">
                 <UFormField label="Nombre de la agencia:" required>
-                  <UInput v-model="formData.nombreAgencia" placeholder="" :disabled="loading"
+                  <UInput v-model="formData.nombreAgencia" placeholder="Ingrese nombre de la agencia" :disabled="loading"
                     class="w-full" />
                 </UFormField>
 
                 <UFormField label="RUC de la agencia:" required>
-                  <UInput v-model="formData.rucAgencia" placeholder="" :disabled="loading" class="w-full" />
+                  <UInput v-model="formData.rucAgencia" placeholder="Ingrese RUC de la agencia" :disabled="loading" class="w-full" />
                 </UFormField>
 
                 <UFormField label="Dirección de la agencia sede lima:" required>
-                  <UInput v-model="formData.direccionAgenciaLima" placeholder=""
+                  <UInput v-model="formData.direccionAgenciaLima" placeholder="Ingrese dirección de la agencia en Lima"
                     :disabled="loading" class="w-full" />
                 </UFormField>
               </div>
