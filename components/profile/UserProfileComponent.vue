@@ -50,7 +50,7 @@
                         <strong class="w-full sm:w-30 font-weight: 300;">Ciudad:</strong>
 
                         <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{
-                            provincias.find(p => p.value == userData.city)?.label || '-'}}
+                            userData.province || userData.city || '-'}}
                         </span>
                         <USelect v-else v-model="profileForm.city" class="edit-input w-full sm:w-40"
                             :items="provincias" placeholder="Seleccionar ciudad" />

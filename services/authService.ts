@@ -286,10 +286,10 @@ class AuthService {
   async register(credentials: RegisterCredentials): Promise<RegisterResponse> {
     try {
       if (!this.nuxtApp) throw new Error('La aplicación Nuxt no está inicializada')
-      // Corregido para usar los tipos correctos y evitar el uso de <any>
-      const response = await this.nuxtApp.$api.auth('/api/auth/clientes/register', {
+      
+      const requestPayload = {
         nombre: credentials.nombre,
-        apellido: credentials.apellido,
+        lastname: credentials.apellido,
         email: credentials.email,
         whatsapp: credentials.whatsapp,
         password: credentials.password,
@@ -297,10 +297,15 @@ class AuthService {
         dni: credentials.dni,
         fechaNacimiento: credentials.fechaNacimiento,
         medioEncontrado: credentials.medioEncontrado,
-        departamento: credentials.departamento,
-        provincia: credentials.provincia,
-        distrito: credentials.distrito
-      })
+        departamento_id: credentials.departamento,
+        provincia_id: credentials.provincia,
+        distrito_id: credentials.distrito
+      }
+      
+      console.log('🔧 AuthService: Enviando al backend:', requestPayload)
+      
+      // Corregido para usar los tipos correctos y evitar el uso de <any>
+      const response = await this.nuxtApp.$api.auth('/api/auth/clientes/register', requestPayload)
       if (response.success && response.token && response.user) {
         console.log(response)
         const user: AuthUser = {

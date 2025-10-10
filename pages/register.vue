@@ -683,11 +683,22 @@ async function handleRegister() {
         return
     }
 
+    // Imprimir valores de ubicación para debug
+    console.log('🚀 Valores de ubicación antes del envío:', {
+        departamento: registerData.value.departamento,
+        provincia: registerData.value.provincia,
+        distrito: registerData.value.distrito,
+        tiposDeDatos: {
+            departamento: typeof registerData.value.departamento,
+            provincia: typeof registerData.value.provincia,
+            distrito: typeof registerData.value.distrito
+        }
+    })
+
     // loading.value = true
     await withSpinner(async () => {
         try {
-
-            const response = await register({
+            const requestData = {
                 name: registerData.value.nombre,
                 nombre: registerData.value.nombre,
                 apellido: registerData.value.apellido,
@@ -698,10 +709,14 @@ async function handleRegister() {
                 dni: registerData.value.dni,
                 fechaNacimiento: registerData.value.fechaNacimiento,
                 medioEncontrado: registerData.value.medioEncontrado,
-                departamento: registerData.value.departamento,
-                provincia: registerData.value.provincia,
-                distrito: registerData.value.distrito
-            })
+                departamento: parseInt(registerData.value.departamento) || 1, // Usar 1 como default
+                provincia: parseInt(registerData.value.provincia) || 1, // Usar 1 como default
+                distrito: parseInt(registerData.value.distrito) || 1 // Usar 1 como default
+            }
+            
+            console.log('📤 Datos enviados al backend:', requestData)
+
+            const response = await register(requestData)
             console.log(response,'response')
             if (response.success) {
                 showSuccess('¡Cuenta creada exitosamente! Redirigiendo...', 'Registro Exitoso')

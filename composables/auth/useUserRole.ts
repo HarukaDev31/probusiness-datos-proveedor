@@ -50,6 +50,9 @@ interface UserData {
   country: string
   city: string
   goals: string
+  department?: string
+  province?: string
+  district?: string
   organizacion: UserOrganization
 }
 
