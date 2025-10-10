@@ -204,13 +204,64 @@
                     <p v-if="fieldErrors.fechaNacimiento" class="text-red-500 text-xs mt-1">{{ fieldErrors.fechaNacimiento }}</p>
                 </div>  
                 
+                <!-- Campos de Ubicación -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Departamento -->
+                    <div>
+                        <label class="block text-gray-600 mb-1" for="departamento">Departamento <span class="text-red-500">*</span></label>
+                        <USelect 
+                            id="departamento"
+                            v-model="registerData.departamento" 
+                            :options="departamentos"
+                            placeholder="Selecciona departamento"
+                            :disabled="loadingDepartamentos"
+                            :class="{ 'border-red-500': fieldErrors.departamento }"
+                            @change="onDepartamentoChange"
+                            class="w-full"
+                        />
+                        <p v-if="fieldErrors.departamento" class="text-red-500 text-xs mt-1">{{ fieldErrors.departamento }}</p>
+                    </div>
+
+                    <!-- Provincia -->
+                    <div>
+                        <label class="block text-gray-600 mb-1" for="provincia">Provincia <span class="text-red-500">*</span></label>
+                        <USelect 
+                            id="provincia"
+                            v-model="registerData.provincia" 
+                            :options="provincias"
+                            placeholder="Selecciona provincia"
+                            :disabled="loadingProvincias || !registerData.departamento"
+                            :class="{ 'border-red-500': fieldErrors.provincia }"
+                            @change="onProvinciaChange"
+                            class="w-full"
+                        />
+                        <p v-if="fieldErrors.provincia" class="text-red-500 text-xs mt-1">{{ fieldErrors.provincia }}</p>
+                    </div>
+
+                    <!-- Distrito -->
+                    <div>
+                        <label class="block text-gray-600 mb-1" for="distrito">Distrito <span class="text-red-500">*</span></label>
+                        <USelect 
+                            id="distrito"
+                            v-model="registerData.distrito" 
+                            :options="distritos"
+                            placeholder="Selecciona distrito"
+                            :disabled="loadingDistritos || !registerData.provincia"
+                            :class="{ 'border-red-500': fieldErrors.distrito }"
+                            @change="fieldErrors.distrito = ''"
+                            class="w-full"
+                        />
+                        <p v-if="fieldErrors.distrito" class="text-red-500 text-xs mt-1">{{ fieldErrors.distrito }}</p>
+                    </div>
+                </div>
+                
                 <!-- Campo Por qué medio nos encontraste -->
                 <div>
                     <label class="block text-gray-600 mb-1" for="medioEncontrado">Por qué medio nos encontraste:</label>
                     <USelect 
                         id="medioEncontrado"
                         v-model="registerData.medioEncontrado"
-                        :items="medioEncontradoOptions"
+                        :options="medioEncontradoOptions"
                         class="w-full"
                         :class="{ 'border-red-500': fieldErrors.medioEncontrado }"
                         placeholder="Selecciona una opción"
@@ -337,14 +388,16 @@ definePageMeta({
 })
 import { vMaska } from 'maska/vue'
 
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 const { login, loading, error } = useAuth()
 import { useModal } from '@/composables/commons/useModal'
 import { useAuth } from '@/composables/auth/useAuth'
 import { useSpinner } from '../composables/commons/useSpinner'
+import { useLocation } from '../composables/commons/useLocation'
 const { withSpinner } = useSpinner()
 const { register, loading: registerLoading, error: registerError } = useAuth()
+const { departamentos, provincias, distritos, getDepartamentos, getProvincias, getDistritos, loadingDepartamentos, loadingProvincias, loadingDistritos } = useLocation()
 const router = useRouter()
 
 const showRegister = ref(false)
@@ -358,7 +411,10 @@ const registerData = ref({
     repeatPassword: '',
     dni: '',
     fechaNacimiento: '',
-    medioEncontrado: ''
+    medioEncontrado: '',
+    departamento: null,
+    provincia: null,
+    distrito: null
 })
 
 // Estados de validación para cada campo
@@ -370,7 +426,10 @@ const fieldErrors = ref({
     repeatPassword: '',
     dni: '',
     fechaNacimiento: '',
-    medioEncontrado: ''
+    medioEncontrado: '',
+    departamento: '',
+    provincia: '',
+    distrito: ''
 })
 
 const showForgot = ref(false)
@@ -609,8 +668,11 @@ const validateAllFields = () => {
     const repeatPasswordValid = validateRepeatPassword()
     const fechaNacimientoValid = validateFechaNacimiento()
     const medioEncontradoValid = validateMedioEncontrado()
+    const departamentoValid = validateDepartamento()
+    const provinciaValid = validateProvincia()
+    const distritoValid = validateDistrito()
     // Retornar true solo si todos los campos son válidos
-    return nombreValid && emailValid && whatsappValid && dniValid && passwordValid && repeatPasswordValid && fechaNacimientoValid && medioEncontradoValid
+    return nombreValid && emailValid && whatsappValid && dniValid && passwordValid && repeatPasswordValid && fechaNacimientoValid && medioEncontradoValid && departamentoValid && provinciaValid && distritoValid
 }
 
 
@@ -635,7 +697,10 @@ async function handleRegister() {
                 repeatPassword: registerData.value.repeatPassword,
                 dni: registerData.value.dni,
                 fechaNacimiento: registerData.value.fechaNacimiento,
-                medioEncontrado: registerData.value.medioEncontrado
+                medioEncontrado: registerData.value.medioEncontrado,
+                departamento: registerData.value.departamento,
+                provincia: registerData.value.provincia,
+                distrito: registerData.value.distrito
             })
             console.log(response,'response')
             if (response.success) {
@@ -665,8 +730,33 @@ async function handleRegister() {
 function closeRegister() {
     showRegister.value = false
     // loading.value = false
-    registerData.value = { nombre: '', apellido: '', email: '', whatsapp: '', password: '', repeatPassword: '', dni: '', fechaNacimiento: '', medioEncontrado: '' }
-    fieldErrors.value = { nombre: '', email: '', whatsapp: '', password: '', repeatPassword: '', dni: '', fechaNacimiento: '', medioEncontrado: '' }
+    registerData.value = { 
+        nombre: '', 
+        apellido: '', 
+        email: '', 
+        whatsapp: '', 
+        password: '', 
+        repeatPassword: '', 
+        dni: '', 
+        fechaNacimiento: '', 
+        medioEncontrado: '',
+        departamento: null,
+        provincia: null,
+        distrito: null
+    }
+    fieldErrors.value = { 
+        nombre: '', 
+        email: '', 
+        whatsapp: '', 
+        password: '', 
+        repeatPassword: '', 
+        dni: '', 
+        fechaNacimiento: '', 
+        medioEncontrado: '',
+        departamento: '',
+        provincia: '',
+        distrito: ''
+    }
     // Limpiar también el DatePicker personalizado
     selectedDay.value = ''
     selectedMonth.value = ''
@@ -712,6 +802,57 @@ const validateMedioEncontrado = () => {
     fieldErrors.value.medioEncontrado = ''
     return true
 }
+
+// Funciones de validación para ubicación
+const validateDepartamento = () => {
+    if (!registerData.value.departamento) {
+        fieldErrors.value.departamento = 'El departamento es requerido'
+        return false
+    }
+    fieldErrors.value.departamento = ''
+    return true
+}
+
+const validateProvincia = () => {
+    if (!registerData.value.provincia) {
+        fieldErrors.value.provincia = 'La provincia es requerida'
+        return false
+    }
+    fieldErrors.value.provincia = ''
+    return true
+}
+
+const validateDistrito = () => {
+    if (!registerData.value.distrito) {
+        fieldErrors.value.distrito = 'El distrito es requerido'
+        return false
+    }
+    fieldErrors.value.distrito = ''
+    return true
+}
+
+// Funciones para manejar cambios en los selects de ubicación
+const onDepartamentoChange = async () => {
+    fieldErrors.value.departamento = ''
+    registerData.value.provincia = null
+    registerData.value.distrito = null
+    fieldErrors.value.provincia = ''
+    fieldErrors.value.distrito = ''
+    
+    if (registerData.value.departamento) {
+        await getProvincias(registerData.value.departamento)
+    }
+}
+
+const onProvinciaChange = async () => {
+    fieldErrors.value.provincia = ''
+    registerData.value.distrito = null
+    fieldErrors.value.distrito = ''
+    
+    if (registerData.value.provincia) {
+        await getDistritos(registerData.value.provincia)
+    }
+}
 function handleForgot() {
     forgotLoading.value = true
     setTimeout(() => {
@@ -727,6 +868,28 @@ function closeForgot() {
     forgotSuccess.value = false
 }
 // Función de login removida - no se usa en esta página
+
+// Cargar datos iniciales
+onMounted(async () => {
+    console.log('🎬 Register.vue: Componente montado, cargando departamentos...')
+    
+    // Test de conexión a la API
+    try {
+        const { $api } = useNuxtApp()
+        console.log('🔌 Probando conexión a la API...')
+        const testResponse = await $api.call('/api/test')
+        console.log('✅ API conectada:', testResponse)
+    } catch (error) {
+        console.warn('⚠️ Error de conexión a la API:', error)
+    }
+    
+    try {
+        await getDepartamentos()
+        console.log('✅ Register.vue: Departamentos cargados exitosamente')
+    } catch (error) {
+        console.error('❌ Register.vue: Error al cargar departamentos:', error)
+    }
+})
 
 </script>
 <style>

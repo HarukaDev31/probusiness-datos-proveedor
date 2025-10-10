@@ -20,6 +20,8 @@ export interface AuthUser {
   phone?: string
   country?: string
   city?: string
+  department?: number
+  district?: number
   goals?: string
   empresa?: string
   fechaNacimiento?: string
@@ -294,7 +296,10 @@ class AuthService {
         repeatPassword: credentials.repeatPassword,
         dni: credentials.dni,
         fechaNacimiento: credentials.fechaNacimiento,
-        medioEncontrado: credentials.medioEncontrado
+        medioEncontrado: credentials.medioEncontrado,
+        departamento: credentials.departamento,
+        provincia: credentials.provincia,
+        distrito: credentials.distrito
       })
       if (response.success && response.token && response.user) {
         console.log(response)
@@ -306,6 +311,8 @@ class AuthService {
           fechaNacimiento: response.user.fechaNacimiento,
           country: response.user.country,
           city: response.user.city,
+          department: response.user.department,
+          district: response.user.district,
           dni: response.user.dni,
           goals: response.user.goals,
           empresa: response.user.empresa,

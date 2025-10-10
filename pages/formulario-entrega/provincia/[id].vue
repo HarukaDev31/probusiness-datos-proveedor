@@ -6,10 +6,31 @@
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           Consolidado #{{ carga }}
         </h1>
+        <div v-if="currentStep === 1">
+        <p class="text-gray-600 dark:text-gray-300">
+          Completa la información para que puedas recoger tu pedido.
+        </p>
+       </div>
+       <div v-else-if="currentStep === 2">
+        <p class="text-gray-600 dark:text-gray-300">
+          Ahora necesitamos los datos para realizar tu comprobante
+        </p>
+       </div>
+       <div v-else-if="currentStep === 3">
+        <p class="text-gray-600 dark:text-gray-300">
+          Ahora necesitamos los datos del destinatario para entregar tu pedido, si aún no cuenta con la información dar
+          en continuar
+        </p>
+       </div>
+       <div v-else-if="currentStep === 4">
+        <p class="text-gray-600 dark:text-gray-300">
+          Por favor selecciona la fecha y hora disponible, después culmina el formulario
+        </p>
+      </div>
       </div>
 
-      <!-- Stepper -->
-      <div class="mb-8">
+            <!-- Stepper -->
+      <div class="mb-5">
         <!-- Desktop stepper -->
         <div class="hidden md:flex items-center justify-center">
           <div class="flex items-center space-x-4">
@@ -67,41 +88,49 @@
           </div>
         </div>
       </div>
-      <div>
-        <div v-if="currentStep === 1">
-        <p class="text-gray-600 dark:text-gray-300">
-          Completa la información para que puedas recoger tu pedido.
-        </p>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
-          Todos los datos enviados mediante este FORMS son confidenciales y no son de dominio público, únicamente los
-          usará la EMPRESA para nuestra base de datos.
-        </p>
-       </div>
-       <div v-else-if="currentStep === 2">
-        <p class="text-gray-600 dark:text-gray-300">
-          Ahora necesitamos los datos para realizar tu comprobante
-        </p>
-       </div>
-       <div v-else-if="currentStep === 3">
-        <p class="text-gray-600 dark:text-gray-300">
-          Ahora necesitamos los datos del destinatario para entregar tu pedido, si aún no cuenta con la información dar
-          en continuar
-        </p>
-       </div>
-       <div v-else-if="currentStep === 4">
-        <p class="text-gray-600 dark:text-gray-300">
-          Por favor selecciona la fecha y hora disponible, después culmina el formulario
-        </p>
+      <div class="text-center mb-8">
+        <!-- Mensaje de información importante -->
+        <div v-if="currentStep === 1" class="max-w-4xl mx-auto">
+          <div class="bg-yellow-50 dark:bg-yellow-800 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 mb-6">
+            <div class="flex items-start">
+              <div class="flex-shrink-0">
+                <UIcon name="i-heroicons-information-circle" class="h-5 w-5 text-yellow-600" />
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-yellow-800 dark:text-yellow-100">
+                  <strong>Los datos que ingreses en este formulario son totalmente confidenciales.</strong> ProBusiness los utilizará únicamente para fines internos y la gestión de tu pedido, no serán compartidos ni divulgados públicamente.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+       <div v-else-if="currentStep === 3" class="max-w-4xl mx-auto">
+        <div class="bg-yellow-50 dark:bg-yellow-800 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 mb-6">
+            <div class="flex items-center justify-center">
+              <div class="flex-shrink-0">
+                <UIcon name="i-heroicons-information-circle" class="h-5 w-5 text-yellow-600" />
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-yellow-800 dark:text-yellow-100 text-center">
+                  Completa la información de la agencia de envío y a quién se le entregara, <strong>esta información es importante para la correcta entrega de tu pedido.</strong>
+                </p>
+              </div>
+            </div>
+          </div>
        </div>
       </div>
       <!-- Form Container -->
       <UCard class="max-w-4xl mx-auto">
         <form @submit.prevent="handleSubmit">
-
           <!-- Paso 1: Información básica -->
           <div v-if="currentStep === 1" class="space-y-6">
+            <div class="text-center mb-6">
+              <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+                Persona que recoja la carga:
+              </h2>
+            </div>
             <UFormField label="Selecciona el nombre del importador:" required>
-              <USelectMenu v-model="formData.importador" :items="importadores" placeholder="Selecciona el importador"
+              <USelectMenu v-model="formData.importador" :items="clientes" placeholder="Selecciona el importador"
                 :disabled="loading" class="w-full" />
             </UFormField>
 
@@ -143,11 +172,11 @@
             <div v-else-if="formData.tipoComprobante.value === 'factura'" class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UFormField label="RUC:" required>
-                  <UInput v-model="formData.clienteRuc" placeholder="" :disabled="loading" class="w-full" />
+                  <UInput v-model="formData.clienteRuc" placeholder="Ingrese RUC" :disabled="loading" class="w-full" />
                 </UFormField>
 
                 <UFormField label="Razón social:" required>
-                  <UInput v-model="formData.clienteRazonSocial" placeholder="" :disabled="loading"
+                  <UInput v-model="formData.clienteRazonSocial" placeholder="Ingrese razón social" :disabled="loading"
                     class="w-full" />
                 </UFormField>
               </div>
@@ -160,108 +189,139 @@
           </div>
 
           <!-- Paso 3: Información del destinatario -->
-          <div v-if="currentStep === 3" class="space-y-6">
-          
-
-            <!-- Tipo de destinatario -->
-            <UFormField label="¿A quién se envía la carga?" required>
-              <USelectMenu v-model="formData.tipoDestinatario" :items="tiposDestinatario"
-                placeholder="Selecciona tipo de destinatario" :disabled="loading" class="w-full" />
-            </UFormField>
-
-            <!-- Información del destinatario -->
-            <div v-if="formData.tipoDestinatario.value === 'PERSONA NATURAL'" class="space-y-4">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <UFormField label="DNI/ID:" required>
-                  <UInput v-model="formData.destinatarioDni" placeholder="48585858" :disabled="loading"
-                    class="w-full" />
-                </UFormField>
-
-                <UFormField label="Nombre completo:" required>
-                  <UInput v-model="formData.destinatarioNombre" placeholder="Miguel Villegas Perez" :disabled="loading"
-                    class="w-full" />
-                </UFormField>
-              </div>
-
-              <UFormField label="Celular:" required>
-                <UInput v-model="formData.destinatarioCelular" placeholder="949359599" :disabled="loading"
-                  class="w-full" />
-              </UFormField>
-
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <UFormField label="Departamento:" required>
-                  <USelectMenu v-model="formData.destinatarioDepartamento" placeholder="Selecciona el departamento"
-                    class="w-full" :items="departamentos" :disabled="loadingDepartamentos"
-                    @update:model-value="getProvincias(formData.destinatarioDepartamento.value)" />
-                </UFormField>
-
-                <UFormField label="Provincia:" required>
-                  <USelectMenu v-model="formData.destinatarioProvincia" placeholder="Selecciona la provincia"
-                    class="w-full" :items="provincias" :disabled="loadingProvincias"
-                    @update:model-value="getDistritos(formData.destinatarioProvincia.value)" />
-                </UFormField>
-
-                <UFormField label="Distrito:" required>
-                  <USelectMenu v-model="formData.destinatarioDistrito" placeholder="Selecciona el distrito"
-                    class="w-full" :items="distritos" :disabled="loadingDistritos"
-                    @update:model-value="getDistritos(formData.destinatarioProvincia.value)" />
-                </UFormField>
-              </div>
-            </div>
-
-            <!-- Información de EMPRESA -->
-            <div v-else-if="formData.tipoDestinatario.value === 'EMPRESA'" class="space-y-4">
-              <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                <p class="text-blue-800 dark:text-blue-200 text-sm">
-                  Recuerde que si la carga va a nombre de una EMPRESA el representante legal es quien tiene que recoger
-                  su pedido en la agencia
-                </p>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <UFormField label="RUC:" required>
-                  <UInput v-model="formData.destinatarioRuc" placeholder="" :disabled="loading"
-                    class="w-full" />
-                </UFormField>
-
-                <UFormField label="Razón social:" required>
-                  <UInput v-model="formData.destinatarioRazonSocial" placeholder=""
-                    :disabled="loading" class="w-full" />
-                </UFormField>
-              </div>
-
-              <UFormField label="Celular:" required>
-                <UInput v-model="formData.destinatarioCelular" placeholder="" :disabled="loading"
-                  class="w-full" />
-              </UFormField>
-
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <UFormField label="Departamento:" required>
-                  <USelectMenu v-model="formData.destinatarioDepartamento" class="w-full" :items="departamentos"
-                    placeholder="Selecciona el departamento" :disabled="loadingDepartamentos"
-                    @update:model-value="getProvincias(formData.destinatarioDepartamento.value)" />
-                </UFormField>
-
-                <UFormField label="Provincia:" required>
-                  <USelectMenu v-model="formData.destinatarioProvincia" class="w-full" :items="provincias"
-                    placeholder="Selecciona la provincia" :disabled="loadingProvincias"
-                    @update:model-value="getDistritos(formData.destinatarioProvincia.value)" />
-                </UFormField>
-
-                <UFormField label="Distrito:" required>
-                  <USelectMenu v-model="formData.destinatarioDistrito" class="w-full" :items="distritos"
-                    placeholder="Selecciona el distrito" :disabled="loadingDistritos"
-                    @update:model-value="getDistritos(formData.destinatarioProvincia.value)" />
-                </UFormField>
-              </div>
-            </div>
-
-            <!-- Agencia de envío -->
+          <div v-if="currentStep === 3" class="space-y-8">
+            <!-- ¿A quién se envía la carga? -->
             <div class="space-y-4">
+              <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 justify-center py-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white text-center md:text-left">
+                  ¿A quién se envía la carga?
+                </h3>
+                <URadioGroup
+                  orientation="horizontal" variant="list"
+                  :items="tiposDestinatarioItems"
+                  :model-value="formData.tipoDestinatario?.value"
+                  @update:model-value="(value) => formData.tipoDestinatario = tiposDestinatario.find(t => t.value === value) || null"
+                  :disabled="loading"
+                  :ui="{ 
+                    wrapper: 'flex gap-4 md:gap-8 justify-center',
+                    container: 'flex gap-4 md:gap-8',
+                    item: 'mx-1 md:mx-2'
+                  }"
+                />
+              </div>
+            </div>
+
+            <!-- Divider -->
+            <hr class="border-gray-200 dark:border-gray-700">
+
+            <!-- Persona autorizada para recoger la carga -->
+            <div class="space-y-6">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                Persona autorizada para recoger la carga
+              </h3>
+
+              <!-- Información del destinatario -->
+              <div v-if="formData.tipoDestinatario.value === 'PERSONA NATURAL'" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <UFormField label="DNI/ID:" required>
+                    <UInput v-model="formData.destinatarioDni" placeholder="48585858" :disabled="loading"
+                      class="w-full" />
+                  </UFormField>
+
+                  <UFormField label="Nombre completo:" required>
+                    <UInput v-model="formData.destinatarioNombre" placeholder="Miguel Villegas Perez" :disabled="loading"
+                      class="w-full" />
+                  </UFormField>
+                </div>
+
+                <UFormField label="Celular:" required>
+                  <UInput v-model="formData.destinatarioCelular" placeholder="949359599" :disabled="loading"
+                    class="w-full" />
+                </UFormField>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <UFormField label="Departamento:" required>
+                    <USelectMenu v-model="formData.destinatarioDepartamento" placeholder="Selecciona el departamento"
+                      class="w-full" :items="departamentos" :disabled="loadingDepartamentos"
+                      @update:model-value="getProvincias(formData.destinatarioDepartamento.value)" />
+                  </UFormField>
+
+                  <UFormField label="Provincia:" required>
+                    <USelectMenu v-model="formData.destinatarioProvincia" placeholder="Selecciona la provincia"
+                      class="w-full" :items="provincias" :disabled="loadingProvincias"
+                      @update:model-value="getDistritos(formData.destinatarioProvincia.value)" />
+                  </UFormField>
+
+                  <UFormField label="Distrito:" required>
+                    <USelectMenu v-model="formData.destinatarioDistrito" placeholder="Selecciona el distrito"
+                      class="w-full" :items="distritos" :disabled="loadingDistritos"
+                      @update:model-value="getDistritos(formData.destinatarioProvincia.value)" />
+                  </UFormField>
+                </div>
+              </div>
+
+              <!-- Información de EMPRESA -->
+              <div v-else-if="formData.tipoDestinatario.value === 'EMPRESA'" class="space-y-4">
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                  <p class="text-blue-800 dark:text-blue-200 text-sm">
+                    Recuerde que si la carga va a nombre de una EMPRESA el representante legal es quien tiene que recoger
+                    su pedido en la agencia
+                  </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <UFormField label="RUC:" required>
+                    <UInput v-model="formData.destinatarioRuc" placeholder="Ingrese RUC" :disabled="loading"
+                      class="w-full" />
+                  </UFormField>
+
+                  <UFormField label="Razón social:" required>
+                    <UInput v-model="formData.destinatarioRazonSocial" placeholder="Ingrese razón social"
+                      :disabled="loading" class="w-full" />
+                  </UFormField>
+                </div>
+
+                <UFormField label="Celular:" required>
+                  <UInput v-model="formData.destinatarioCelular" placeholder="949359599" :disabled="loading"
+                    class="w-full" />
+                </UFormField>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <UFormField label="Departamento:" required>
+                    <USelectMenu v-model="formData.destinatarioDepartamento" class="w-full" :items="departamentos"
+                      placeholder="Selecciona el departamento" :disabled="loadingDepartamentos"
+                      @update:model-value="getProvincias(formData.destinatarioDepartamento.value)" />
+                  </UFormField>
+
+                  <UFormField label="Provincia:" required>
+                    <USelectMenu v-model="formData.destinatarioProvincia" class="w-full" :items="provincias"
+                      placeholder="Selecciona la provincia" :disabled="loadingProvincias"
+                      @update:model-value="getDistritos(formData.destinatarioProvincia.value)" />
+                  </UFormField>
+
+                  <UFormField label="Distrito:" required>
+                    <USelectMenu v-model="formData.destinatarioDistrito" class="w-full" :items="distritos"
+                      placeholder="Selecciona el distrito" :disabled="loadingDistritos"
+                      @update:model-value="getDistritos(formData.destinatarioProvincia.value)" />
+                  </UFormField>
+                </div>
+              </div>
+            </div>
+
+            <!-- Divider -->
+            <hr class="border-gray-200 dark:border-gray-700">
+
+            <!-- Agencia autorizada para recoger la carga -->
+            <div class="space-y-6">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                Agencia autorizada para recoger la carga
+              </h3>
+
               <UFormField label="Escoge la agencia de envío:" required>
                 <USelectMenu v-model="formData.agenciaEnvio" :items="agencies"
                   placeholder="Selecciona la agencia de envío" :disabled="loading" class="w-full" />
               </UFormField>
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4" v-if="formData.agenciaEnvio?.value == 3">
                 <UFormField label="Nombre de la agencia:" required>
                   <UInput v-model="formData.nombreAgencia" placeholder="" :disabled="loading"
@@ -271,26 +331,50 @@
                 <UFormField label="RUC de la agencia:" required>
                   <UInput v-model="formData.rucAgencia" placeholder="" :disabled="loading" class="w-full" />
                 </UFormField>
+
                 <UFormField label="Dirección de la agencia sede lima:" required>
-                <UInput v-model="formData.direccionAgenciaLima" placeholder=""
-                  :disabled="loading" class="w-full" />
-              </UFormField>
+                  <UInput v-model="formData.direccionAgenciaLima" placeholder=""
+                    :disabled="loading" class="w-full" />
+                </UFormField>
               </div>
 
-          
-
-              <UFormField label="DIRECCIÓN DE LA AGENCIA DE DESTINO (La dirección de la agencia en su provincia):"
-                required>
+              <UFormField label="Dirección de la agencia de destino (La dirección de la agencia en su provincia):" required>
                 <UTextarea v-model="formData.direccionAgenciaDestino" placeholder="Dirección de la agencia en provincia"
-                  :rows="2" :disabled="loading" class="w-full" />
-              </UFormField>
-
-              <UFormField label="SOLO en caso desee envío a domicilio escriba su dirección exacta Aquí:">
-                <UTextarea v-model="formData.direccionDomicilio" placeholder="Dirección exacta para envío a domicilio"
                   :rows="2" :disabled="loading" class="w-full" />
               </UFormField>
             </div>
 
+            <!-- Divider -->
+            <hr class="border-gray-200 dark:border-gray-700">
+
+            <!-- Envío a domicilio -->
+            <div class="space-y-6">
+              <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white text-center md:text-left">
+                  ¿Desea envío a domicilio?
+                </h3>
+                <URadioGroup
+                  orientation="horizontal" variant="list"  
+                  :items="envioADomicilioItems"
+                  :model-value="formData.envioADomicilio.toString()"
+                  @update:model-value="(value) => formData.envioADomicilio = value === 'true'"
+                  :disabled="loading"
+                  :ui="{ 
+                    wrapper: 'flex gap-4 md:gap-8 justify-center md:justify-start',
+                    container: 'flex gap-4 md:gap-8',
+                    item: 'mx-1 md:mx-2'
+                  }"
+                />
+              </div>
+
+              <!-- Campo de dirección domicilio - solo aparece si selecciona "Sí" -->
+              <div v-if="formData.envioADomicilio" class="space-y-4">
+                <UFormField label="Escriba su dirección exacta:" required>
+                  <UTextarea v-model="formData.direccionDomicilio" placeholder="Dirección exacta para envío a domicilio"
+                    :rows="2" :disabled="loading" class="w-full" />
+                </UFormField>
+              </div>
+            </div>
           </div>
 
           <!-- Navigation Buttons -->
@@ -316,17 +400,28 @@
         </form>
       </UCard>
     </div>
+
+    <!-- Modal de éxito - Fuera del contenedor principal -->
+    <SuccessReservationModal 
+      v-if="showSuccessModal && reservationSummary.persona"
+      v-model="showSuccessModal" 
+      :reservation-data="reservationSummary"
+      @generate-new-reservation="handleNewReservation"
+      @go-to-home="handleGoToHome"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, watch } from 'vue'
 import { useOptions } from '~/composables/commons/useOptions'
 import { useDelivery } from '~/composables/clientes/delivery/useDelivery'
 import type { ClientesOptions } from '~/types/clientes/delivery/common'
 import { useLocation } from '~/composables/commons/useLocation'
 import { useSpinner } from '~/composables/commons/useSpinner'
 import { useFormPersistence } from '~/composables/commons/useFormPersistence'
+import SuccessReservationModal from '~/components/commons/SuccessModal.vue'
+import type { RadioGroupItem } from '@nuxt/ui'
 // Composables
 import {useModal} from '~/composables/commons/useModal'
 import {useUserRole} from '~/composables/auth/useUserRole'
@@ -352,10 +447,12 @@ const { saveFormState, loadFormState, clearFormState } = useFormPersistence('pro
 // Estado del formulario
 const currentStep = ref(1)
 const loading = ref(false)
+const showSuccessModal = ref(false)
 
-// Datos del consolidado
-const consolidadoNumber = ref(23)
-const consolidadoRange = ref('25')
+// Watcher para depurar cuándo cambia el estado del modal
+watch(showSuccessModal, (newValue, oldValue) => {
+  console.log(`Modal cambió de ${oldValue} a ${newValue}`)
+}, { immediate: true })
 
 // Configuración de pasos
 const steps = [
@@ -385,7 +482,7 @@ const formData = reactive({
   destinatarioCelular: '',
   destinatarioDepartamento: null,
   destinatarioProvincia: null,
-  destinatarioDistrito: '',
+  destinatarioDistrito: null,
   destinatarioRuc: '',
   destinatarioRazonSocial: '',
   agenciaEnvio: null,
@@ -393,7 +490,8 @@ const formData = reactive({
   rucAgencia: '',
   direccionAgenciaLima: '',
   direccionAgenciaDestino: '',
-  direccionDomicilio: ''
+  direccionDomicilio: '',
+  envioADomicilio: false
 })
 
 // Opciones para selects
@@ -407,6 +505,19 @@ const tiposDestinatario = [
   { label: 'Persona natural', value: 'PERSONA NATURAL' },
   { label: 'Empresa', value: 'EMPRESA' }
 ]
+
+// Opciones para URadioGroup
+const tiposDestinatarioItems = ref<RadioGroupItem[]>(
+  tiposDestinatario.map(tipo => ({
+    value: tipo.value,
+    label: tipo.label
+  }))
+)
+
+const envioADomicilioItems = ref<RadioGroupItem[]>([
+  { value: 'false', label: 'No' },
+  { value: 'true', label: 'Sí' }
+])
 
 
 
@@ -436,7 +547,8 @@ const canProceedToNextStep = computed(() => {
      ((formData.agenciaEnvio && formData.agenciaEnvio?.value == 3) && 
        (formData.nombreAgencia && formData.rucAgencia && formData.direccionAgenciaLima)) ||((
         formData.agenciaEnvio && formData.agenciaEnvio.value != 3)) &&
-        formData.direccionAgenciaDestino
+        formData.direccionAgenciaDestino &&
+        (!formData.envioADomicilio || formData.direccionDomicilio)
     default:
       return false
   }
@@ -498,6 +610,39 @@ const canNavigateToStep = (stepNumber: number) => {
   return false
 }
 
+// Computed para el resumen de la reserva (para el modal)
+const reservationSummary = computed(() => ({
+  fecha: '', // Provincia no maneja fechas específicas como Lima
+  hora: '', // Provincia no maneja horarios específicos como Lima
+  persona: formData.destinatarioNombre || formData.destinatarioRazonSocial || '',
+  dni: formData.destinatarioDni || formData.destinatarioRuc || '',
+  agencia: formData.agenciaEnvio?.label || '',
+  provincia: formData.destinatarioProvincia?.label || '',
+  distrito: formData.destinatarioDistrito?.label || '',
+  tipoComprobante: formData.tipoComprobante?.label || '',
+  importador: formData.importador?.label || ''
+}))
+
+// Funciones del modal
+const handleNewReservation = () => {
+  // Resetear formulario y volver al paso 1
+  resetForm()
+  currentStep.value = 1
+  showSuccessModal.value = false
+  // Limpiar estado guardado
+  clearFormState()
+  // Scroll hacia arriba
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const handleGoToHome = () => {
+  // Cerrar modal y navegar al home
+  showSuccessModal.value = false
+  // Limpiar estado guardado
+  clearFormState()
+  navigateTo('/')
+}
+
 // Manejo del formulario
 const handleSubmit = () => {
   if (currentStep.value < 3) {
@@ -523,11 +668,8 @@ const finalizarFormulario = async () => {
         }
         const response = await saveDeliveryProvincia(data)
         if (response.success) {
-          showSuccess('Guardado exitosamente', 'Los datos se han guardado correctamente')
-          // Limpiar estado del localStorage al enviar exitosamente
-          clearFormState()
-          resetForm()
-          navigateTo(`/`)
+          // Mostrar modal de éxito en lugar de navegar directamente
+          showSuccessModal.value = true
         
         } else {
           showError('Error al guardar', response.error || 'Error al guardar los datos')
@@ -571,7 +713,7 @@ const resetForm = () => {
     destinatarioCelular: '',
     destinatarioDepartamento: null,
     destinatarioProvincia: null,
-    destinatarioDistrito: '',
+    destinatarioDistrito: null,
     destinatarioRuc: '',
     destinatarioRazonSocial: '',
     agenciaEnvio: null,
@@ -579,7 +721,8 @@ const resetForm = () => {
     rucAgencia: '',
     direccionAgenciaLima: '',
     direccionAgenciaDestino: '',
-    direccionDomicilio: ''
+    direccionDomicilio: '',
+    envioADomicilio: false
   })
 }
 

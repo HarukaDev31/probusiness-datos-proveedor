@@ -25,7 +25,6 @@ import { journeySeeder } from "../../../helpers/datatable-seeder"
 import type { TableColumn } from '@nuxt/ui'
 import { USelect, UBadge, UButton } from '#components'
 import { useTrayecto } from '~/composables/clientes/importaciones/useTrayecto'
-import { format } from 'path'
 const { trayectos, loading, error, pagination, search, getTrayectos } = useTrayecto()
 const NuxtLink = resolveComponent('NuxtLink')
 const UIcon = resolveComponent('UIcon')
@@ -34,7 +33,7 @@ const customers = ref([] as ContainerJourney[])
 const isLoading = ref(false)
 
 // Configuración de columnas para NuxtUI DataTable
-const tableColumns: ref<TableColumn<any>[]> = ref([
+const tableColumns = ref<TableColumn<any>[]>([
   {
     accessorKey: 'carga',
     header: 'Carga',

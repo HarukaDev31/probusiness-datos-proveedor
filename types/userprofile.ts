@@ -9,6 +9,8 @@ export interface UserProfile{
     fechaNacimiento:string,
     country:string,
     city?:number,
+    department?:number,
+    district?:number,
     phone?:string,
     business?:UserBusiness,   
     importedAmount:number,

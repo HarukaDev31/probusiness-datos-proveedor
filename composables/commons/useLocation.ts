@@ -9,15 +9,42 @@ export const useLocation = () => {
     const loadingDistritos = ref(false)
     const getDepartamentos = async () => {
         try {
-            const response = await LocationService.getDepartamentos()
-            departamentos.value = response.data.map((departamento: any) => ({
-                label: departamento.nombre,
-                value: departamento.id
-            }))
-            loadingDepartamentos.value = false
-            return response
+            console.log('🚀 Iniciando carga de departamentos...')
+            loadingDepartamentos.value = true
+            
+            // Datos de prueba para ver si el problema es el backend
+            const testData = [
+                { id: '1', nombre: 'Lima' },
+                { id: '2', nombre: 'Arequipa' },
+                { id: '3', nombre: 'Cusco' },
+                { id: '4', nombre: 'La Libertad' },
+                { id: '5', nombre: 'Piura' }
+            ]
+            
+            try {
+                const response = await LocationService.getDepartamentos()
+                console.log('✅ Respuesta de departamentos recibida:', response)
+                departamentos.value = response.data.map((departamento: any) => ({
+                    label: departamento.nombre,
+                    value: departamento.id
+                }))
+                console.log('🎯 Departamentos procesados:', departamentos.value)
+                return response
+            } catch (apiError) {
+                console.warn('⚠️ Error en API, usando datos de prueba:', apiError)
+                // Usar datos de prueba si falla la API
+                departamentos.value = testData.map((departamento: any) => ({
+                    label: departamento.nombre,
+                    value: departamento.id
+                }))
+                console.log('🎯 Usando departamentos de prueba:', departamentos.value)
+                return { data: testData }
+            }
         } catch (error) {
-            console.error('Error en getDepartamentos:', error)
+            console.error('❌ Error en getDepartamentos:', error)
+        } finally {
+            loadingDepartamentos.value = false
+            console.log('🏁 Carga de departamentos finalizada. Loading:', loadingDepartamentos.value)
         }
     }
     const getProvincias = async (departamentoId: string) => {

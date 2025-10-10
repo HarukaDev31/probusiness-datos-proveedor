@@ -50,17 +50,17 @@
 
             <!-- Horarios Disponibles -->
             <div v-if="selectedDate && availableTimeSlotsForSelectedDate.length > 0"
-              class="space-y-2 grid grid-cols-1 scrollbar-hide" style="max-height: 40vh; overflow-y: auto;">
+              class="gap-3 md:gap-2 grid grid-cols-2">
               <button v-for="timeSlot in availableTimeSlotsForSelectedDate" :key="timeSlot.range_id"
                 @click="selectTimeSlot(timeSlot)" :class="[
-                  'w-full py-2 md:py-1 px-3 md:px-2 rounded-lg font-medium transition-all duration-200 h-12 md:h-10 flex flex-col justify-center',
+                  'w-full py-3 md:py-1 px-2 md:px-2 rounded-lg font-medium transition-all duration-200 h-14 md:h-10 flex flex-col justify-center text-center',
                   selectedTimeSlot?.range_id === timeSlot.range_id
                     ? 'bg-primary-600 hover:bg-primary-700 text-white hover:text-white'
                     : 'bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-500'
                 ]">
-                <div class="text-sm font-semibold flex-row items-center justify-center">
-                  <div>
-                    {{ formatTimeToAMPM(timeSlot.start_time) }} -{{ formatTimeToAMPM(timeSlot.end_time) }}
+                <div class="text-[10px] md:text-sm font-semibold">
+                  <div class="leading-tight">
+                    {{ formatTimeToAMPM(timeSlot.start_time) }} - {{ formatTimeToAMPM(timeSlot.end_time) }}
                   </div>
                   
                 </div>
@@ -89,8 +89,9 @@
               Confirmar Recogida
             </UButton> -->
           </div>
-
-          <!-- Resumen de la Cita -->
+        </div>
+      </div>
+      <!-- Resumen de la Cita -->
           <div v-if="selectedDate && selectedTimeSlot" class="rounded-lg p-4 md:p-6" ref="resumenSection">
             <h4 class="text-base md:text-lg font-semibold mb-4">
               Resumen de tu recogida
@@ -120,8 +121,6 @@
 
             </div>
           </div>
-        </div>
-      </div>
     </div>
   </UCard>
 </template>

@@ -91,23 +91,32 @@
       <div class="text-center mb-8">
         <!-- Mensaje de información importante -->
         <div v-if="currentStep === 1" class="max-w-4xl mx-auto">
-          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+          <div class="bg-yellow-50 dark:bg-yellow-800 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 mb-6">
             <div class="flex items-start">
               <div class="flex-shrink-0">
                 <UIcon name="i-heroicons-information-circle" class="h-5 w-5 text-yellow-600" />
               </div>
               <div class="ml-3">
-                <p class="text-sm text-yellow-800">
+                <p class="text-sm text-yellow-800 dark:text-yellow-100">
                   <strong>Los datos que ingreses en este formulario son totalmente confidenciales.</strong> ProBusiness los utilizará únicamente para fines internos y la gestión de tu pedido, no serán compartidos ni divulgados públicamente.
                 </p>
               </div>
             </div>
           </div>
         </div>
-       <div v-else-if="currentStep === 3">
-        <p class="text-gray-600 dark:text-gray-300">
-          Si aún no cuenta con la información dar en continuar
-        </p>
+       <div v-else-if="currentStep === 3" class="max-w-4xl mx-auto">
+        <div class="bg-yellow-50 dark:bg-yellow-800 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 mb-6">
+            <div class="flex items-center justify-center">
+              <div class="flex-shrink-0">
+                <UIcon name="i-heroicons-information-circle" class="h-5 w-5 text-yellow-600" />
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-yellow-800 dark:text-yellow-100 text-center">
+                  Completa la información del chofer al que se le entregará el pedido, <strong>si aún no cuenta con la información dar en continuar.</strong>
+                </p>
+              </div>
+            </div>
+          </div>
        </div>
       </div>
 
@@ -269,6 +278,15 @@
       </UCard>
 
     </div>
+
+    <!-- Modal de éxito - Fuera del contenedor principal -->
+    <SuccessReservationModal 
+      v-if="showSuccessModal && reservationSummary.persona"
+      v-model="showSuccessModal" 
+      :reservation-data="reservationSummary"
+      @generate-new-reservation="handleNewReservation"
+      @go-to-home="handleGoToHome"
+    />
   </div>
 </template>
 
@@ -276,6 +294,7 @@
 import { ref, computed, reactive } from 'vue'
 import { useModal } from '~/composables/commons/useModal'
 import AppointmentScheduler from '~/components/commons/AppointmentScheduler.vue'
+import SuccessReservationModal from '~/components/commons/SuccessModal.vue'
 import { useDelivery } from '~/composables/clientes/delivery/useDelivery'
 import type { ClientesOptions } from '~/types/clientes/delivery/common'
 import { useLocation } from '~/composables/commons/useLocation'
@@ -309,6 +328,12 @@ const { saveFormState, loadFormState, clearFormState } = useFormPersistence('lim
 // Estado del formulario
 const currentStep = ref(1)
 const loading = ref(false)
+const showSuccessModal = ref(false)
+
+// Watcher para depurar cuándo cambia el estado del modal
+watch(showSuccessModal, (newValue, oldValue) => {
+  console.log(`Modal cambió de ${oldValue} a ${newValue}`)
+}, { immediate: true })
 
 
 // Configuración de pasos
@@ -381,11 +406,64 @@ const canProceedToNextStep = computed(() => {
   }
 })
 
+// Computed para el resumen de la reserva
+const reservationSummary = computed(() => {
+  // Función para formatear hora a formato AM/PM
+  const formatTimeToAMPM = (time24: string): string => {
+    if (!time24) return ''
+    const [hours, minutes] = time24.split(':')
+    const hour24 = parseInt(hours, 10)
+    const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24
+    const ampm = hour24 >= 12 ? 'PM' : 'AM'
+    return `${hour12}:${minutes} ${ampm}`
+  }
+
+  // Función para formatear fecha
+  const formatSelectedDate = (date: Date | null | string): string => {
+    if (!date) return ''
+    
+    // Si es una cadena, intentar convertirla a Date
+    let dateObj: Date
+    if (typeof date === 'string') {
+      dateObj = new Date(date)
+      // Verificar si la conversión fue exitosa
+      if (isNaN(dateObj.getTime())) return date // Retornar la cadena original si no se puede convertir
+    } else if (date instanceof Date) {
+      dateObj = date
+    } else {
+      return '' // Si no es Date ni string, retornar vacío
+    }
+    
+    const day = dateObj.getDate()
+    const months = [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ]
+    const month = months[dateObj.getMonth()]
+    const year = dateObj.getFullYear()
+    return `${day} de ${month} de ${year}`
+  }
+
+  return {
+    fecha: formatSelectedDate(formData.fechaEntrega),
+    hora: formData.horarioSeleccionado && formData.horarioSeleccionado.start_time && formData.horarioSeleccionado.end_time
+      ? `${formatTimeToAMPM(formData.horarioSeleccionado.start_time)} - ${formatTimeToAMPM(formData.horarioSeleccionado.end_time)}`
+      : '',
+    persona: formData.nombreCompleto || '',
+    dni: formData.dni || '',
+    distrito: formData.distritoDestino?.toString() || '',
+    tipoComprobante: String(typeof formData.tipoComprobante === 'object' && formData.tipoComprobante ? formData.tipoComprobante.label : formData.tipoComprobante || ''),
+    importador: String(typeof formData.importador === 'object' && formData.importador ? formData.importador.label : formData.importador || '')
+  }
+})
+
 // Navegación entre pasos
 const nextStep = () => {
   console.log(canProceedToNextStep.value, "waos")
   if (currentStep.value < 4 && canProceedToNextStep.value) {
     currentStep.value++
+    // Asegurar que el modal esté cerrado al cambiar de paso
+    showSuccessModal.value = false
     // Guardar estado después de cambiar de paso
     saveFormState(formData, currentStep.value)
   }
@@ -394,6 +472,8 @@ const nextStep = () => {
 const previousStep = () => {
   if (currentStep.value > 1) {
     currentStep.value--
+    // Asegurar que el modal esté cerrado al cambiar de paso
+    showSuccessModal.value = false
     // Guardar estado después de cambiar de paso
     saveFormState(formData, currentStep.value)
   }
@@ -403,6 +483,8 @@ const previousStep = () => {
 const goToStep = (stepNumber: number) => {
   if (canNavigateToStep(stepNumber)) {
     currentStep.value = stepNumber
+    // Asegurar que el modal esté cerrado al navegar a un paso
+    showSuccessModal.value = false
     // Guardar estado después de cambiar de paso
     saveFormState(formData, currentStep.value)
   }
@@ -463,6 +545,8 @@ const canNavigateToStep = (stepNumber: number) => {
 const handleDateSelected = (date: Date | null, timeSlot: any) => {
   formData.fechaEntrega = date
   formData.horarioSeleccionado = timeSlot
+  // Asegurar que el modal esté cerrado al seleccionar fecha/horario
+  showSuccessModal.value = false
   // Guardar estado cuando se selecciona fecha/horario
   saveFormState(formData, currentStep.value)
 }
@@ -486,18 +570,17 @@ const finalizarReserva = async () => {
           tipoComprobante: formData.tipoComprobante.value,
           fechaEntrega: formData.fechaEntrega,
           horarioSeleccionado: formData.horarioSeleccionado,
-          distritoDestino: formData.distritoDestino.label
+          distritoDestino: formData.distritoDestino || ''
         }
         
         const response = await saveDeliveryLima(data)
         console.log(response, "response")
         if (response.success) {
-          console.log("exitosamente")
-          showSuccess('Guardado exitosamente', 'Los datos se han guardado correctamente')
+          console.log("exitosamente - mostrando modal")
+          // Mostrar modal de éxito en lugar del toast
+          showSuccessModal.value = true
           // Limpiar estado del localStorage al enviar exitosamente
           clearFormState()
-          resetForm()
-          navigateTo(`/`)
         } else {
           showError('Error al guardar', response.error || 'Error al guardar los datos')
         }
@@ -547,6 +630,19 @@ const resetForm = () => {
   })
 }
 
+// Función para manejar nueva reserva desde el modal
+const handleNewReservation = () => {
+  resetForm()
+  // Navegar al inicio después de resetear el formulario
+  navigateTo('/')
+}
+
+// Función para manejar volver al home desde el modal
+const handleGoToHome = () => {
+  // Solo navegar al home sin resetear el formulario
+  navigateTo('/')
+}
+
 // Actualizar datos del consolidado
 watch(() => formData.tipoComprobante, (newValue) => {
   if (newValue.value === 'BOLETA') {
@@ -558,6 +654,9 @@ watch(() => formData.tipoComprobante, (newValue) => {
   }
 })
 onMounted(async () => {
+  // Asegurar que el modal esté cerrado al montar el componente
+  showSuccessModal.value = false
+  
   // Cargar datos del servidor
   await getDeliveryByConsolidadoId(Number(consolidadoId))
   await getHorariosDisponibles(Number(consolidadoId))

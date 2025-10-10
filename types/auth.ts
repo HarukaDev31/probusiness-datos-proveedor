@@ -35,6 +35,9 @@ export interface RegisterCredentials {
   dni: string
   fechaNacimiento: string
   medioEncontrado: string
+  departamento?: number
+  provincia?: number
+  distrito?: number
 }
 
 export interface RegisterResponse {
