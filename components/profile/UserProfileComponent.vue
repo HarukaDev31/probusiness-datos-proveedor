@@ -415,23 +415,45 @@ const saveGoals = async () => {
     try {
         await withSpinner(async () => {
             try {
-                // Incluir email y otros campos esenciales junto con goals
+                // Enviar todos los datos del formulario para evitar que se borren campos
                 const updateData = {
                     goals: profileForm.value.goals || '',
                     email: profileForm.value.email || userData.value.email || '',
-                    fullName: profileForm.value.fullName || userData.value.name || ''
+                    fullName: profileForm.value.fullName || userData.value.name || '',
+                    phone: profileForm.value.phone || userData.value.phone || '',
+                    documentNumber: profileForm.value.documentNumber || userData.value.dni || '',
+                    fechaNacimiento: profileForm.value.fechaNacimiento || userData.value.fechaNacimiento || '',
+                    country: (profileForm.value.country || parseInt(userData.value.country) || null)?.toString() || userData.value.country || '',
+                    city: profileForm.value.city || parseInt(userData.value.city) || null
                 };
                 
-                console.log('🔍 Debug GOALS - Datos a enviar:', updateData);
+                // Limpiar campos null/undefined pero mantener strings vacíos para campos importantes
+                Object.keys(updateData).forEach(key => {
+                    if (updateData[key] === null || updateData[key] === undefined) {
+                        delete updateData[key];
+                    }
+                    // Solo eliminar strings vacíos para campos no críticos
+                    if (updateData[key] === '' && !['email', 'fullName', 'phone', 'goals'].includes(key)) {
+                        delete updateData[key];
+                    }
+                });
+                
+                console.log('🔍 Debug GOALS - Datos completos a enviar:', updateData);
                 
                 const response = await updateProfile(updateData);
                 if (response.success) {
                     showSuccess('Metas actualizadas exitosamente', 'Las metas se han actualizado correctamente')
                     
-                    // Actualizar localStorage
+                    // Actualizar localStorage con la respuesta del servidor
                     const authUser = localStorage.getItem('auth_user');
                     const authUserJson = JSON.parse(authUser || '{}');
-                    authUserJson.goals = profileForm.value.goals;
+                    authUserJson.goals = response.user.goals || profileForm.value.goals;
+                    authUserJson.email = response.user.email || authUserJson.email;
+                    authUserJson.name = response.user.name || authUserJson.name;
+                    authUserJson.phone = response.user.phone || authUserJson.phone;
+                    authUserJson.fechaNacimiento = response.user.fechaNacimiento || authUserJson.fechaNacimiento;
+                    authUserJson.country = response.user.country || authUserJson.country;
+                    authUserJson.city = response.user.city || authUserJson.city;
                     localStorage.setItem('auth_user', JSON.stringify(authUserJson));
                     userData.value = authUserJson;
                     
