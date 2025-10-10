@@ -208,11 +208,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Departamento -->
                     <div>
-                        <label class="block text-gray-600 mb-1" for="departamento">Departamento <span class="text-red-500">*</span></label>
+                        <label class="block text-gray-600 mb-1" for="departamento">Depart. <span class="text-red-500">*</span></label>
                         <USelect 
                             id="departamento"
                             v-model="registerData.departamento" 
-                            :options="departamentos"
+                            :items="departamentos"
                             placeholder="Selecciona departamento"
                             :disabled="loadingDepartamentos"
                             :class="{ 'border-red-500': fieldErrors.departamento }"
@@ -228,7 +228,7 @@
                         <USelect 
                             id="provincia"
                             v-model="registerData.provincia" 
-                            :options="provincias"
+                            :items="provincias"
                             placeholder="Selecciona provincia"
                             :disabled="loadingProvincias || !registerData.departamento"
                             :class="{ 'border-red-500': fieldErrors.provincia }"
@@ -244,7 +244,7 @@
                         <USelect 
                             id="distrito"
                             v-model="registerData.distrito" 
-                            :options="distritos"
+                            :items="distritos"
                             placeholder="Selecciona distrito"
                             :disabled="loadingDistritos || !registerData.provincia"
                             :class="{ 'border-red-500': fieldErrors.distrito }"
@@ -261,7 +261,7 @@
                     <USelect 
                         id="medioEncontrado"
                         v-model="registerData.medioEncontrado"
-                        :options="medioEncontradoOptions"
+                        :items="medioEncontradoOptions"
                         class="w-full"
                         :class="{ 'border-red-500': fieldErrors.medioEncontrado }"
                         placeholder="Selecciona una opción"
