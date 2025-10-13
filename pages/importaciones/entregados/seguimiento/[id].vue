@@ -19,12 +19,12 @@
         <ShipTracker :progress="progress" v-else />
       </div>
       
-      <!-- Timeline - Horizontal en móvil y tablet, vertical en desktop -->
+      <!-- Timeline - Siempre vertical -->
       <div class="w-full lg:w-1/2 mt-4 lg:mt-0">
         <CommonsTimeLineComponent 
           v-if="!isLoadingTimeline" 
           :events="seguimientos" 
-          :orientation="timelineOrientation"
+          orientation="vertical"
           class="w-full"
         />
         <CommonsTimeLineSkeleton v-else class="w-full min-h-48 lg:min-h-screen" />
@@ -53,39 +53,14 @@ const progress = ref(0);
 const isLoadingShipTracker = ref(true);
 const isLoadingTimeline = ref(true);
 
-// Detectar orientación del timeline basada en el tamaño de pantalla
-const timelineOrientation = ref<'vertical' | 'horizontal'>('vertical');
-
-// Función para actualizar orientación basada en el tamaño de pantalla
-const updateTimelineOrientation = () => {
-  if (process.client) {
-    timelineOrientation.value = window.innerWidth < 1024 ? 'horizontal' : 'vertical';
-  }
-};
-
 onMounted(async () => {
   isLoadingShipTracker.value = true;
   isLoadingTimeline.value = true;
-  
-  // Configurar orientación inicial
-  updateTimelineOrientation();
-  
-  // Agregar listener para cambios de tamaño
-  if (process.client) {
-    window.addEventListener('resize', updateTimelineOrientation);
-  }
   
   await getSeguimiento(uuid as string)
   isLoadingShipTracker.value = false; 
   isLoadingTimeline.value = false;
   progress.value = (seguimientos.value.filter((event) => event.status === 'COMPLETADO').length / (6)) * 100
-});
-
-// Cleanup
-onUnmounted(() => {
-  if (process.client) {
-    window.removeEventListener('resize', updateTimelineOrientation);
-  }
 });
 
 useHead({

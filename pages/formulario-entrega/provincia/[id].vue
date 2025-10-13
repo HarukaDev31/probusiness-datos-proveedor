@@ -150,7 +150,7 @@
             
 
             <!-- Boleta -->
-            <div v-if="formData.tipoComprobante.value === 'boleta'" class="space-y-4">
+            <div v-if="formData.tipoComprobante && formData.tipoComprobante.value === 'boleta'" class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UFormField label="DNI:" required>
                   <UInput v-model="formData.clienteDni" placeholder="" :disabled="loading" class="w-full" />
@@ -169,7 +169,7 @@
             </div>
 
             <!-- Factura -->
-            <div v-else-if="formData.tipoComprobante.value === 'factura'" class="space-y-4">
+            <div v-else-if="formData.tipoComprobante && formData.tipoComprobante.value === 'factura'" class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UFormField label="RUC:" required>
                   <UInput v-model="formData.clienteRuc" placeholder="Ingrese RUC" :disabled="loading" class="w-full" />
@@ -728,14 +728,14 @@ const resetForm = () => {
 
 // Actualizar datos del consolidado
 watch(() => formData.tipoComprobante, (newValue) => {
-  if (newValue.value === 'boleta') {
+  if (newValue && newValue.value === 'boleta') {
     // Pre-llenar datos para boleta
-    formData.clienteDni = ''
-    formData.clienteNombre = ''
-  } else if (newValue.value === 'factura') {
+    formData.clienteDni = userData.value?.dni || ''
+    formData.clienteNombre = userData.value?.name || ''
+  } else if (newValue && newValue.value === 'factura') {
     // Pre-llenar datos para factura
-    formData.clienteRuc = ''
-    formData.clienteRazonSocial = ''
+    formData.clienteRuc = userData.value?.empresa?.ruc || ''
+    formData.clienteRazonSocial = userData.value?.empresa?.name || ''
   }
 })
 

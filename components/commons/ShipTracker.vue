@@ -23,7 +23,6 @@
               stroke-width="3"
               stroke-dasharray="10,10"
               class="drop-shadow-md"
-              vector-effect="non-scaling-stroke"
             />
             
             <!-- Origin Marker -->

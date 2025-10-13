@@ -3,9 +3,18 @@
         <h1 class="text-lg md:text-xl font-medium text-onix-pro">Mi cuenta</h1>
     </div>
 
-    <div class="user-profile">
+    <div class="user-profile-container">
+        <div class="user-profile">
         <!-- Información Personal -->
-        <UCard class="profile-header flex" style="grid-area: profile-header;" :key="formKey">
+        <UCard 
+            class="profile-header flex" 
+            style="grid-area: profile-header;" 
+            :key="formKey"
+            :ui="{ 
+                root: 'w-full',
+                body: 'w-full'
+            }"
+        >
             <div class="edit-header flex flex-row w-full justify-end items-end">
                 <UButton variant="ghost" @click="toggleEditProfile"
                     :icon="isEditingProfile ? 'i-heroicons-x-mark' : 'i-heroicons-pencil'"
@@ -77,14 +86,28 @@
         </UCard>
 
         <!-- Estadísticas -->
-        <UCard class=" profile-stats" style="grid-area: profile-stats;">
+        <UCard 
+            class="profile-stats" 
+            style="grid-area: profile-stats;"
+            :ui="{ 
+                root: 'w-full',
+                body: 'w-full'
+            }"
+        >
             <h3>Monto Importado</h3>
             <p class="text-7xl font-bold">{{ formatCurrency(userProfile.importedAmount || 0) }}</p>
             <p>de {{ userProfile.importedContainers || 0 }} importaciones realizadas con éxito</p>
         </UCard>
 
         <!-- Información de la Empresa -->
-        <UCard class=" business-details" style="grid-area: business-details;">
+        <UCard 
+            class="business-details" 
+            style="grid-area: business-details;"
+            :ui="{ 
+                root: 'w-full',
+                body: 'w-full sm:p-4'
+            }"
+        >
             <div class="flex flex-row gap-2 items-center justify-between mb-4">
                 <div class="flex flex-row gap-1">
                     <h3>Mi empresa</h3>
@@ -127,7 +150,14 @@
 
 
         <!-- Metas -->
-        <UCard class=" profile-goals" style="grid-area: profile-goals;">
+        <UCard 
+            class="profile-goals" 
+            style="grid-area: profile-goals;"
+            :ui="{ 
+                root: 'w-full',
+                body: 'w-full'
+            }"
+        >
             <div class="flex flex-row gap-2 items-center justify-between mb-4">
                 <div class="flex flex-row gap-2 items-center">
                     <h3>Mis metas</h3>
@@ -147,6 +177,7 @@
                 Guardar
             </UButton>
         </UCard>
+        </div>
     </div>
 </template>
 <script setup lang="ts">
@@ -536,15 +567,41 @@ onUnmounted(() => {
     width: 100%;
 }
 
+.user-profile-container {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: auto;
+    padding: 0;
+}
+
 .user-profile {
     display: grid;
     grid-template-areas:
         "profile-header profile-stats profile-goals"
         "profile-header business-details profile-goals";
-    grid-template-columns: 1fr 2fr 1fr;
-    grid-template-rows: auto auto auto;
+    grid-template-columns: 1fr 1.5fr 1fr;
+    grid-template-rows: auto auto;
     gap: 1.5rem;
-    padding: 1.5rem;
+    padding: 2rem;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* Pantallas grandes - ajuste para mejor distribución */
+@media (min-width: 1400px) {
+    .user-profile {
+        grid-template-columns: 1fr 2fr 1.2fr;
+        padding: 2.5rem;
+    }
+}
+
+/* Tablet grande - 3 columnas más equilibradas */
+@media (max-width: 1280px) {
+    .user-profile {
+        grid-template-columns: 1fr 1.3fr 1fr;
+        padding: 1.5rem;
+        gap: 1rem;
+    }
 }
 
 
@@ -561,6 +618,21 @@ onUnmounted(() => {
     }
 }
 
+/* Tablet pequeño */
+@media (max-width: 900px) {
+    .user-profile {
+        grid-template-areas:
+            "profile-header"
+            "profile-stats"
+            "business-details"
+            "profile-goals";
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, auto);
+        gap: 1rem;
+        padding: 1rem;
+    }
+}
+
 /* Mobile - 1 columna */
 @media (max-width: 768px) {
     .user-profile {
@@ -570,7 +642,7 @@ onUnmounted(() => {
             "business-details"
             "profile-goals";
         grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto auto;
+        grid-template-rows: repeat(4, auto);
         gap: 1rem;
         padding: 1rem;
     }
@@ -583,6 +655,8 @@ onUnmounted(() => {
     height: auto;
     display: flex;
     flex-direction: column;
+    min-height: fit-content;
+    width: 100%;
 }
 
 /* Responsive para profile-header */
@@ -590,6 +664,7 @@ onUnmounted(() => {
     .profile-header {
         align-items: center;
         text-align: center;
+        min-height: auto;
     }
 }
 
@@ -599,9 +674,18 @@ onUnmounted(() => {
     justify-content: center;
     align-items: center;
     text-align: center;
+    padding: 1.5rem;
+    min-height: fit-content;
+    width: 100%;
 }
 
 /* Responsive para profile-stats */
+@media (max-width: 1024px) {
+    .profile-stats .text-7xl {
+        font-size: 4rem;
+    }
+}
+
 @media (max-width: 768px) {
     .profile-stats {
         padding: 1rem;
@@ -621,20 +705,32 @@ onUnmounted(() => {
 .profile-goals {
     display: flex;
     flex-direction: column;
-    padding: 5%;
+    padding: 1.5rem;
+    height: fit-content;
+    width: 100%;
+}
+
+.profile-goals {
+    max-width: 100%;
+    min-width: 0; /* Permite que se contraiga más */
 }
 
 /* Responsive para business-details y profile-goals */
-@media (max-width: 1024px) {
-
+@media (max-width: 1280px) {
     .business-details,
     .profile-goals {
-        padding: 3%;
+        padding: 1.2rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .business-details,
+    .profile-goals {
+        padding: 1rem;
     }
 }
 
 @media (max-width: 768px) {
-
     .business-details,
     .profile-goals {
         padding: 1rem;
