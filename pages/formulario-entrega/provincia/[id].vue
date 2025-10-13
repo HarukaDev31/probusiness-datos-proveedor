@@ -18,8 +18,7 @@
        </div>
        <div v-else-if="currentStep === 3">
         <p class="text-gray-600 dark:text-gray-300">
-          Ahora necesitamos los datos del destinatario para entregar tu pedido, si aún no cuenta con la información dar
-          en continuar
+          Ahora necesitamos los datos del destinatario para entregar tu pedido.
         </p>
        </div>
        <div v-else-if="currentStep === 4">
@@ -104,20 +103,6 @@
             </div>
           </div>
         </div>
-       <div v-else-if="currentStep === 3" class="max-w-4xl mx-auto">
-        <div class="bg-yellow-50 dark:bg-yellow-800 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 mb-6">
-            <div class="flex items-center justify-center">
-              <div class="flex-shrink-0">
-                <UIcon name="i-heroicons-information-circle" class="h-5 w-5 text-yellow-600" />
-              </div>
-              <div class="ml-3">
-                <p class="text-sm text-yellow-800 dark:text-yellow-100 text-center">
-                  Completa la información de la agencia de envío y a quién se le entregara, <strong>esta información es importante para la correcta entrega de tu pedido.</strong>
-                </p>
-              </div>
-            </div>
-          </div>
-       </div>
       </div>
       <!-- Form Container -->
       <UCard class="max-w-4xl mx-auto">
