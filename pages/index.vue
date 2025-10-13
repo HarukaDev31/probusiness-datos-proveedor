@@ -4,7 +4,7 @@
     <div class="w-full px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-8">
       <div class="w-full mx-auto">
         <div
-          class="bg-cover bg-center bg-no-repeat w-full h-[400px] sm:h-[280px] lg:h-[320px] rounded-2xl flex justify-start items-center relative shadow-lg overflow-visible"
+          class="bg-cover bg-center bg-no-repeat w-full h-[250px] xs:h-[200px] sm:h-[200px] lg:h-[420px] rounded-2xl flex justify-start items-center relative shadow-lg overflow-hidden lg:overflow-visible"
           style="background-image: url('/assets/img/home.png')"
         >
           <div class="absolute inset-0 bg-gradient-to-r from-blue-300/78 to-blue-300/40 rounded-2xl"></div>
@@ -12,7 +12,7 @@
             ¡Bienvenido a la comunidad de importadores!
           </h1>
           <img
-            class="absolute bottom-0 right-0 h-[450px] object-contain object-right-bottom"
+            class="absolute bottom-0 right-[-20%] h-[200px]  sm:right-[-15%] sm:h-[380px] lg:right-0 lg:h-[480px] object-right-bottom"
             src="/assets/img/home_sincielo.png"
             alt="Hero Image"
           />
