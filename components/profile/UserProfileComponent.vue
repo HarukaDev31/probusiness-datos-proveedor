@@ -52,7 +52,7 @@
                         <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{
                             userData.province || userData.city || '-'}}
                         </span>
-                        <USelect v-else v-model="profileForm.city" class="edit-input w-full sm:w-40"
+                        <USelectMenu  v-else v-model="profileForm.city" class="edit-input w-full sm:w-40"
                             :items="provincias" placeholder="Seleccionar ciudad" />
                     </p>
                     <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
@@ -541,20 +541,20 @@ onUnmounted(() => {
     grid-template-areas:
         "profile-header profile-stats profile-goals"
         "profile-header business-details profile-goals";
-    grid-template-columns: 1.2fr 2fr 2fr;
+    grid-template-columns: 1fr 2fr 1fr;
     grid-template-rows: auto auto auto;
     gap: 1.5rem;
-    padding: 2rem;
+    padding: 1.5rem;
 }
 
+
 /* Tablet - 2 columnas */
-@media (max-width: 1024px) {
+@media (max-width: 1440px) {
     .user-profile {
         grid-template-areas:
-            "profile-header profile-stats"
-            "profile-header business-details"
-            "profile-goals profile-goals";
-        grid-template-columns: 1fr 1fr;
+        "profile-header profile-stats profile-goals"
+        "profile-header business-details profile-goals";
+        grid-template-columns: 1.2fr 1.2fr 1fr;
         grid-template-rows: auto auto auto;
         gap: 1rem;
         padding: 1.5rem;

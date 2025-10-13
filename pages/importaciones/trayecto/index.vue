@@ -15,6 +15,8 @@
       show-pagination
       show-bottom-section
       show-top-section
+      @page-change="handlePageChange"
+      @items-per-page-change="handleItemsPerPageChange"
     />
   </div>
 </template>
@@ -119,9 +121,21 @@ const formatDate = (dateString: string) => {
   })
 }
 
+// Manejar cambio de página
+const handlePageChange = async (page: number) => {
+  pagination.value.current_page = page
+  await getTrayectos()
+}
+
+// Manejar cambio de items por página
+const handleItemsPerPageChange = async (itemsPerPage: number) => {
+  pagination.value.per_page = itemsPerPage
+  pagination.value.current_page = 1 // Resetear a la primera página
+  await getTrayectos()
+}
+
 onMounted(() => {
   getTrayectos()
-  
 })
 
 const openSeguimiento = (id: number) => {
