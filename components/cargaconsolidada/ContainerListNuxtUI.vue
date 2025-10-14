@@ -1,13 +1,13 @@
 <template>
-  <div class="w-full px-4 sm:px-6 lg:px-8 pb-12">
-    <div class="w-full  mx-auto">
+  <div class="w-full px-2 sm:px-4 lg:px-8 pb-8 sm:pb-12">
+    <div class="w-full mx-auto">
       <!-- Loading State -->
-      <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+      <div v-if="loading" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
         <ContainerItemSkeletonNuxtUI v-for="i in 3" :key="i" />
       </div>
       
       <!-- Containers Grid -->
-      <div v-else-if="containers.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+      <div v-else-if="containers.length > 0" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
         <ContainerCardNuxtUI
           v-for="container in containers"
           :key="container.id"

@@ -6,6 +6,15 @@
               " />
     </div>
 
+    <!-- SectionHeader con breadcrumbs -->
+    <div class="px-4 lg:px-0 mb-4">
+      <SectionHeader 
+        title="Mis importaciones"
+        :headers="sectionHeaders"
+        :loading="isLoadingTimeline"
+      />
+    </div>
+
     <!-- Mostrar datos específicos del trayecto -->
     <h2 class="text-2xl md:text-3xl font-bold text-start mt-6 md:mt-10 mb-4 px-4 md:px-0">
       Tu carga está en camino a Perú
@@ -34,15 +43,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 definePageMeta({
     middleware: 'auth'
 })
 import ShipTracker from '@/components/commons/ShipTracker.vue';
 import ShipTrackerSkeleton from '~/components/commons/ShipTrackerSkeleton.vue';
+import SectionHeader from '@/components/commons/SectionHeader.vue';
 import type { ContainerJourneyStatus } from '~/types/containers';
+import type { Header } from '~/types/data-table';
 import { useTrayecto } from '~/composables/clientes/importaciones/useTrayecto';
-const { getSeguimiento, seguimientos } = useTrayecto();
+const { getSeguimiento, seguimientos, cargaInfo } = useTrayecto();
 // Obtener el ID de la URL
 const route = useRoute();
 const uuid = route.params.id;
@@ -52,6 +63,25 @@ const events = ref([] as ContainerJourneyStatus[]);
 const progress = ref(0);
 const isLoadingShipTracker = ref(true);
 const isLoadingTimeline = ref(true);
+
+// Headers para el SectionHeader
+const sectionHeaders = computed<Header[]>(() => [
+  {
+    label: "Entregado",
+    value: undefined, // Sin value para que no muestre badge
+    icon: undefined
+  },
+  {
+    label: `Consolidado #${cargaInfo.value?.carga || uuid}`,
+    value: undefined, // Sin value para que no muestre badge
+    icon: undefined
+  },
+  {
+    label: "Finalizado",
+    value: undefined, // Sin value para que no muestre badge
+    icon: "i-heroicons-stop-circle"
+  }
+]);
 
 onMounted(async () => {
   isLoadingShipTracker.value = true;

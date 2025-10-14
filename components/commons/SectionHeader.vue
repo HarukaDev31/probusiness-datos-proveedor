@@ -14,32 +14,38 @@
         </div>
 
         <!-- Contenido real cuando no está cargando -->
-        <div v-else class="flex flex-wrap ">
-            <div v-if="title" class="flex items-center pr-4 pl-2 py-3"
+        <div v-else class="flex flex-wrap">
+            <div v-if="title" class="flex items-center pr-2 pl-2 py-2 whitespace-nowrap"
                 style="border-bottom: 1px solid #e0e0e0;border-right: 1px solid #e0e0e0;">
                 {{ title }}
             </div>
-            <div v-for="header in headers" :key="header.value" class="flex items-center px-2 py-3 gap-1"
+            <div v-for="header in headers" :key="header.value" class="flex items-center px-2 py-2 gap-1 whitespace-nowrap"
                 style="border-bottom: 1px solid #e0e0e0;">
-                <div v-if="isUrl(header.icon)" class="flex items-center gap-2">
+                <div v-if="header.icon && isUrl(header.icon)" class="flex items-center gap-2">
                     <img :src="header.icon" alt="icon" class="w-5 h-4" />
                 </div>
-                <div v-else>
-                    <UIcon :name="header.icon" class="w-5 h-4 mt-1" />
+                <div v-else-if="header.icon">
+                    <UIcon :name="header.icon" 
+                           :class="header.icon === 'i-heroicons-stop-circle' && header.label === 'En proceso' ? 'w-5 h-4 mt-1 text-green-500' : 
+                                  header.icon === 'i-heroicons-stop-circle' && header.label === 'Finalizado' ? 'w-5 h-4 mt-1 text-gray-500' : 
+                                  'w-5 h-4 mt-1'" />
                 </div>
                     <span class="text-xs lg:text-sm text-gray-600 dark:text-gray-400">
-                        {{ header.label }}:
+                        {{ header.label }}
                     </span>
-                    <template v-if="header.por_usuario">
-                        <button type="button"
-                            class="inline-flex items-center rounded-md border border-gray-200 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-400 px-2 py-[2px] text-[11px] font-medium hover:bg-gray-100 dark:hover:bg-gray-700"
-                            @click="openPerUsuarioModal(header)">
-                            {{ header.value || 'N/A' }}
-                        </button>
-                    </template>
-                    <template v-else>
-                        <UBadge :label="header.value || 'N/A'" color="neutral" variant="soft" size="sm"
-                            class="font-medium text-xs" />
+                    <template v-if="header.value">
+                        <span class="text-xs lg:text-sm text-gray-600 dark:text-gray-400">:</span>
+                        <template v-if="header.por_usuario">
+                            <button type="button"
+                                class="inline-flex items-center rounded-md border border-gray-200 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-400 px-2 py-[2px] text-[11px] font-medium hover:bg-gray-100 dark:hover:bg-gray-700"
+                                @click="openPerUsuarioModal(header)">
+                                {{ header.value || 'N/A' }}
+                            </button>
+                        </template>
+                        <template v-else>
+                            <UBadge :label="header.value || 'N/A'" color="neutral" variant="soft" size="sm"
+                                class="font-medium text-xs" />
+                        </template>
                     </template>
             </div>
         </div>
@@ -120,6 +126,37 @@ const openPerUsuarioModal = (header: any) => {
 @media (max-width: 768px) {
     .skeleton-item {
         margin: 0.25rem 0;
+    }
+    
+    /* Título más pequeño en móvil */
+    .flex-wrap > div:first-child {
+        font-size: 0.60rem; /* Más pequeño para ahorrar espacio */
+        padding: 0.375rem 0.5rem;
+        min-width: fit-content;
+    }
+    
+    /* Elementos del header más compactos en móvil */
+    .flex-wrap > div:not(:first-child) {
+        font-size: 0.60rem;
+        padding: 0.375rem 0.375rem;
+        gap: 0.25rem;
+    }
+    
+    /* Textos más pequeños en móvil */
+    .flex-wrap span {
+        font-size: 0.60rem !important;
+    }
+    
+    /* Iconos más pequeños en móvil */
+    .flex-wrap .w-5 {
+        width: 0.875rem !important;
+        height: 0.875rem !important;
+    }
+    
+    /* Badges más pequeños */
+    .flex-wrap .font-medium {
+        font-size: 0.625rem !important;
+        padding: 0.125rem 0.375rem !important;
     }
 }
 </style>

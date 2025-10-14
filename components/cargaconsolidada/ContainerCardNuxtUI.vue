@@ -9,64 +9,65 @@
     </div>
 
     <!-- Body -->
-    <div class="p-6">
-      <div class="flex items-start justify-between gap-6">
-        <!-- Container Details -->
-        <div class="flex flex-col h-[200px] w-full justify-between">
-          <div class="flex items-center gap-3 text-sm">
-            <img src="/assets/icon/close-container.svg" alt="Contenedor" />
+    <div class="p-4 sm:p-6">
+      <div class="flex flex-col gap-4">
+        <!-- Container Details and Progress Section -->
+        <div class="flex items-center justify-between gap-4">
+          <!-- Container Details -->
+          <div class="flex flex-col space-y-3 flex-1">
+            <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+              <img src="/assets/icon/close-container.svg" alt="Contenedor" class="w-4 h-4 sm:w-auto sm:h-auto" />
+              <span class="text-gray-600 dark:text-gray-400">Cierre:</span>
+              <span class="font-medium text-gray-900 dark:text-gray-100">
+                {{ formatDate(container.closeDate) }}
+              </span>
+            </div>
 
-            <span class="text-gray-600 dark:text-gray-400">Cierre:</span>
-            <span class="font-medium text-gray-900 dark:text-gray-100">
-              {{ formatDate(container.closeDate) }}
-            </span>
+            <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+              <img src="/assets/icon/ship-container.svg" alt="Contenedor" class="w-4 h-4 sm:w-auto sm:h-auto" />
+              <span class="text-gray-600 dark:text-gray-400">Zarpe:</span>
+              <span class="font-medium text-gray-900 dark:text-gray-100">
+                {{ formatDate(container.shipDate) }}
+              </span>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+              <img src="/assets/icon/arrival-container.svg" alt="Contenedor" class="w-4 h-4 sm:w-auto sm:h-auto" />
+              <span class="text-gray-600 dark:text-gray-400">Arribo:</span>
+              <span class="font-medium text-gray-900 dark:text-gray-100">
+                {{ formatDate(container.arrivalDate) }}
+              </span>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+              <img src="/assets/icon/delivery-container.svg" alt="Contenedor" class="w-4 h-4 sm:w-auto sm:h-auto" />
+              <span class="text-gray-600 dark:text-gray-400">Entrega:</span>
+              <span class="font-medium text-gray-900 dark:text-gray-100">
+                {{ formatDate(container.deliveryDate) }}
+              </span>
+            </div>
           </div>
 
-          <div class="flex items-center gap-3 text-sm">
-            <img src="/assets/icon/ship-container.svg" alt="Contenedor" />
-
-            <span class="text-gray-600 dark:text-gray-400">Zarpe:</span>
-            <span class="font-medium text-gray-900 dark:text-gray-100">
-              {{ formatDate(container.shipDate) }}
-            </span>
-          </div>
-
-          <div class="flex items-center gap-3 text-sm">
-            <img src="/assets/icon/arrival-container.svg" alt="Contenedor" />
-
-            <span class="text-gray-600 dark:text-gray-400">Arribo:</span>
-            <span class="font-medium text-gray-900 dark:text-gray-100">
-              {{ formatDate(container.arrivalDate) }}
-            </span>
-          </div>
-
-          <div class="flex items-center gap-3 text-sm">
-            <img src="/assets/icon/delivery-container.svg" alt="Contenedor" />
-
-            <span class="text-gray-600 dark:text-gray-400">Entrega:</span>
-            <span class="font-medium text-gray-900 dark:text-gray-100">
-              {{ formatDate(container.deliveryDate) }}
-            </span>
+          <!-- Progress Circle and Container -->
+          <div class="flex flex-col items-center gap-2 flex-shrink-0">
+            <WaveProgressBar :percentage="currentProgress" class="scale-75 sm:scale-90" />
+            
+            <!-- Status Badge -->
+            <div class="text-center flex items-center gap-1">
+              <div class="text-xs text-gray-500 dark:text-gray-400">Contenedor al</div>
+              <div class="text-lg font-bold text-primary">{{ Math.round(currentProgress) }}%</div>
+            </div>
           </div>
         </div>
 
-        <!-- Progress Section -->
-        <div class="flex flex-col items-center gap-4 flex-shrink-0">
-          <!-- Progress Circle -->
-          <WaveProgressBar :percentage="currentProgress" />
-
-          <!-- Status Badge -->
-          <div class="text-center flex flex-row items-center gap-2">
-            <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Contenedor al</div>
-            <div class="text-lg font-bold text-primary">{{ Math.round(currentProgress) }}%</div>
-          </div>
-
-          <!-- Participate Button -->
-          <UButton v-if="!container.userIsPresent" class="w-full text-center flex justify-center items-center py-3"
+        <!-- Participate Button -->
+        <div class="w-full flex justify-center mt-2">
+          <UButton v-if="!container.userIsPresent" 
+            class="w-4/5 text-center flex justify-center items-center py-2 px-4"
             color="primary" size="sm" @click="toggleParticipate">
             Participar
           </UButton>
-          <div v-else class="text-xs text-green-600 dark:text-green-400 font-medium">
+          <div v-else class="text-xs text-green-600 dark:text-green-400 font-medium text-center">
             ✓ Participando
           </div>
         </div>

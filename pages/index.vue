@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen  mt-[100px]">
+  <div class="min-h-screen md:mt-[30px]">
     <!-- Hero Section -->
     <div class="w-full px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-8">
       <div class="w-full mx-auto">

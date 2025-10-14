@@ -23,6 +23,7 @@ export const useTrayecto = () => {
     const activeTab=ref<string>('')
     const activeFilesAlmacenInspection=ref<FileAlmacenInspection[]>([])
     const seguimientos=ref<Seguimiento[]>([])
+    const cargaInfo=ref<any>(null)
     const getTrayectos = async () => {
         try {
             const params: any = {
@@ -80,6 +81,7 @@ export const useTrayecto = () => {
         try {
             const response = await TrayectoService.getSeguimiento(uuid)
             seguimientos.value = response.data
+            cargaInfo.value = response
         }catch(err: any) {
             error.value = err.message
             console.error('Error en getSeguimiento:', err)
@@ -113,6 +115,7 @@ export const useTrayecto = () => {
         cambiarProveedor,
         getSeguimiento,
         seguimientos,
+        cargaInfo,
         getEntregados,
         entregados
     }

@@ -1,7 +1,12 @@
 <template>
   <main>
     <UserProfileSkeleton v-if="isLoading" />
-    <UserProfileComponent v-else :userProfile="profile" class="user-profile" />
+    <UserProfileComponent 
+      v-else 
+      :userProfile="profile" 
+      class="user-profile" 
+      @profile-updated="handleProfileUpdate" 
+    />
     <!-- <Sidebar :userProfile="userProfile" class="sidebar" /> -->
   </main>
 </template>
@@ -13,6 +18,18 @@ import { useProfile } from '@/composables/clientes/commons/profile';
 const { profile, loading, error, getProfile } = useProfile();
 const isLoading = ref(true);
 let userProfile = ref({} as UserProfile);
+
+// Función para manejar la actualización del perfil
+const handleProfileUpdate = async () => {
+  try {
+    isLoading.value = true;
+    await getProfile(); // Recargar los datos del perfil desde el backend
+    isLoading.value = false;
+  } catch (error) {
+    console.error('Error al recargar el perfil:', error);
+    isLoading.value = false;
+  }
+};
 onMounted(async () => {
   try {
     const response = await getProfile();

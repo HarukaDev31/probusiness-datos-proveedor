@@ -22,25 +22,43 @@ export class ProfileService extends BaseService {
         }
     }
 
-    static async updateProfile(profileData: Partial<UserProfile>, photoFile?: File): Promise<UserProfileResponse> {
+    static async updateProfile(profileData: any, photoFile?: File): Promise<UserProfileResponse> {
         try {
             const formData = new FormData()
             
-            // Agregar campos del perfil (incluir campos vacíos también)
+            console.log('🔍 Debug SERVICE - profileData recibido:', profileData);
+            
+            // Agregar campos del perfil con los nombres EXACTOS que espera el backend
             if (profileData.fullName !== undefined) formData.append('full_name', profileData.fullName)
             if (profileData.email !== undefined) formData.append('email', profileData.email)
-            if (profileData.documentNumber !== undefined) formData.append('document_number', profileData.documentNumber)
-            if (profileData.fechaNacimiento !== undefined) formData.append('fecha_nacimiento', profileData.fechaNacimiento)
-            if (profileData.country !== undefined) formData.append('country', profileData.country)
+            
+            // CORREGIR: usar 'dni' - campo correcto
+            if (profileData.dni !== undefined) formData.append('dni', profileData.dni)
+            
+            // CORREGIR: usar 'fecha_nacimiento' - campo correcto
+            if (profileData.fecha_nacimiento !== undefined) formData.append('fecha_nacimiento', profileData.fecha_nacimiento)
+            
+            if (profileData.country !== undefined) formData.append('country', profileData.country.toString())
             if (profileData.city !== undefined) formData.append('city', profileData.city.toString())
-            if (profileData.department !== undefined) formData.append('department', profileData.department.toString())
-            if (profileData.district !== undefined) formData.append('district', profileData.district.toString())
+            
+            // CORREGIR: usar 'departamento' - campo correcto
+            if (profileData.departamento !== undefined) formData.append('departamento', profileData.departamento.toString())
+            
+            // CORREGIR: usar 'distrito' - campo correcto
+            if (profileData.distrito !== undefined) formData.append('distrito', profileData.distrito.toString())
+            
             if (profileData.phone !== undefined) formData.append('phone', profileData.phone)
             if (profileData.goals !== undefined) formData.append('goals', profileData.goals)
             
             // Agregar foto si existe
             if (photoFile) {
                 formData.append('photo', photoFile)
+            }
+
+            // Debug: mostrar contenido del FormData
+            console.log('🔍 Debug SERVICE - FormData contents:');
+            for (const [key, value] of formData.entries()) {
+                console.log(`${key}:`, value);
             }
 
             const response = await this.apiCall<UserProfileResponse>(`${this.baseUrl}/profile`, {
