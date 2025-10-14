@@ -9,11 +9,14 @@
       <header 
       class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 lg:hidden">
         <div class="px-6 py-4">
-
           <div class="flex items-center justify-between w-full">
-              <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ pageTitle }}</h2>
-              <UButton icon="i-heroicons-bars-3" variant="ghost" @click="toggleSidebar" />
+            <div class="flex items-center gap-2">
+              <!-- Icono/logo de la empresa clickable -->
+              <img src="https://intranet.probusiness.pe/assets/img/logos/probusiness.png" alt="Logo Empresa" class="h-8 w-8 rounded-full object-cover cursor-pointer" @click="navigateToHome" />
+              <h2 class="text-md font-semibold text-gray-900 dark:text-white">{{ pageTitle }}</h2>
             </div>
+            <UButton icon="i-heroicons-bars-3" variant="ghost" @click="toggleSidebar" />
+          </div>
         </div>
       </header>
 
@@ -53,6 +56,7 @@ import ModalContainer from '../components/ModalContainer.vue'
 import GlobalSpinner from '../components/GlobalSpinner.vue'
 import type { AuthMenu } from '../services/authService'
 import type { SidebarCategory } from '../types/module'
+import { useRouter } from 'vue-router'
 
 // Detectar si es dispositivo móvil y ocultar sidebar por defecto en móviles
 const isMobile = () => {
@@ -170,6 +174,7 @@ const pageTitle = computed(() => {
 })
 
 const { user, logout, initializeAuth, menu } = useAuth()
+const router = useRouter()
 
 // Inicializar sistema de WebSocket
 useWebSocketRole()
@@ -317,6 +322,10 @@ const convertUrlToRoute = (menuUrl: string, intranetUrl?: string | null): string
 
 const toggleSidebar = () => {
   sidebarVisible.value = !sidebarVisible.value
+}
+
+function navigateToHome() {
+  router.push('/')
 }
 
 onMounted(async () => {
