@@ -177,7 +177,7 @@
                 <h3>Monto Importado</h3>
                 <p class="text-7xl font-bold">{{ formatCurrency(userProfile.importedAmount || 0) }}</p>
                 <p>de {{ userProfile.importedContainers || 0 }} importaciones realizadas con éxito</p>
-                <h4>CBM total: {{ (userProfile.cbm || 0) }}</h4>
+                <h4>CBM total: {{ formatNumber(userProfile.cbm || 0,2) }}</h4>
             </UCard>
 
             <!-- Información de la Empresa -->
