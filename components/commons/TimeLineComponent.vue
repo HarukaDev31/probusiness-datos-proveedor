@@ -5,9 +5,8 @@
       :default-value="activeItemIndex"
       color="success"
       size="md"
-      :orientation="orientation"
-      
-      :class="orientation === 'horizontal' ? 'w-full overflow-x-auto' : 'w-full max-w-2xl mx-auto'"
+      orientation="vertical"
+      class="w-full max-w-2xl mx-auto"
     />
   </div>
 </template>
@@ -24,10 +23,6 @@ const props = defineProps({
   completed: {
     type: Boolean,
     default: false,
-  },
-  orientation: {
-    type: String as () => 'vertical' | 'horizontal',
-    default: 'vertical',
   }
 })
 
@@ -90,12 +85,7 @@ const getItemClass = (status: string) => {
   padding: 1rem;
 }
 
-/* Estilos para timeline horizontal */
-.timeline-container:has(.overflow-x-auto) {
-  padding: 1rem 0;
-}
-
-/* Personalización adicional para el timeline */
+/* Personalización para el timeline vertical */
 :deep(.timeline-item) {
   transition: all 0.3s ease;
 }
@@ -104,14 +94,13 @@ const getItemClass = (status: string) => {
   transform: translateX(4px);
 }
 
-/* Estilos específicos para timeline horizontal */
-:deep(.overflow-x-auto .timeline-item) {
-  min-width: 200px;
-  text-align: center;
+/* Estilos para mejorar la apariencia */
+:deep(.timeline-item) {
+  padding: 0.75rem 0;
 }
 
-:deep(.overflow-x-auto .timeline-item:hover) {
-  transform: translateY(-2px);
+:deep(.timeline-item .timeline-content) {
+  padding-left: 1rem;
 }
 
 /* Estilos para diferentes estados */
@@ -120,6 +109,25 @@ const getItemClass = (status: string) => {
 }
 
 :deep(.timeline-item.pending) {
-  opacity: 0.7;
+  opacity: 0.8;
+}
+
+/* Mejoras en el texto */
+:deep(.timeline-item .timeline-title) {
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+:deep(.timeline-item .timeline-description) {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+:deep(.timeline-item .timeline-date) {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-weight: 500;
 }
 </style>

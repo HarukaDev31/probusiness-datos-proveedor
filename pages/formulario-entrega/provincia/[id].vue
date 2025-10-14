@@ -18,8 +18,7 @@
        </div>
        <div v-else-if="currentStep === 3">
         <p class="text-gray-600 dark:text-gray-300">
-          Ahora necesitamos los datos del destinatario para entregar tu pedido, si aún no cuenta con la información dar
-          en continuar
+          Ahora necesitamos los datos del destinatario para entregar tu pedido.
         </p>
        </div>
        <div v-else-if="currentStep === 4">
@@ -104,20 +103,6 @@
             </div>
           </div>
         </div>
-       <div v-else-if="currentStep === 3" class="max-w-4xl mx-auto">
-        <div class="bg-yellow-50 dark:bg-yellow-800 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 mb-6">
-            <div class="flex items-center justify-center">
-              <div class="flex-shrink-0">
-                <UIcon name="i-heroicons-information-circle" class="h-5 w-5 text-yellow-600" />
-              </div>
-              <div class="ml-3">
-                <p class="text-sm text-yellow-800 dark:text-yellow-100 text-center">
-                  Completa la información de la agencia de envío y a quién se le entregara, <strong>esta información es importante para la correcta entrega de tu pedido.</strong>
-                </p>
-              </div>
-            </div>
-          </div>
-       </div>
       </div>
       <!-- Form Container -->
       <UCard class="max-w-4xl mx-auto">
@@ -150,7 +135,7 @@
             
 
             <!-- Boleta -->
-            <div v-if="formData.tipoComprobante.value === 'boleta'" class="space-y-4">
+            <div v-if="formData.tipoComprobante && formData.tipoComprobante.value === 'boleta'" class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UFormField label="DNI:" required>
                   <UInput v-model="formData.clienteDni" placeholder="" :disabled="loading" class="w-full" />
@@ -169,7 +154,7 @@
             </div>
 
             <!-- Factura -->
-            <div v-else-if="formData.tipoComprobante.value === 'factura'" class="space-y-4">
+            <div v-else-if="formData.tipoComprobante && formData.tipoComprobante.value === 'factura'" class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UFormField label="RUC:" required>
                   <UInput v-model="formData.clienteRuc" placeholder="Ingrese RUC" :disabled="loading" class="w-full" />
@@ -728,14 +713,14 @@ const resetForm = () => {
 
 // Actualizar datos del consolidado
 watch(() => formData.tipoComprobante, (newValue) => {
-  if (newValue.value === 'boleta') {
+  if (newValue && newValue.value === 'boleta') {
     // Pre-llenar datos para boleta
-    formData.clienteDni = ''
-    formData.clienteNombre = ''
-  } else if (newValue.value === 'factura') {
+    formData.clienteDni = userData.value?.dni || ''
+    formData.clienteNombre = userData.value?.name || ''
+  } else if (newValue && newValue.value === 'factura') {
     // Pre-llenar datos para factura
-    formData.clienteRuc = ''
-    formData.clienteRazonSocial = ''
+    formData.clienteRuc = userData.value?.empresa?.ruc || ''
+    formData.clienteRazonSocial = userData.value?.empresa?.name || ''
   }
 })
 
