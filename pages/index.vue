@@ -30,7 +30,10 @@ import { useContainers } from '~/composables/clientes/useContainers'
 import ContainerListNuxtUI from '@/components/cargaconsolidada/ContainerListNuxtUI.vue'
 // Usará el layout default automáticamente (con sidebar)
 const { containers, loading, error, getContainers } = useContainers()
-
+//set middleware auth
+definePageMeta({
+  middleware: 'auth'
+})
 // Cargar contenedores al montar el componente
 onMounted(async () => {
   await getContainers()
