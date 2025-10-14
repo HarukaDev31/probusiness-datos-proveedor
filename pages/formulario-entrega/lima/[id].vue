@@ -18,7 +18,7 @@
         </div>
         <div v-else-if="currentStep === 3">
           <p class="text-gray-600 dark:text-gray-300">
-            Ahora necesitamos los datos del chofer para entregar tu pedido, si aún no cuenta con la información dar en continuar.
+            Ahora necesitamos los datos del chofer para entregar tu pedido,<strong> si aún no cuenta con la información dar en continuar.</strong>
           </p>
         </div>
         <div v-else-if="currentStep === 4">
