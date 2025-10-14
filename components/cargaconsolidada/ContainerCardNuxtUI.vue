@@ -23,13 +23,7 @@
               </span>
             </div>
 
-            <div class="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-sm">
-              <img src="/assets/icon/ship-container.svg" alt="Contenedor" class="w-4 h-4 sm:w-auto sm:h-auto" />
-              <span class="text-gray-600 dark:text-gray-400">Zarpe:</span>
-              <span class="font-medium text-gray-900 dark:text-gray-100">
-                {{ formatDate(container.shipDate) }}
-              </span>
-            </div>
+            
 
             <div class="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-sm">
               <img src="/assets/icon/arrival-container.svg" alt="Contenedor" class="w-4 h-4 sm:w-auto sm:h-auto" />
