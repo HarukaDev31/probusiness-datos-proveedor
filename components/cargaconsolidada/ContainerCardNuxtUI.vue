@@ -12,10 +12,10 @@
     <div class="p-4 sm:p-6">
       <div class="flex flex-col gap-4">
         <!-- Container Details and Progress Section -->
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center justify-between md:gap-4 gap-0">
           <!-- Container Details -->
           <div class="flex flex-col space-y-3 flex-1">
-            <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+            <div class="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-sm">
               <img src="/assets/icon/close-container.svg" alt="Contenedor" class="w-4 h-4 sm:w-auto sm:h-auto" />
               <span class="text-gray-600 dark:text-gray-400">Cierre:</span>
               <span class="font-medium text-gray-900 dark:text-gray-100">
@@ -23,7 +23,7 @@
               </span>
             </div>
 
-            <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+            <div class="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-sm">
               <img src="/assets/icon/ship-container.svg" alt="Contenedor" class="w-4 h-4 sm:w-auto sm:h-auto" />
               <span class="text-gray-600 dark:text-gray-400">Zarpe:</span>
               <span class="font-medium text-gray-900 dark:text-gray-100">
@@ -31,7 +31,7 @@
               </span>
             </div>
 
-            <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+            <div class="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-sm">
               <img src="/assets/icon/arrival-container.svg" alt="Contenedor" class="w-4 h-4 sm:w-auto sm:h-auto" />
               <span class="text-gray-600 dark:text-gray-400">Arribo:</span>
               <span class="font-medium text-gray-900 dark:text-gray-100">
@@ -39,7 +39,7 @@
               </span>
             </div>
 
-            <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+            <div class="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-sm">
               <img src="/assets/icon/delivery-container.svg" alt="Contenedor" class="w-4 h-4 sm:w-auto sm:h-auto" />
               <span class="text-gray-600 dark:text-gray-400">Entrega:</span>
               <span class="font-medium text-gray-900 dark:text-gray-100">
