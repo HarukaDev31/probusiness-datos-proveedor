@@ -49,7 +49,7 @@ const tableColumns = ref<TableColumn<any>[]>([
   {
     accessorKey: 'fecha_arribo',
     header: 'Fecha Arribo',
-    cell: ({ row }) => h('span', {}, formatDateTimeToDmy(row.getValue('fecha_arribo')))
+    cell: ({ row }) => h('span', {}, formatDateTimeToDmy(row.original.f_puerto|| row.getValue('fecha_arribo')))
   },
   {
     accessorKey: 'fecha_entrega',
