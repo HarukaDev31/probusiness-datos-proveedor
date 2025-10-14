@@ -79,7 +79,7 @@ const sectionHeaders = computed<Header[]>(() => [
   {
     label: "Finalizado",
     value: undefined, // Sin value para que no muestre badge
-    icon: "i-heroicons-stop-circle"
+    icon: "gravity-ui:circle-fill"
   }
 ]);
 
@@ -90,7 +90,8 @@ onMounted(async () => {
   await getSeguimiento(uuid as string)
   isLoadingShipTracker.value = false; 
   isLoadingTimeline.value = false;
-  progress.value = (seguimientos.value.filter((event) => event.status === 'COMPLETADO').length / (6)) * 100
+  // Incluir elementos COMPLETADO y ENTREGADO en el cálculo del progreso
+  progress.value = (seguimientos.value.filter((event) => event.status === 'COMPLETADO' || event.status === 'ENTREGADO').length / (6)) * 100
 });
 
 useHead({

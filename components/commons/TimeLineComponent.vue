@@ -63,6 +63,8 @@ const formatDate = (dateString: string) => {
     return 'i-heroicons-check-circle'
   } else if (status === 'PENDIENTE') {
     return 'i-heroicons-clock'
+  } else if (status === 'ENTREGADO') {
+    return 'i-heroicons-check-circle'
   } 
   return defaultIcon || 'i-heroicons-clock  '
 }
@@ -73,8 +75,8 @@ const getItemClass = (status: string) => {
     return 'text-green-600 dark:text-green-400'
   } else if (status === 'PENDIENTE') {
     return 'text-gray-500 dark:text-gray-400'
-  } else if (status === 'COMPLETADO') {
-    return 'text-green-600 dark:text-green-400'
+  } else if (status === 'ENTREGADO') {
+    return 'text-gray-600 dark:text-gray-500'
   }
   return 'text-blue-600 dark:text-blue-400'
 }

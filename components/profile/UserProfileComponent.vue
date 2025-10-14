@@ -1080,6 +1080,9 @@ textarea {
         margin-bottom: 0;
         width: 100%;
         max-width: 320px;
+        min-height: 2.2em; /* Altura mínima uniforme para todos los campos */
+        align-items: flex-start; /* Alineación vertical superior */
+        justify-content: center;
     }
     
     .profile-fields.items-center p strong {
@@ -1095,11 +1098,38 @@ textarea {
     .profile-fields.items-center p .edit-input {
         width: 100% !important;
         font-size: 0.875rem;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
     }
     
     .profile-fields.items-center p span {
         color: #374151;
         padding: 0.25rem 0;
     }
+}
+
+/* Estilos generales para manejo de texto largo en todos los campos del perfil */
+.profile-fields p span,
+.profile-fields p .edit-input {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Específicamente para campos de correo y texto largo */
+.profile-fields p {
+    min-width: 0; /* Permite que el contenedor se contraiga */
+    flex: 1;
+}
+
+/* Asegurar que los inputs también respeten el ancho */
+.edit-input {
+    box-sizing: border-box;
+    width: 100%;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 </style>
