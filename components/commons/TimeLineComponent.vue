@@ -23,6 +23,10 @@ const props = defineProps({
   completed: {
     type: Boolean,
     default: false,
+  },
+  allGray: {
+    type: Boolean,
+    default: false,
   }
 })
 
@@ -38,9 +42,10 @@ const timelineItems = computed<TimelineItem[]>(() => {
   }))
 })
 
-//obtener indices activos de los eventos PENDIENTE y COMPLETADO
+// Obtener el índice activo: si hay 'ENTREGADO', ese es el activo; si no, el último 'COMPLETADO'
 const activeItemIndex = computed(() => {
- //last item with status COMPLETADO
+  const lastEntregadoIndex = props.events.findLastIndex(event => event.status === 'ENTREGADO')
+  if (lastEntregadoIndex >= 0) return lastEntregadoIndex
   const lastCompletedIndex = props.events.findLastIndex(event => event.status === 'COMPLETADO')
   return lastCompletedIndex >= 0 ? lastCompletedIndex : -1
 })
@@ -71,6 +76,9 @@ const formatDate = (dateString: string) => {
 
 // Función para obtener clases CSS según el estado
 const getItemClass = (status: string) => {
+  if (props.allGray) {
+    return 'text-gray-600 dark:text-gray-500'
+  }
   if (status === 'COMPLETADO') {
     return 'text-green-600 dark:text-green-400'
   } else if (status === 'PENDIENTE') {

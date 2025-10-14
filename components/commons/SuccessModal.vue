@@ -101,9 +101,6 @@
           <UButton @click="goToHome" variant="outline" size="lg" block class="order-2 md:order-1">
             Volver al home
           </UButton>
-          <UButton @click="generateNewReservation" color="primary" size="lg" block class="order-1 md:order-2">
-            Generar otra reserva
-          </UButton>
         </div>
       </div>
     </div>

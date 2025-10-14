@@ -34,6 +34,7 @@
           v-if="!isLoadingTimeline" 
           :events="seguimientos" 
           orientation="vertical"
+          :allGray="true"
           class="w-full"
         />
         <CommonsTimeLineSkeleton v-else class="w-full min-h-48 lg:min-h-screen" />
