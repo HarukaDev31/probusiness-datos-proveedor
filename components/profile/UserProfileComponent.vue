@@ -202,23 +202,23 @@
                     </UButton>
                 </div>
                 <div class="flex flex-col gap-4">
-                    <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
+                    <p class="flex flex-row sm:flex-row place-content-start gap-1 sm:gap-0">
                         <strong class="w-full sm:w-48 font-weight: 300;">Empresa:</strong>
                         <span v-if="!isEditingBusiness" class="w-full sm:flex-1">{{ userProfile.business?.name }}</span>
                         <UInput v-else v-model="businessForm.name" class="edit-input w-full sm:flex-1" />
                     </p>
-                    <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
+                    <p class="flex flex-row sm:flex-row place-content-start gap-1 sm:gap-0">
                         <strong class="w-full sm:w-48 font-weight: 300;">RUC:</strong>
                         <span v-if="!isEditingBusiness" class="w-full sm:flex-1">{{ userProfile.business?.ruc }}</span>
                         <UInput v-else v-model="businessForm.ruc" class="edit-input w-full sm:flex-1" />
                     </p>
             
-                    <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
+                    <p class="flex flex-row sm:flex-row place-content-start gap-1 sm:gap-0">
                         <strong class="w-full sm:w-48 font-weight: 300;">Rubro:</strong>
                         <span v-if="!isEditingBusiness" class="w-full sm:flex-1">{{ userProfile.business?.rubric }}</span>
                         <UInput v-else v-model="businessForm.rubric" class="edit-input w-full sm:flex-1" />
                     </p>
-                    <p class="flex flex-col sm:flex-row place-content-start gap-1 sm:gap-0">
+                    <p class="flex flex-row sm:flex-row place-content-start gap-1 sm:gap-0">
                         <strong class="w-full sm:w-48 font-weight: 300;">Red social:</strong>
                         <span v-if="!isEditingBusiness" class="w-full sm:flex-1">{{ userProfile.business?.socialAddress
                         }}</span>
