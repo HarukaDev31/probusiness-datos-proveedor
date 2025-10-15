@@ -15,8 +15,8 @@
             <UCard class="mb-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="space-y-2">
-                        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20 animate-pulse"></div>
-                        <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded w-32 animate-pulse"></div>
+                        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20 md:w-24 animate-pulse"></div>
+                        <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded w-32 md:w-36 animate-pulse"></div>
                     </div>
                     <div class="space-y-2">
                         <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20 animate-pulse"></div>
@@ -32,9 +32,9 @@
             <!-- Skeleton para los tabs -->
             <div class="mb-6">
                 <div class="flex space-x-2">
-                    <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-full w-24 animate-pulse"></div>
-                    <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-full w-24 animate-pulse"></div>
-                    <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-full w-24 animate-pulse"></div>
+                    <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-full w-24 md:w-32 animate-pulse"></div>
+                    <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-full w-24 md:w-32 animate-pulse"></div>
+                    <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-full w-24 md:w-32 animate-pulse"></div>
                 </div>
             </div>
 
@@ -167,11 +167,12 @@
             
             <!-- Tabs de proveedores -->
             <div v-if="providers?.length > 0" class="mb-6">
-                <UTabs v-model="activeTab" :items="tabs" size="md" variant="pill" 
-                :class="{ 'w-200': tabs.length >=3, 'w-50': tabs.length <3, 'w-300': tabs.length >= 5 }"
-
-                color="neutral"
+                <div class="tabs-responsive">
+                  <UTabs v-model="activeTab" :items="tabs" size="md" variant="pill"
+                    :class="{ 'w-80 md:w-200': tabs.length >=3, 'w-100 md:w-50': tabs.length <3, 'w-80 md:w-300': tabs.length >= 5 }"
+                    color="neutral"
                     @update:model-value="handleTabChange" />
+                </div>
             </div>
 
 
@@ -513,4 +514,21 @@ onMounted(async () => {
 
 <style scoped>
 /* Estilos adicionales si son necesarios */
+
+.tabs-responsive {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+@media (max-width: 640px) {
+    .tabs-responsive {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+    .tabs-responsive .u-tabs {
+        flex-basis: 100%;
+        min-width: 0;
+    }
+}
 </style>
