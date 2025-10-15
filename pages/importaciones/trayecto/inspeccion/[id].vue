@@ -167,11 +167,16 @@
             
             <!-- Tabs de proveedores -->
             <div v-if="providers?.length > 0" class="mb-6">
-                <UTabs v-model="activeTab" :items="tabs" size="md" variant="pill" 
-                :class="{ 'w-200': tabs.length >=3, 'w-50': tabs.length <3, 'w-300': tabs.length >= 5 }"
-
-                color="neutral"
-                    @update:model-value="handleTabChange" />
+                <div class="overflow-x-auto scrollbar-hide sm:overflow-x-visible">
+                    <UTabs v-model="activeTab" :items="tabs" size="md" variant="pill" 
+                    :class="{ 
+                        'w-100': tabs.length >=3, 
+                        'w-50': tabs.length <3, 
+                        'min-w-max': true
+                    }"
+                    color="neutral"
+                        @update:model-value="handleTabChange" />
+                </div>
             </div>
 
 
