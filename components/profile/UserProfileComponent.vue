@@ -22,7 +22,7 @@
                 </UButton>
             </div>
             <div class="profile-info px-4">
-                <div class="pb-10">
+                <div class="pb-8">
                     <div class="profile-avatar__container flex justify-center items-center mx-auto">
                         <UAvatar :src="previewImage || userProfile.photoUrl" alt="Foto de perfil" class="profile-avatar" />
 
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <div class="flex flex-col gap-1 profile-fields" :class="isEditingProfile ? 'items-center' : 'items-start'">
-                        <p class="flex flex-row sm:flex-row place-content-start gap-1 sm:gap-2 profile-field">
+                        <p class="flex w-full flex-row sm:flex-row place-content-start gap-1 sm:gap-2 profile-field">
                             <strong class="w-full sm:w-30 font-weight: 300; break-words">F.Nacimiento:</strong>
                             <span v-if="!isEditingProfile"
                                 class="w-full sm:w-40 word-break break-words">{{
@@ -56,18 +56,33 @@
                             <UInput v-else type="date" v-model="profileForm.fechaNacimiento"
                                 class="edit-input w-full sm:w-40" />
                         </p>
-                        <p class="flex flex-row sm:flex-row place-content-start gap-1 sm:gap-2">
+                        <p class="flex w-full flex-row sm:flex-row place-content-start gap-1 sm:gap-2">
                             <strong class="w-full sm:w-30 font-weight: 300;">País:</strong>
                             <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{
-                                (typeof userProfile.country === 'string' && isNaN(parseInt(userProfile.country))) 
-                                    ? userProfile.country 
-                                    : (paises.find(p => p.value == userProfile.country)?.label || '-')
+                                (() => {
+                                    const userProfileAny = userProfile as any;
+                                    
+                                    // Priorizar valor directo si es string (nombre del país)
+                                    if (userProfileAny.country && typeof userProfileAny.country === 'string' && isNaN(parseInt(userProfileAny.country))) {
+                                        return userProfileAny.country;
+                                    }
+                                    
+                                    // Buscar por ID en múltiples fuentes: id_country, country, etc.
+                                    const countryId = userProfileAny.id_country || userProfileAny.country;
+                                    
+                                    if (countryId && !isNaN(parseInt(countryId))) {
+                                        const foundCountry = paises.find(p => p.value == parseInt(countryId));
+                                        return foundCountry ? foundCountry.label : `ID: ${countryId}`;
+                                    }
+                                    
+                                    return '-';
+                                })()
                             }}</span>
                             <USelect v-else v-model="profileForm.country" class="edit-input w-full sm:w-40"
                                 :items="paises" placeholder="Seleccionar país" />
 
                         </p>
-                        <p class="flex flex-row sm:flex-row place-content-start gap-1 sm:gap-2">
+                        <p class="flex w-full flex-row sm:flex-row place-content-start gap-1 sm:gap-2">
                             <strong class="w-full sm:w-30 font-weight: 300;">Departamento:</strong>
                             <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{
                                 (() => {
@@ -93,7 +108,7 @@
                                 :items="departamentos" placeholder="Seleccionar departamento"
                                 @change="handleDepartmentChange" />
                         </p>
-                        <p class="flex flex-row sm:flex-row place-content-start gap-1 sm:gap-2">
+                        <p class="flex w-full flex-row sm:flex-row place-content-start gap-1 sm:gap-2">
                             <strong class="w-full sm:w-30 font-weight: 300;">Provincia:</strong>
 
                             <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{
@@ -119,7 +134,7 @@
                                 :items="provincias" placeholder="Seleccionar provincia"
                                 @change="handleProvinceChange" />
                         </p>
-                        <p class="flex flex-row sm:flex-row place-content-start gap-1 sm:gap-2">
+                        <p class="flex w-full flex-row sm:flex-row place-content-start gap-1 sm:gap-2">
                             <strong class="w-full sm:w-30 font-weight: 300;">Distrito:</strong>
                             <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{
                                 (() => {
@@ -144,13 +159,13 @@
                             <USelect v-else v-model="profileForm.district" class="edit-input w-full sm:w-40"
                                 :items="distritos" placeholder="Seleccionar distrito" />
                         </p>
-                        <p class="flex flex-row sm:flex-row place-content-start gap-1 sm:gap-2">
+                        <p class="flex w-full flex-row sm:flex-row place-content-start gap-1 sm:gap-2">
                             <strong class="w-full sm:w-30 font-weight: 300;">Correo:</strong>
                             <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{
                                 userProfile.email || '-' }}</span>
                             <UInput v-else type="email" v-model="profileForm.email" class="edit-input w-full sm:w-40" />
                         </p>
-                        <p class="flex flex-row sm:flex-row place-content-start gap-1 sm:gap-2">
+                        <p class="flex w-full flex-row sm:flex-row place-content-start gap-1 sm:gap-2">
                             <strong class="w-full sm:w-30 font-weight: 300;">Celular:</strong>
                             <span v-if="!isEditingProfile" class="w-full sm:w-40 word-break break-words">{{
                                 userProfile.phone || '-' }}</span>
@@ -915,8 +930,6 @@ watch([paises, departamentos, provincias, distritos], ([newPaises, newDepartamen
 /* Responsive para profile-header */
 @media (max-width: 768px) {
     .profile-header {
-        align-items: center;
-        text-align: center;
         min-height: auto;
     }
 }
@@ -993,6 +1006,9 @@ watch([paises, departamentos, provincias, distritos], ([newPaises, newDepartamen
     .profile-goals h3 {
         font-size: 1.2rem;
         margin-bottom: 1rem;
+    }
+    .user-profile p {
+        font-size: .9rem;
     }
 }
 

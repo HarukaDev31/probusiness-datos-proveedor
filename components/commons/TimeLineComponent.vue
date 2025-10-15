@@ -3,11 +3,15 @@
     <UTimeline 
       :items="timelineItems" 
       :default-value="activeItemIndex"
-      color="success"
+      :color="props.isDisable ? 'secondary' : 'success'"
       size="md"
       orientation="vertical"
       class="w-full max-w-2xl mx-auto"
-    />
+    >
+      <template #description="{ item }">
+        <span v-html="item.description" />
+      </template>
+    </UTimeline>
   </div>
 </template>
 
@@ -27,6 +31,10 @@ const props = defineProps({
   allGray: {
     type: Boolean,
     default: false,
+  },
+  isDisable: {
+    type: Boolean,
+    default: false,
   }
 })
 
@@ -35,7 +43,7 @@ const timelineItems = computed<TimelineItem[]>(() => {
   return props.events.map((event, index) => ({
     date: formatDate(event.date),
     title: event.name,
-    description: event.description || `${event.name} `,
+    description: (event.description || `${event.name} `).replace(/\n/g, '<br>'),
     icon: getStatusIcon(event.status, 'i-heroicons-clock'),
     value: index,
     class: getItemClass(event.status)
@@ -76,7 +84,7 @@ const formatDate = (dateString: string) => {
 
 // Función para obtener clases CSS según el estado
 const getItemClass = (status: string) => {
-  if (props.allGray) {
+  if (props.isDisable || props.allGray) {
     return 'text-gray-600 dark:text-gray-500'
   }
   if (status === 'COMPLETADO') {

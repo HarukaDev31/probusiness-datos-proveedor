@@ -15,29 +15,29 @@
         <div class="flex items-center justify-between md:gap-4 gap-0">
           <!-- Container Details -->
           <div class="flex flex-col space-y-3 flex-1">
-            <div class="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-sm">
+            <div class="flex items-center gap-1 sm:gap-3 text-[10px] sm:text-sm">
               <img src="/assets/icon/close-container.svg" alt="Contenedor" class="w-4 h-4 sm:w-auto sm:h-auto" />
               <span class="text-gray-600 dark:text-gray-400">Cierre:</span>
               <span class="font-medium text-gray-900 dark:text-gray-100">
-                {{ formatDate(container.closeDate) }}
+                {{ formatDateToDayMonth(container.closeDate) }}
               </span>
             </div>
 
             
 
-            <div class="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-sm">
+            <div class="flex items-center gap-1 sm:gap-3 text-[10px] sm:text-sm">
               <img src="/assets/icon/arrival-container.svg" alt="Contenedor" class="w-4 h-4 sm:w-auto sm:h-auto" />
               <span class="text-gray-600 dark:text-gray-400">Arribo:</span>
               <span class="font-medium text-gray-900 dark:text-gray-100">
-                {{ formatDate(container.arrivalDate) }}
+                {{ formatDateToDayMonth(container.arrivalDate) }}
               </span>
             </div>
 
-            <div class="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-sm">
+            <div class="flex items-center gap-1 sm:gap-3 text-[10px] sm:text-sm">
               <img src="/assets/icon/delivery-container.svg" alt="Contenedor" class="w-4 h-4 sm:w-auto sm:h-auto" />
               <span class="text-gray-600 dark:text-gray-400">Entrega:</span>
               <span class="font-medium text-gray-900 dark:text-gray-100">
-                {{ formatDate(container.deliveryDate) }}
+                {{ formatDateToDayMonth(container.deliveryDate) }}
               </span>
             </div>
           </div>
@@ -132,4 +132,14 @@ onBeforeUnmount(() => {
     clearInterval(animationInterval.value);
   }
 });
+
+function formatDateToDayMonth(dateStr: string | Date): string {
+  let date = typeof dateStr === 'string' ? new Date(dateStr) : new Date(dateStr);
+  if (isNaN(date.getTime())) return '';
+  // Ajuste de desfase horario (timezone offset)
+  date = new Date(date.getTime() + Math.abs(date.getTimezoneOffset()) * 60000);
+  const day = date.getDate();
+  const month = date.toLocaleString('es-ES', { month: 'short' });
+  return `${day} ${month.charAt(0).toUpperCase() + month.slice(1)}`;
+}
 </script>
