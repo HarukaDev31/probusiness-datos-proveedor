@@ -205,7 +205,7 @@
             <div class="flex justify-end space-x-2">
                 <UButton v-if="file?.file_url" icon="i-heroicons-arrow-down-tray" label="Descargar" color="primary"
                     @click="downloadFile" />
-                <UButton v-if="file?.file_url" icon="i-heroicons-arrow-top-right-on-square"
+                <UButton v-if="file?.file_url && !isMobile" icon="i-heroicons-arrow-top-right-on-square"
                     label="Abrir en nueva pestaña" variant="outline" @click="openInNewTab" />
                 <UButton label="Cerrar" variant="ghost" @click="close" />
             </div>
@@ -244,6 +244,22 @@ const dragOffset = ref({ x: 0, y: 0 })
 const excelData = ref<any>(null)
 const activeSheet = ref(0)
 const isLoadingExcel = ref(false)
+
+// Detectar si está en mobile
+const isMobile = ref(false)
+
+const checkIsMobile = () => {
+  isMobile.value = window.innerWidth <= 640
+}
+
+onMounted(() => {
+  checkIsMobile()
+  window.addEventListener('resize', checkIsMobile)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkIsMobile)
+})
 
 // Computed properties
 const isImage = computed(() => {
