@@ -26,12 +26,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, inject } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const props = defineProps<{ item: any; level: number }>()
 const route = useRoute()
 const router = useRouter()
+
+// Inyectar función para cerrar sidebar
+const closeSidebar = inject<() => void>('closeSidebar')
+
+// Detectar si es mobile
+const isMobile = () => {
+  if (process.client) {
+    return window.innerWidth < 1024 // lg breakpoint de Tailwind
+  }
+  return false
+}
 
 const expanded = ref(false)
 
@@ -104,6 +115,11 @@ function navigateToItem(item: any) {
         // Remover / inicial si existe y luego agregar uno
         targetUrl = targetUrl.replace(/^\/+/, '')
         router.push('/' + targetUrl)
+      }
+      
+      // Cerrar sidebar en mobile después de navegar
+      if (isMobile() && closeSidebar) {
+        closeSidebar()
       }
     }
     return

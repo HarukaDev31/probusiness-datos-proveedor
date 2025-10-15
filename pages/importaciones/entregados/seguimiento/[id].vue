@@ -17,7 +17,7 @@
 
     <!-- Mostrar datos específicos del trayecto -->
     <h2 class="text-2xl md:text-3xl font-bold text-start mt-6 md:mt-10 mb-4 px-4 md:px-0">
-      Tu carga está en camino a Perú
+      Tú carga fue entregada con éxito
     </h2>
     
     <!-- Layout responsive: vertical en móvil y tablet, horizontal solo en desktop -->

@@ -244,7 +244,19 @@ const isActiveRoute = (route: string) => {
 const handleNavigation = (route: string) => {
   console.log('Navegando a:', route)
   // Usar el navigateTo de Nuxt, no la función local
-  return navigateTo(route)
+  navigateTo(route)
+  
+  // Cerrar sidebar en mobile después de navegar
+  const isMobile = () => {
+    if (process.client) {
+      return window.innerWidth < 1024 // lg breakpoint de Tailwind
+    }
+    return false
+  }
+  
+  if (isMobile()) {
+    visible.value = false
+  }
 }
 
 const navigateOrToggle = (item: any) => {
@@ -252,6 +264,18 @@ const navigateOrToggle = (item: any) => {
   const route = item?.route
   if (route && route !== '' && route !== '#') {
     navigateTo(route)
+    
+    // Cerrar sidebar en mobile después de navegar
+    const isMobile = () => {
+      if (process.client) {
+        return window.innerWidth < 1024 // lg breakpoint de Tailwind
+      }
+      return false
+    }
+    
+    if (isMobile()) {
+      visible.value = false
+    }
   } else {
     toggleParent(item.id)
   }
@@ -266,6 +290,18 @@ const openNotifications = async () => {
   // Refrescar contador antes de navegar
   await fetchUnreadCount()
   await navigateTo('/notificaciones')
+  
+  // Cerrar sidebar en mobile después de navegar
+  const isMobile = () => {
+    if (process.client) {
+      return window.innerWidth < 1024 // lg breakpoint de Tailwind
+    }
+    return false
+  }
+  
+  if (isMobile()) {
+    visible.value = false
+  }
 }
 
 /**

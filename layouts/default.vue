@@ -324,6 +324,13 @@ const toggleSidebar = () => {
   sidebarVisible.value = !sidebarVisible.value
 }
 
+const closeSidebar = () => {
+  sidebarVisible.value = false
+}
+
+// Proporcionar función para cerrar sidebar a componentes hijos
+provide('closeSidebar', closeSidebar)
+
 function navigateToHome() {
   router.push('/')
 }
