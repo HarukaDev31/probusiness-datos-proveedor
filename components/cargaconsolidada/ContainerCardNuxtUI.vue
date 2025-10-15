@@ -74,7 +74,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import type { Container } from "../../types/containers";
 import WaveProgressBar from './WaveProgressBar.vue';
-import { formatDate } from '../../utils/formatters';
+
 // Props
 const props = defineProps({
   container: {
@@ -91,6 +91,7 @@ const animationInterval = ref<ReturnType<typeof setInterval> | null>(null);
 const circumference = computed(() => 2 * Math.PI * 60); // radio = 60
 
 // Métodos
+
 
 const toggleParticipate = () => {
   if (props.container.userIsPresent) {
