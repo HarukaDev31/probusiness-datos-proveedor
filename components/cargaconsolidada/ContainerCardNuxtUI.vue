@@ -90,13 +90,18 @@ const animationInterval = ref<ReturnType<typeof setInterval> | null>(null);
 // Computed properties
 const circumference = computed(() => 2 * Math.PI * 60); // radio = 60
 
-// Métodos
 
 
 const toggleParticipate = () => {
-  if (props.container.userIsPresent) {
-    // Lógica para participar
-    console.log('Participando en contenedor:', props.container.id);
+  if (!props.container.userIsPresent) {
+    // Redirigir a WhatsApp con mensaje personalizado
+    const phoneNumber = '51992583703'; // Número sin espacios ni caracteres especiales
+    const message = `Hola deseo participar en el consolidado #${props.container.carga}`;
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    
+    // Abrir WhatsApp en una nueva ventana/pestaña
+    window.open(whatsappUrl, '_blank');
   }
 };
 
