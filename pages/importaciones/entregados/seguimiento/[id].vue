@@ -2,7 +2,7 @@
   <ClientOnly>
     <div class="px-4 lg:px-0">
       <PageHeader title="" subtitle="" icon="" :hide-back-button="false" @back="
-              navigateTo(`/importaciones/trayecto`)
+              navigateTo(`/importaciones/entregados`)
               " />
     </div>
 
