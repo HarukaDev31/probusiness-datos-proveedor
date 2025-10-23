@@ -1,27 +1,14 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
     <!-- Sidebar -->
-    <SidebarMenu v-model="sidebarVisible" :user="user" :menu-categories="sidebarCategories" />
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col transition-all duration-300 w-80" :class="sidebarVisible ? 'lg:ml-70' : ''">
+    <div class="flex-1 flex flex-col transition-all duration-300 w-80" :class="sidebarVisible ? '' : ''">
       <!-- Top Header -->
-      <header 
-      class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 lg:hidden">
-        <div class="px-6 py-4">
-          <div class="flex items-center justify-between w-full">
-            <div class="flex items-center gap-2">
-              <!-- Icono/logo de la empresa clickable -->
-              <img src="https://intranet.probusiness.pe/assets/img/logos/probusiness.png" alt="Logo Empresa" class="h-8 w-8 rounded-full object-cover cursor-pointer" @click="navigateToHome" />
-              <h2 class="text-md font-semibold text-gray-900 dark:text-white">{{ pageTitle }}</h2>
-            </div>
-            <UButton icon="i-heroicons-bars-3" variant="ghost" @click="toggleSidebar" />
-          </div>
-        </div>
-      </header>
+   
 
       <!-- Page Content -->
-      <main class="flex-1 p-3 bg-[#f0f4f9] dark:bg-gray-900">
+      <main class="flex-1  bg-[#f0f4f9] dark:bg-gray-900">
         <div class="">
           <!-- <Breadcrumbs /> -->
         </div>

@@ -3,6 +3,7 @@ import { BaseService } from "../base/BaseService"
 import type { CotizacionFilters , Cotizacion, CotizacionResponse } from "~/types/cargaconsolidada/cotizaciones"
 export class CotizacionService extends BaseService {
     private static baseUrl = 'api/carga-consolidada/contenedor'
+    private static baseUrlExternal = 'api/contenedor/external'
     static async getCotizaciones(id: number, filters: CotizacionFilters) {
         try {
             const response = await this.apiCall<CotizacionResponse>(`${this.baseUrl}/cotizaciones/${id}`, {
@@ -115,6 +116,29 @@ export class CotizacionService extends BaseService {
         } catch (error) {
             console.error('Error al exportar las cotizaciones:', error)
             throw new Error(error?.data?.message || 'Error al exportar clientes')
+        }
+    }
+    static async getCotizacionByUUID(uuid: string): Promise<any> {
+        try {
+            const response = await this.apiCall<any>(`${this.baseUrlExternal}/cotizacion-proveedor/${uuid}`, {
+                method: 'GET'
+            })
+            return response
+        } catch (error) {
+            console.error('Error al obtener la cotización por UUID:', error)
+            throw new Error('No se pudo obtener la cotización por UUID')
+        }
+    }
+    static async updateProveedores(uuid: string, data: any): Promise<any> {
+        try {
+            const response = await this.apiCall<any>(`${this.baseUrlExternal}/cotizacion-proveedor/${uuid}`, {
+                method: 'PUT',
+                body: data
+            })
+            return response
+        } catch (error) {
+            console.error('Error al actualizar los proveedores:', error)
+            throw new Error('No se pudo actualizar los proveedores')
         }
     }
 }
