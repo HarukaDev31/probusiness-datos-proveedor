@@ -94,26 +94,25 @@
                 Hola, por favor llenar los datos de tu proveedor
               </h1>
             </div>
-            <div class="bg-gray-50 rounded-lg p-4">
+            <div class=" rounded-lg p-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex items-center space-x-3 ">
                   <UIcon name="i-heroicons-user" class="w-6 h-6 text-primary" />
                   <div>
-                    <div class="text-sm font-medium text-gray-500">Nombre del Cliente</div>
-                    <div class="text-lg font-semibold text-gray-900">{{ data.nombre }}</div>
+                    <div class="text-sm font-medium ">Nombre del Cliente</div>
+                    <div class="text-lg font-semibold ">{{ data.nombre }}</div>
                   </div>
                 </div>
                 <div class="flex items-center space-x-3">
                   <UIcon name="i-heroicons-phone" class="w-6 h-6 text-primary" />
                   <div>
-                    <div class="text-sm font-medium text-gray-500">Teléfono del Cliente</div>
-                    <div class="text-lg font-semibold text-gray-900">{{ data.telefono }}</div>
+                    <div class="text-sm font-medium ">Teléfono del Cliente</div>
+                    <div class="text-lg font-semibold ">{{ data.telefono }}</div>
                   </div>
                 </div>
                
               </div>
             </div>
-    </UCard>
 
           <!-- Provider Cards -->
           <div class="max-h-[600px] overflow-y-auto">
@@ -124,7 +123,7 @@
               <div class="block md:hidden space-y-4">
                 <!-- Product Info -->
                 <div class="flex items-center gap-3 p-3 rounded-lg border">
-                  <UIcon name="i-heroicons-cube" class="w-5 h-5 text-gray-500" />
+                  <UIcon name="i-heroicons-cube" class="w-5 h-5 " />
                   <div class="flex-1">
                     <div class="text-sm font-medium text-gray-700">Producto</div>
                     <UButton :label="proveedor.products" variant="soft" color="neutral" size="sm"
@@ -134,7 +133,7 @@
 
                 <!-- Supplier Code -->
                 <div class="flex items-center gap-3 p-3 rounded-lg border">
-                  <UIcon name="i-heroicons-tag" class="w-5 h-5 text-gray-500" />
+                  <UIcon name="i-heroicons-tag" class="w-5 h-5 " />
                   <div class="flex-1">
                     <div class="text-sm font-medium text-gray-700">Código Proveedor</div>
                     <UButton :label="proveedor.code_supplier" variant="soft" color="neutral" size="sm"
@@ -163,9 +162,7 @@
                       Número celular
                     </label>
                     <div class="relative">
-                      <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-lg z-10">
-                        {{ getCountryInfo(proveedor.supplier_phone || '').flag }}
-                      </div>
+                      
                       <UInput v-model="proveedor.supplier_phone" v-maska="getPhoneMask(proveedor.supplier_phone || '')"
                         placeholder="Ej: 51912345678" size="md" type="tel" :class="[
                           'text-base w-full pl-10',
@@ -187,21 +184,21 @@
 
                   <!-- Productos Column -->
                   <div class="flex flex-col justify-center">
-                    <div class="text-sm font-medium text-gray-500 mb-1">Productos</div>
+                    <div class="text-sm font-medium  mb-1">Productos</div>
                     <UButton :label="proveedor.products" variant="soft" color="neutral" size="sm"
                       class="justify-start text-xs" disabled />
                   </div>
 
                   <!-- Codigo proveedor Column -->
                   <div class="flex flex-col justify-center">
-                    <div class="text-sm font-medium text-gray-500 mb-1">Código</div>
+                    <div class="text-sm font-medium  mb-1">Código</div>
                     <UButton :label="proveedor.code_supplier" variant="soft" color="neutral" size="sm"
                       class="justify-start text-xs" disabled />
                   </div>
 
                   <!-- Nombre del vendedor Column -->
                   <div class="flex flex-col justify-center">
-                    <div class="text-sm font-medium text-gray-500 mb-1">Vendedor</div>
+                    <div class="text-sm font-medium  mb-1">Vendedor</div>
                     <UInput v-model="proveedor.supplier" placeholder="Nombre del vendedor" size="sm" :class="[
                       'text-sm',
                       validationErrors[`vendor_${proveedor.id}`] ? 'border-red-500 focus:border-red-500' : ''
@@ -213,11 +210,9 @@
 
                   <!-- Numero celular Column -->
                   <div class="flex flex-col justify-center">
-                    <div class="text-sm font-medium text-gray-500 mb-1">Celular</div>
+                    <div class="text-sm font-medium  mb-1">Celular</div>
                     <div class="relative">
-                      <div class="absolute left-2 top-1/2 transform -translate-y-1/2 text-sm z-10">
-                        {{ getCountryInfo(proveedor.supplier_phone || '').flag }}
-                      </div>
+                     
                       <UInput v-model="proveedor.supplier_phone" v-maska="getPhoneMask(proveedor.supplier_phone || '')"
                         placeholder="Ej: 51912345678" size="sm" type="tel" :class="[
                           'text-sm pl-8',
@@ -234,14 +229,14 @@
           </div>
 
           <!-- Save Button -->
-          <UCard class="shadow-2xl border-0 p-6 flex items-center justify-center">
             <UButton color="primary" size="xl" @click="guardarDatos" :loading="saving"
-              class=" text-lg font-semibold py-4 mx-auto"
+              class=" text-lg font-semibold py-4 mx-auto flex items-center justify-center"
               :aria-label="`Guardar datos de ${data.proveedores.length} proveedores`">
               <UIcon name="i-heroicons-check" class="w-5 h-5 mr-2 flex items-center justify-center" />
               Guardar Datos
             </UButton>
-          </UCard>
+        </UCard>
+
         </div>
 
         <!-- No Data State -->
@@ -258,7 +253,7 @@
             </h2>
 
             <!-- Subtitle -->
-            <p class="text-gray-500 mb-6">
+            <p class=" mb-6">
               No se pudo encontrar la información solicitada
             </p>
 
