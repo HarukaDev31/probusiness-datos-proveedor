@@ -94,130 +94,133 @@
                 Hola, por favor llenar los datos de tu proveedor
               </h1>
             </div>
-           
 
-          <!-- Provider Cards -->
-          <div class="max-h-[600px] overflow-y-auto">
-            <UCard v-for="(proveedor, index) in data.proveedores" :key="proveedor.id"
-              class="shadow-lg border-0 p-4 md:p-6" :aria-label="`Proveedor ${index + 1}: ${proveedor.products}`"
-              role="article" tabindex="0">
-              <!-- Mobile Layout (Stacked) -->
-              <div class="block md:hidden space-y-4">
-                <!-- Product Info -->
-                <div class="flex items-center gap-3 p-3 rounded-lg border">
-                  <UIcon name="i-heroicons-cube" class="w-5 h-5 " />
-                  <div class="flex-1">
-                    <div class="text-sm font-medium text-gray-700">Producto</div>
-                    <UButton :label="proveedor.products" variant="soft" color="neutral" size="sm"
-                      class="justify-start text-xs mt-1" disabled />
-                  </div>
-                </div>
 
-                <!-- Supplier Code -->
-                <div class="flex items-center gap-3 p-3 rounded-lg border">
-                  <UIcon name="i-heroicons-tag" class="w-5 h-5 " />
-                  <div class="flex-1">
-                    <div class="text-sm font-medium text-gray-700">Código Proveedor</div>
-                    <UButton :label="proveedor.code_supplier" variant="soft" color="neutral" size="sm"
-                      class="justify-start text-xs mt-1" disabled />
-                  </div>
-                </div>
-
-                <!-- Input Fields -->
-                <div class="space-y-4">
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                      Nombre del vendedor
-                    </label>
-                    <UInput v-model="proveedor.supplier" placeholder="Ingresa nombre del vendedor" size="md" :class="[
-                      'text-base w-full',
-                      validationErrors[`vendor_${proveedor.id}`] ? 'border-red-500 focus:border-red-500' : ''
-                    ]" :aria-label="`Nombre del vendedor para ${proveedor.products}`"
-                      @input="handleVendorInput(proveedor, $event.target.value)" />
-                    <small v-if="validationErrors[`vendor_${proveedor.id}`]" class="text-red-500 text-xs mt-1 block">
-                      Este campo es requerido
-                    </small>
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                      Número celular o WeeChat
-                    </label>
-                    <div class="relative">
-                      
-                      <UInput v-model="proveedor.supplier_phone" v-maska="getPhoneMask(proveedor.supplier_phone || '')"
-                        placeholder="Ej: 51912345678" size="md" type="text" :class="[
-                          'text-base w-full',
-                          validationErrors[`phone_${proveedor.id}`] ? 'border-red-500 focus:border-red-500' : ''
-                        ]" :aria-label="`Número celular para ${proveedor.products}`"
-                        @input="handlePhoneInput(proveedor, $event.target.value)" @keypress="onPhoneKeypress" />
+            <!-- Provider Cards -->
+            <div class="max-h-[600px] overflow-y-auto">
+              <UCard v-for="(proveedor, index) in data.proveedores" :key="proveedor.id"
+                class="shadow-lg border-0 p-4 md:p-6" :aria-label="`Proveedor ${index + 1}: ${proveedor.products}`"
+                role="article" tabindex="0">
+                <!-- Mobile Layout (Stacked) -->
+                <div class="block md:hidden space-y-4">
+                  <!-- Product Info -->
+                  <div class="grid grid-cols-2 gap-4">
+                    <div class="flex items-center gap-3 p-3 rounded-lg border">
+                      <UIcon name="i-heroicons-cube" class="w-5 h-5 " />
+                      <div class="flex-1">
+                        <div class="text-sm font-medium text-gray-700">Producto</div>
+                        <UButton :label="proveedor.products" variant="soft" color="neutral" size="sm"
+                          class="justify-start text-xs mt-1" disabled />
+                      </div>
                     </div>
-                    <small v-if="validationErrors[`phone_${proveedor.id}`]" class="text-red-500 text-xs mt-1 block">
-                      Este campo es requerido
-                    </small>
-                  </div>
-                </div>
-              </div>
 
-              <!-- Desktop Layout (Grid) -->
-              <div class="hidden md:block">
-                <div class="grid grid-cols-4 gap-4 items-center">
-
-
-                  <!-- Productos Column -->
-                  <div class="flex flex-col justify-center">
-                    <div class="text-sm font-medium  mb-1">Productos</div>
-                    <UButton :label="proveedor.products" variant="soft" color="neutral" size="sm"
-                      class="justify-start text-xs" disabled />
-                  </div>
-
-                  <!-- Codigo proveedor Column -->
-                  <div class="flex flex-col justify-center">
-                    <div class="text-sm font-medium  mb-1">Código</div>
-                    <UButton :label="proveedor.code_supplier" variant="soft" color="neutral" size="sm"
-                      class="justify-start text-xs" disabled />
-                  </div>
-
-                  <!-- Nombre del vendedor Column -->
-                  <div class="flex flex-col justify-center">
-                    <div class="text-sm font-medium  mb-1">Vendedor</div>
-                    <UInput v-model="proveedor.supplier" placeholder="Nombre del vendedor" size="sm" :class="[
-                      'text-sm',
-                      validationErrors[`vendor_${proveedor.id}`] ? 'border-red-500 focus:border-red-500' : ''
-                    ]" @input="handleVendorInput(proveedor, $event.target.value)" />
-                    <small v-if="validationErrors[`vendor_${proveedor.id}`]" class="text-red-500 text-xs mt-1">
-                      Requerido
-                    </small>
-                  </div>
-
-                  <!-- Numero celular Column -->
-                  <div class="flex flex-col justify-center">
-                    <div class="text-sm font-medium  mb-1">Celular</div>
-                    <div class="relative">
-                     
-                      <UInput v-model="proveedor.supplier_phone" v-maska="getPhoneMask(proveedor.supplier_phone || '')"
-                        placeholder="Ej: 51912345678" size="sm" type="tel" :class="[
-                          'text-sm pl-8',
-                          validationErrors[`phone_${proveedor.id}`] ? 'border-red-500 focus:border-red-500' : ''
-                        ]" @input="handlePhoneInput(proveedor, $event.target.value)" @keypress="onPhoneKeypress" />
+                    <!-- Supplier Code -->
+                    <div class="flex items-center gap-3 p-3 rounded-lg border">
+                      <UIcon name="i-heroicons-tag" class="w-5 h-5 " />
+                      <div class="flex-1">
+                        <div class="text-sm font-medium text-gray-700">Código Proveedor</div>
+                        <UButton :label="proveedor.code_supplier" variant="soft" color="neutral" size="sm"
+                          class="justify-start text-xs mt-1" disabled />
+                      </div>
                     </div>
-                    <small v-if="validationErrors[`phone_${proveedor.id}`]" class="text-red-500 text-xs mt-1">
-                      Requerido
-                    </small>
+                  </div>
+                  <!-- Input Fields -->
+                  <div class="space-y-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Nombre del vendedor
+                      </label>
+                      <UInput v-model="proveedor.supplier" placeholder="Ingresa nombre del vendedor" size="md" :class="[
+                        'text-base w-full',
+                        validationErrors[`vendor_${proveedor.id}`] ? 'border-red-500 focus:border-red-500' : ''
+                      ]" :aria-label="`Nombre del vendedor para ${proveedor.products}`"
+                        @input="handleVendorInput(proveedor, $event.target.value)" />
+                      <small v-if="validationErrors[`vendor_${proveedor.id}`]" class="text-red-500 text-xs mt-1 block">
+                        Este campo es requerido
+                      </small>
+                    </div>
+
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Número celular o WeeChat
+                      </label>
+                      <div class="relative">
+
+                        <UInput v-model="proveedor.supplier_phone"
+                          v-maska="getPhoneMask(proveedor.supplier_phone || '')" placeholder="Ej: 51912345678" size="md"
+                          type="text" :class="[
+                            'text-base w-full',
+                            validationErrors[`phone_${proveedor.id}`] ? 'border-red-500 focus:border-red-500' : ''
+                          ]" :aria-label="`Número celular para ${proveedor.products}`"
+                          @input="handlePhoneInput(proveedor, $event.target.value)" @keypress="onPhoneKeypress" />
+                      </div>
+                      <small v-if="validationErrors[`phone_${proveedor.id}`]" class="text-red-500 text-xs mt-1 block">
+                        Este campo es requerido
+                      </small>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </UCard>
-          </div>
 
-          <!-- Save Button -->
+                <!-- Desktop Layout (Grid) -->
+                <div class="hidden md:block">
+                  <div class="grid grid-cols-4 gap-4 items-center">
+
+
+                    <!-- Productos Column -->
+                    <div class="flex flex-col justify-center">
+                      <div class="text-sm font-medium  mb-1">Productos</div>
+                      <UButton :label="proveedor.products" variant="soft" color="neutral" size="sm"
+                        class="justify-start text-xs" disabled />
+                    </div>
+
+                    <!-- Codigo proveedor Column -->
+                    <div class="flex flex-col justify-center">
+                      <div class="text-sm font-medium  mb-1">Código</div>
+                      <UButton :label="proveedor.code_supplier" variant="soft" color="neutral" size="sm"
+                        class="justify-start text-xs" disabled />
+                    </div>
+
+                    <!-- Nombre del vendedor Column -->
+                    <div class="flex flex-col justify-center">
+                      <div class="text-sm font-medium  mb-1">Vendedor</div>
+                      <UInput v-model="proveedor.supplier" placeholder="Nombre del vendedor" size="sm" :class="[
+                        'text-sm',
+                        validationErrors[`vendor_${proveedor.id}`] ? 'border-red-500 focus:border-red-500' : ''
+                      ]" @input="handleVendorInput(proveedor, $event.target.value)" />
+                      <small v-if="validationErrors[`vendor_${proveedor.id}`]" class="text-red-500 text-xs mt-1">
+                        Requerido
+                      </small>
+                    </div>
+
+                    <!-- Numero celular Column -->
+                    <div class="flex flex-col justify-center">
+                      <div class="text-sm font-medium  mb-1">Celular</div>
+                      <div class="relative">
+
+                        <UInput v-model="proveedor.supplier_phone"
+                          v-maska="getPhoneMask(proveedor.supplier_phone || '')" placeholder="Ej: 51912345678" size="sm"
+                          type="tel" :class="[
+                            'text-sm pl-8',
+                            validationErrors[`phone_${proveedor.id}`] ? 'border-red-500 focus:border-red-500' : ''
+                          ]" @input="handlePhoneInput(proveedor, $event.target.value)" @keypress="onPhoneKeypress" />
+                      </div>
+                      <small v-if="validationErrors[`phone_${proveedor.id}`]" class="text-red-500 text-xs mt-1">
+                        Requerido
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </UCard>
+            </div>
+
+            <!-- Save Button -->
             <UButton color="primary" size="xl" @click="guardarDatos" :loading="saving"
               class=" text-lg font-semibold py-4 mx-auto flex items-center justify-center"
               :aria-label="`Guardar datos de ${data.proveedores.length} proveedores`">
               <UIcon name="i-heroicons-check" class="w-5 h-5 mr-2 flex items-center justify-center" />
               Guardar Datos
             </UButton>
-        </UCard>
+          </UCard>
 
         </div>
 
