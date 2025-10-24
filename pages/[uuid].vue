@@ -141,12 +141,12 @@
 
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                      Número celular
+                      Número celular o WeeChat
                     </label>
                     <div class="relative">
                       
                       <UInput v-model="proveedor.supplier_phone" v-maska="getPhoneMask(proveedor.supplier_phone || '')"
-                        placeholder="Ej: 51912345678" size="md" type="tel" :class="[
+                        placeholder="Ej: 51912345678" size="md" type="text" :class="[
                           'text-base w-full',
                           validationErrors[`phone_${proveedor.id}`] ? 'border-red-500 focus:border-red-500' : ''
                         ]" :aria-label="`Número celular para ${proveedor.products}`"
