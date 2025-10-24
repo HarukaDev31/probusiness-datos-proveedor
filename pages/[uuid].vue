@@ -147,7 +147,7 @@
                       
                       <UInput v-model="proveedor.supplier_phone" v-maska="getPhoneMask(proveedor.supplier_phone || '')"
                         placeholder="Ej: 51912345678" size="md" type="tel" :class="[
-                          'text-base w-full pl-10',
+                          'text-base w-full',
                           validationErrors[`phone_${proveedor.id}`] ? 'border-red-500 focus:border-red-500' : ''
                         ]" :aria-label="`Número celular para ${proveedor.products}`"
                         @input="handlePhoneInput(proveedor, $event.target.value)" @keypress="onPhoneKeypress" />
