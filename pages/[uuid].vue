@@ -94,25 +94,7 @@
                 Hola, por favor llenar los datos de tu proveedor
               </h1>
             </div>
-            <div class=" rounded-lg p-4">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex items-center space-x-3 ">
-                  <UIcon name="i-heroicons-user" class="w-6 h-6 text-primary" />
-                  <div>
-                    <div class="text-sm font-medium ">Nombre del Cliente</div>
-                    <div class="text-lg font-semibold ">{{ data.nombre }}</div>
-                  </div>
-                </div>
-                <div class="flex items-center space-x-3">
-                  <UIcon name="i-heroicons-phone" class="w-6 h-6 text-primary" />
-                  <div>
-                    <div class="text-sm font-medium ">Teléfono del Cliente</div>
-                    <div class="text-lg font-semibold ">{{ data.telefono }}</div>
-                  </div>
-                </div>
-               
-              </div>
-            </div>
+           
 
           <!-- Provider Cards -->
           <div class="max-h-[600px] overflow-y-auto">
