@@ -7,14 +7,11 @@
       <div class="absolute inset-0 opacity-40" style="background-color: black;"></div>
     </div>
 
-    <!-- Theme Toggle Button -->
-    <div class="fixed top-4 right-4 z-20">
-      <UButton :icon="isDark ? 'i-heroicons-sun' : 'i-heroicons-moon'" variant="ghost" size="lg" @click="toggleDarkMode"
-        class="text-white hover:text-gray-200" />
-    </div>
+    <!-- Theme Toggle Button - Disabled for this view -->
+   
 
     <!-- Content -->
-    <div class="relative z-10 min-h-screen flex items-center justify-center px-8 pt-16">
+    <div class="relative z-10 min-h-screen flex items-center justify-center px-3 pt-2 ">
       <div class="w-full max-w-6xl">
         <!-- Loading State with Skeleton -->
         <div v-if="loading">
@@ -87,19 +84,29 @@
 
         <!-- Main Form - Responsive Cards View -->
         <div v-else-if="data">
-          <!-- Header Card -->
-          <UCard class="shadow-2xl border-0 p-6 mb-6">
-            <div class="text-center py-4 mb-6">
-              <h1 class="text-2xl md:text-3xl font-bold mb-3">
+          <!-- Main Card with Title and Provider Cards -->
+          <UCard class="shadow-2xl border-0 p-2 mb-6">
+            <!-- Title - Hides on mobile scroll -->
+            <div 
+              class="text-center py-4 transition-all duration-300"
+              :class="[
+                'mb-6', 
+                showTitle ? 'block' : 'hidden md:block',
+                showTitle ? 'mb-6' : 'mb-0 md:mb-6'
+              ]">
+              <h1 class="text-xl md:text-3xl font-bold mb-3">
                 Hola, por favor llenar los datos de tu proveedor
               </h1>
             </div>
 
-
-            <!-- Provider Cards -->
-            <div class="max-h-[600px] overflow-y-auto">
+            <!-- Provider Cards Container -->
+            <div 
+              class="overflow-y-auto transition-all duration-300" 
+              :class="showTitle ? 'max-h-[600px]' : 'h-[calc(100vh-200px)] max-h-none'"
+              @scroll="handleScroll"
+              style="transition: max-height 0.3s ease-in-out;">
               <UCard v-for="(proveedor, index) in data.proveedores" :key="proveedor.id"
-                class="shadow-lg border-0 p-4 md:p-6" :aria-label="`Proveedor ${index + 1}: ${proveedor.products}`"
+                class="shadow-lg border-0 p-2 md:p-6" :aria-label="`Proveedor ${index + 1}: ${proveedor.products}`"
                 role="article" tabindex="0">
                 <!-- Mobile Layout (Stacked) -->
                 <div class="block md:hidden space-y-4">
@@ -210,15 +217,17 @@
                 </div>
               </UCard>
             </div>
+          </UCard>
 
-            <!-- Save Button -->
+          <!-- Save Button - Sticky on mobile -->
+          <div class="md:mt-6 flex justify-center md:relative fixed bottom-0 left-0 right-0 p-4 md:p-0 bg-white md:bg-transparent shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] md:shadow-none z-50">
             <UButton color="primary" size="xl" @click="guardarDatos" :loading="saving"
-              class=" text-lg font-semibold py-4 mx-auto flex items-center justify-center"
+              class="text-lg font-semibold py-4 w-full md:w-auto flex items-center justify-center shadow-lg"
               :aria-label="`Guardar datos de ${data.proveedores.length} proveedores`">
               <UIcon name="i-heroicons-check" class="w-5 h-5 mr-2 flex items-center justify-center" />
               Guardar Datos
             </UButton>
-          </UCard>
+          </div>
 
         </div>
 
@@ -267,12 +276,31 @@ const uuid = route.params.uuid as string
 // Use composable
 const { getCotizacionByUUID, updateProveedores, data, loading, error } = useCotizacion()
 
-// Dark mode
+// Dark mode - Force light mode for this view
 const colorMode = useColorMode()
 const isDark = computed(() => colorMode.value === 'dark')
 
+// Force light mode on mount and save previous preference
+const previousColorPreference = ref<string>('')
+
 const toggleDarkMode = () => {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+  // Toggle is disabled in this view, but we keep the function for the button
+  colorMode.preference = 'light'
+}
+
+// Title visibility for mobile scroll
+const showTitle = ref(true)
+
+// Handle scroll on cards container
+const handleScroll = (event: Event) => {
+  const target = event.target as HTMLElement
+  const scrollTop = target.scrollTop
+  const scrollThreshold = 50 // Show/hide title after scrolling 50px
+  
+  // Only hide on mobile
+  if (window.innerWidth < 768) {
+    showTitle.value = scrollTop < scrollThreshold
+  }
 }
 
 // Comprehensive country codes and flags
@@ -590,12 +618,24 @@ const validateForm = () => {
 
 // Load data on mount
 onMounted(async () => {
+  // Save current color preference to restore later if needed
+  previousColorPreference.value = colorMode.preference || 'light'
+  // Force light mode for this view
+  colorMode.preference = 'light'
+  
+  // Load cotization data
   console.log('uuid', uuid)
   if (uuid) {
     await getCotizacionByUUID(uuid)
   } else {
     error.value = 'No se pudo obtener la cotización'
   }
+})
+
+// Optional: Restore previous preference when leaving the page
+onUnmounted(() => {
+  // Uncomment the line below if you want to restore the previous theme when leaving this page
+  // colorMode.preference = previousColorPreference.value
 })
 
 // Save function
