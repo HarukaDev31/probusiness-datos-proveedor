@@ -106,7 +106,6 @@
                   <!-- Product Info -->
                   <div class="grid grid-cols-2 gap-4">
                     <div class="flex items-center gap-3 p-3 rounded-lg border">
-                      <UIcon name="i-heroicons-cube" class="w-5 h-5 " />
                       <div class="flex-1">
                         <div class="text-sm font-medium text-gray-700">Producto</div>
                         <UButton :label="proveedor.products" variant="soft" color="neutral" size="sm"
@@ -116,7 +115,6 @@
 
                     <!-- Supplier Code -->
                     <div class="flex items-center gap-3 p-3 rounded-lg border">
-                      <UIcon name="i-heroicons-tag" class="w-5 h-5 " />
                       <div class="flex-1">
                         <div class="text-sm font-medium text-gray-700">Código Proveedor</div>
                         <UButton :label="proveedor.code_supplier" variant="soft" color="neutral" size="sm"
