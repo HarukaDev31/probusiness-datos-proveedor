@@ -85,14 +85,14 @@
         <!-- Main Form - Responsive Cards View -->
         <div v-else-if="data">
           <!-- Main Card with Title and Provider Cards -->
-          <UCard class="shadow-2xl border-0 p-2 mb-6">
+          <UCard class="shadow-2xl border-0 p-2 mb-2">
             <!-- Title - Hides on mobile scroll -->
             <div 
               class="text-center py-4 transition-all duration-300"
               :class="[
-                'mb-6', 
+                'mb-2', 
                 showTitle ? 'block' : 'hidden md:block',
-                showTitle ? 'mb-6' : 'mb-0 md:mb-6'
+                showTitle ? 'mb-2' : 'mb-0 md:mb-2'
               ]">
               <h1 class="text-xl md:text-3xl font-bold mb-3">
                 Hola, por favor llenar los datos de tu proveedor
@@ -102,7 +102,7 @@
             <!-- Provider Cards Container -->
             <div 
               class="overflow-y-auto transition-all duration-300" 
-              :class="showTitle ? 'max-h-[600px]' : 'h-[calc(100vh-200px)] max-h-none'"
+              :class="showTitle ? 'max-h-[800px]' : 'h-[calc(100vh-100px)] max-h-none'"
               @scroll="handleScroll"
               style="transition: max-height 0.3s ease-in-out;">
               <UCard v-for="(proveedor, index) in data.proveedores" :key="proveedor.id"
