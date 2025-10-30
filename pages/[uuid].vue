@@ -94,7 +94,7 @@
                 showTitle ? 'block' : 'hidden md:block',
                 showTitle ? '' : 'mb-0 md:'
               ]">
-              <h1 class="text-xl md:text-3xl font-bold mb-3">
+              <h1 class="text-xl md:text-3xl font-bold">
                 Hola, por favor llenar los datos de tu proveedor
               </h1>
             </div>
