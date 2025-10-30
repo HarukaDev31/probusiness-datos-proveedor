@@ -88,11 +88,11 @@
           <UCard class="shadow-2xl border-0 p-2 mb-2">
             <!-- Title - Hides on mobile scroll -->
             <div 
-              class="text-center py-2 transition-all duration-300"
+              class="text-center  transition-all duration-300"
               :class="[
-                'mb-2', 
+                '', 
                 showTitle ? 'block' : 'hidden md:block',
-                showTitle ? 'mb-2' : 'mb-0 md:mb-2'
+                showTitle ? '' : 'mb-0 md:'
               ]">
               <h1 class="text-xl md:text-3xl font-bold mb-3">
                 Hola, por favor llenar los datos de tu proveedor
