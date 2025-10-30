@@ -12,7 +12,7 @@
 
     <!-- Content -->
     <div class="relative z-10 min-h-screen flex items-center justify-center px-3 pt-2 ">
-      <div class="w-full max-w-6xl">
+      <div class="w-full max-w-6xl h-[800px]">
         <!-- Loading State with Skeleton -->
         <div v-if="loading">
           <!-- Header Skeleton -->
