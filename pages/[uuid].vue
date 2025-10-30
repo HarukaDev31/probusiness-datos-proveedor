@@ -88,7 +88,7 @@
           <UCard class="shadow-2xl border-0 p-2 mb-2">
             <!-- Title - Hides on mobile scroll -->
             <div 
-              class="text-center py-4 transition-all duration-300"
+              class="text-center py-2 transition-all duration-300"
               :class="[
                 'mb-2', 
                 showTitle ? 'block' : 'hidden md:block',
