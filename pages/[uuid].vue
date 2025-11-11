@@ -116,7 +116,8 @@
                       <div class="flex-1">
                         <div class="text-sm font-medium text-gray-700">Producto</div>
                         <UButton :label="proveedor.products" variant="soft" color="neutral" size="sm"
-                          class="justify-start text-xs mt-1 word-break-all" disabled />
+                          class="justify-start text-xs mt-1 w-full text-left whitespace-normal break-words"
+                          disabled />
                       </div>
                     </div>
 
@@ -125,7 +126,8 @@
                       <div class="flex-1">
                         <div class="text-sm font-medium text-gray-700">Código Proveedor</div>
                         <UButton :label="proveedor.code_supplier" variant="soft" color="neutral" size="sm"
-                          class="justify-start text-xs mt-1 word-break-all" disabled />
+                          class="justify-start text-xs mt-1 w-full text-left whitespace-normal break-words"
+                          disabled />
                       </div>
                     </div>
                   </div>
