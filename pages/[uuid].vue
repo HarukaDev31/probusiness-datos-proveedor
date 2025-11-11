@@ -113,11 +113,15 @@
                   <!-- Product Info -->
                   <div class="grid grid-cols-2 gap-4">
                     <div class="flex items-center gap-3 p-3 rounded-lg border">
-                      <div class="flex-1">
+                      <div class="flex-1 w-full">
                         <div class="text-sm font-medium text-gray-700">Producto</div>
-                        <UButton :label="proveedor.products" variant="soft" color="neutral" size="sm"
+                        <UButton variant="soft" color="neutral" size="sm"
                           class="justify-start text-xs mt-1 w-full text-left whitespace-normal break-words"
-                          disabled />
+                          disabled>
+                          <span class="w-full text-left whitespace-normal break-words leading-snug">
+                            {{ proveedor.products }}
+                          </span>
+                        </UButton>
                       </div>
                     </div>
 
@@ -125,9 +129,13 @@
                     <div class="flex items-center gap-3 p-3 rounded-lg border">
                       <div class="flex-1">
                         <div class="text-sm font-medium text-gray-700">Código Proveedor</div>
-                        <UButton :label="proveedor.code_supplier" variant="soft" color="neutral" size="sm"
+                        <UButton variant="soft" color="neutral" size="sm"
                           class="justify-start text-xs mt-1 w-full text-left whitespace-normal break-words"
-                          disabled />
+                          disabled>
+                          <span class="w-full text-left whitespace-normal break-words leading-snug">
+                            {{ proveedor.code_supplier }}
+                          </span>
+                        </UButton>
                       </div>
                     </div>
                   </div>
