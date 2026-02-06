@@ -8,7 +8,7 @@
     </div>
 
     <!-- Theme Toggle Button - Disabled for this view -->
-   
+
 
     <!-- Content -->
     <div class="relative z-10 min-h-screen flex items-center justify-center px-3 pt-2 ">
@@ -87,23 +87,19 @@
           <!-- Main Card with Title and Provider Cards -->
           <UCard class="shadow-2xl border-0 p-2 mb-2">
             <!-- Title - Hides on mobile scroll -->
-            <div 
-              class="text-center  transition-all duration-300"
-              :class="[
-                '', 
-                showTitle ? 'block' : 'hidden md:block',
-                showTitle ? '' : 'mb-0 md:'
-              ]">
+            <div class="text-center  transition-all duration-300" :class="[
+              '',
+              showTitle ? 'block' : 'hidden md:block',
+              showTitle ? '' : 'mb-0 md:'
+            ]">
               <h1 class="text-xl md:text-3xl font-bold">
                 Hola, por favor llenar los datos de tu proveedor
               </h1>
             </div>
 
             <!-- Provider Cards Container -->
-            <div 
-              class="overflow-y-auto transition-all duration-300" 
-              :class="showTitle ? 'max-h-[800px]' : 'h-[calc(100vh-100px)] max-h-none'"
-              @scroll="handleScroll"
+            <div class="overflow-y-auto transition-all duration-300"
+              :class="showTitle ? 'max-h-[800px]' : 'h-[calc(100vh-100px)] max-h-none'" @scroll="handleScroll"
               style="transition: max-height 0.3s ease-in-out;">
               <UCard v-for="(proveedor, index) in data.proveedores" :key="proveedor.id"
                 class="shadow-lg border-0 p-2 md:p-6" :aria-label="`Proveedor ${index + 1}: ${proveedor.products}`"
@@ -116,8 +112,7 @@
                       <div class="flex-1 w-full">
                         <div class="text-sm font-medium text-gray-700">Producto</div>
                         <UButton variant="soft" color="neutral" size="sm"
-                          class="justify-start text-xs mt-1 w-full text-left whitespace-normal break-words"
-                          disabled>
+                          class="justify-start text-xs mt-1 w-full text-left whitespace-normal break-words" disabled>
                           <span class="w-full text-left whitespace-normal break-words leading-snug">
                             {{ proveedor.products }}
                           </span>
@@ -130,8 +125,7 @@
                       <div class="flex-1">
                         <div class="text-sm font-medium text-gray-700">Código Proveedor</div>
                         <UButton variant="soft" color="neutral" size="sm"
-                          class="justify-start text-xs mt-1 w-full text-left whitespace-normal break-words"
-                          disabled>
+                          class="justify-start text-xs mt-1 w-full text-left whitespace-normal break-words" disabled>
                           <span class="w-full text-left whitespace-normal break-words leading-snug">
                             {{ proveedor.code_supplier }}
                           </span>
@@ -159,15 +153,27 @@
                       <label class="block text-sm font-medium text-gray-700 mb-2">
                         Número celular o WeeChat
                       </label>
-                      <div class="relative">
+                      <div
+                        class="relative flex items-center rounded-lg border bg-white dark:bg-gray-900 overflow-hidden focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-primary-500"
+                        :class="[validationErrors[`phone_${proveedor.id}`] ? 'border-red-500 focus-within:ring-red-500 focus-within:border-red-500' : 'border-gray-200 dark:border-gray-700']">
 
-                        <UInput v-model="proveedor.supplier_phone"
-                          v-maska="getPhoneMask(proveedor.supplier_phone || '')" placeholder="Ej: 51912345678" size="md"
-                          type="text" :class="[
-                            'text-base w-full',
-                            validationErrors[`phone_${proveedor.id}`] ? 'border-red-500 focus:border-red-500' : ''
+                        <UInput v-model="proveedor.supplier_phone" v-maska="chinaPhoneMask"
+                          placeholder="(86) 138 1234 5678" size="md" type="text" :class="[
+                            'text-base w-full min-w-0 border-0 rounded-none bg-transparent focus:ring-0 placeholder:text-gray-400',
+                            validationErrors[`phone_${proveedor.id}`] ? '!border-red-500' : ''
                           ]" :aria-label="`Número celular para ${proveedor.products}`"
-                          @input="handlePhoneInput(proveedor, $event.target.value)" @keypress="onPhoneKeypress" />
+                          @input="handlePhoneInput(proveedor, $event.target.value)" @keypress="onPhoneKeypress">
+                          <template #leading>
+                            <svg width="18px" height="18px" viewBox="0 0 0.81 0.81" xmlns="http://www.w3.org/2000/svg"
+                              xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+                              class="iconify iconify--twemoji" preserveAspectRatio="xMidYMid meet">
+                              <path fill="#DE2910"
+                                d="M0.81 0.608a0.09 0.09 0 0 1 -0.09 0.09H0.09A0.09 0.09 0 0 1 0 0.608V0.202a0.09 0.09 0 0 1 0.09 -0.09H0.72a0.09 0.09 0 0 1 0.09 0.09z" />
+                              <path fill="#FFDE02"
+                                d="m0.251 0.202 0.017 0.008 0.013 -0.013 -0.002 0.018 0.016 0.009 -0.018 0.003 -0.003 0.018 -0.009 -0.016 -0.018 0.002 0.013 -0.013zm0.105 0.066 -0.008 0.017 0.013 0.013 -0.018 -0.003 -0.009 0.016 -0.003 -0.018 -0.018 -0.003 0.016 -0.009 -0.003 -0.018 0.013 0.013zm-0.022 0.085 0.006 0.017 0.018 0 -0.015 0.011 0.005 0.018 -0.015 -0.011 -0.015 0.011 0.005 -0.018 -0.015 -0.011 0.018 0zm-0.083 0.074 0.017 0.008 0.013 -0.013 -0.002 0.018 0.016 0.009 -0.018 0.003 -0.003 0.018 -0.009 -0.016 -0.018 0.002 0.013 -0.013zm-0.093 -0.181 0.021 0.06 0.064 0.001 -0.051 0.038 0.018 0.061 -0.052 -0.036 -0.052 0.036 0.018 -0.061 -0.051 -0.038 0.064 -0.001z" />
+                            </svg>
+                          </template>
+                        </UInput>
                       </div>
                       <small v-if="validationErrors[`phone_${proveedor.id}`]" class="text-red-500 text-xs mt-1 block">
                         Este campo es requerido
@@ -203,24 +209,36 @@
                         validationErrors[`vendor_${proveedor.id}`] ? 'border-red-500 focus:border-red-500' : ''
                       ]" @input="handleVendorInput(proveedor, $event.target.value)" />
                       <small v-if="validationErrors[`vendor_${proveedor.id}`]" class="text-red-500 text-xs mt-1">
-                        Requerido
+                        El nombre del vendedor es requerido
                       </small>
                     </div>
 
                     <!-- Numero celular Column -->
                     <div class="flex flex-col justify-center">
                       <div class="text-sm font-medium  mb-1">Celular</div>
-                      <div class="relative">
+                      <div
+                        class="relative flex items-center rounded-md border bg-white dark:bg-gray-900 overflow-hidden focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-primary-500"
+                        :class="[validationErrors[`phone_${proveedor.id}`] ? 'border-red-500 focus-within:ring-red-500 focus-within:border-red-500' : 'border-gray-200 dark:border-gray-700']">
 
-                        <UInput v-model="proveedor.supplier_phone"
-                          v-maska="getPhoneMask(proveedor.supplier_phone || '')" placeholder="Ej: 51912345678" size="sm"
-                          type="tel" :class="[
-                            'text-sm pl-8',
-                            validationErrors[`phone_${proveedor.id}`] ? 'border-red-500 focus:border-red-500' : ''
-                          ]" @input="handlePhoneInput(proveedor, $event.target.value)" @keypress="onPhoneKeypress" />
+                        <UInput v-model="proveedor.supplier_phone" v-maska="chinaPhoneMask"
+                          placeholder="(86) 138 1234 5678" size="sm" type="tel" :class="[
+                            'text-sm w-full min-w-0 border-0 rounded-none bg-transparent focus:ring-0 placeholder:text-gray-400',
+                            validationErrors[`phone_${proveedor.id}`] ? '!border-red-500' : ''
+                          ]" @input="handlePhoneInput(proveedor, $event.target.value)" @keypress="onPhoneKeypress">
+                          <template #leading>
+                            <svg width="18px" height="18px" viewBox="0 0 0.81 0.81" xmlns="http://www.w3.org/2000/svg"
+                              xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+                              class="iconify iconify--twemoji" preserveAspectRatio="xMidYMid meet">
+                              <path fill="#DE2910"
+                                d="M0.81 0.608a0.09 0.09 0 0 1 -0.09 0.09H0.09A0.09 0.09 0 0 1 0 0.608V0.202a0.09 0.09 0 0 1 0.09 -0.09H0.72a0.09 0.09 0 0 1 0.09 0.09z" />
+                              <path fill="#FFDE02"
+                                d="m0.251 0.202 0.017 0.008 0.013 -0.013 -0.002 0.018 0.016 0.009 -0.018 0.003 -0.003 0.018 -0.009 -0.016 -0.018 0.002 0.013 -0.013zm0.105 0.066 -0.008 0.017 0.013 0.013 -0.018 -0.003 -0.009 0.016 -0.003 -0.018 -0.018 -0.003 0.016 -0.009 -0.003 -0.018 0.013 0.013zm-0.022 0.085 0.006 0.017 0.018 0 -0.015 0.011 0.005 0.018 -0.015 -0.011 -0.015 0.011 0.005 -0.018 -0.015 -0.011 0.018 0zm-0.083 0.074 0.017 0.008 0.013 -0.013 -0.002 0.018 0.016 0.009 -0.018 0.003 -0.003 0.018 -0.009 -0.016 -0.018 0.002 0.013 -0.013zm-0.093 -0.181 0.021 0.06 0.064 0.001 -0.051 0.038 0.018 0.061 -0.052 -0.036 -0.052 0.036 0.018 -0.061 -0.051 -0.038 0.064 -0.001z" />
+                            </svg>
+                          </template>
+                        </UInput>
                       </div>
                       <small v-if="validationErrors[`phone_${proveedor.id}`]" class="text-red-500 text-xs mt-1">
-                        Requerido
+                        Este campo es requerido (mín. 8 dígitos)
                       </small>
                     </div>
                   </div>
@@ -230,7 +248,8 @@
           </UCard>
 
           <!-- Save Button - Sticky on mobile -->
-          <div class="md:mt-6 flex justify-center md:relative fixed bottom-0 left-0 right-0 p-4 md:p-0 bg-white md:bg-transparent shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] md:shadow-none z-50">
+          <div
+            class="md:mt-6 flex justify-center md:relative fixed bottom-0 left-0 right-0 p-4 md:p-0 bg-white md:bg-transparent shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] md:shadow-none z-50">
             <UButton color="primary" size="xl" @click="guardarDatos" :loading="saving"
               class="text-lg font-semibold py-4 w-full md:w-auto flex items-center justify-center shadow-lg"
               :aria-label="`Guardar datos de ${data.proveedores.length} proveedores`">
@@ -306,7 +325,7 @@ const handleScroll = (event: Event) => {
   const target = event.target as HTMLElement
   const scrollTop = target.scrollTop
   const scrollThreshold = 50 // Show/hide title after scrolling 50px
-  
+
   // Only hide on mobile
   if (window.innerWidth < 768) {
     showTitle.value = scrollTop < scrollThreshold
@@ -552,14 +571,29 @@ const getPhoneMask = (value: string) => {
   return getCountryInfo(value).mask
 }
 
-const handlePhoneInput = (proveedor: any, value: string) => {
-  // Only allow digits and + at the beginning
-  const cleaned = value.replace(/[^\d+]/g, '')
-  proveedor.supplier_phone = cleaned
+// China: (86) al inicio del UInput vía máscara; 13 huecos para poder escribir 86 + número; al enviar se corta el 86
+const chinaPhoneMask = '(86) ### ### #### ###'
 
-  // Clear validation errors when user starts typing
-  if (cleaned.trim() !== '') {
-    validationErrors.value[`phone_${proveedor.id}`] = false
+const normalizePhoneToNational = (value: string) => {
+  const digits = (value || '').trim().replace(/\D/g, '')
+  if (digits.startsWith('86')) return digits.slice(2)
+  return digits
+}
+
+const handlePhoneInput = (proveedor: any, value: string) => {
+  const cleaned = (value || '').trim().replace(/\D/g, '')
+  if (cleaned.startsWith('86')) {
+    proveedor.supplier_phone = `(86) ${cleaned.slice(2)}`
+  } else if (cleaned.startsWith('+86')) {
+    proveedor.supplier_phone = `(86) ${cleaned.slice(3)}`
+  } else {
+    proveedor.supplier_phone = `(86) ${cleaned}`
+  }
+  // Solo quitar error si tiene 8+ dígitos; si tiene 1–7 dígitos mostrar error
+  const digits = (proveedor.supplier_phone || '').trim().replace(/\D/g, '')
+  validationErrors.value = {
+    ...validationErrors.value,
+    [`phone_${proveedor.id}`]: digits.length >= 8 ? false : digits.length > 0
   }
 }
 
@@ -571,7 +605,7 @@ const handleVendorInput = (proveedor: any, value: string) => {
 }
 
 const onPhoneKeypress = (event: KeyboardEvent) => {
-  // Allow: backspace, delete, tab, escape, enter, home, end, left, right, up, down
+  // Allow: backspace, delete, tab, escape, enter, home, end, left, right, up, down all
   if ([8, 9, 27, 13, 46, 35, 36, 37, 38, 39, 40].includes(event.keyCode) ||
     // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
     (event.ctrlKey === true && [65, 67, 86, 88].includes(event.keyCode)) ||
@@ -585,46 +619,59 @@ const onPhoneKeypress = (event: KeyboardEvent) => {
   event.preventDefault()
 }
 
+// Al enviar al backend: cortar el 86 inicial si lo escribieron
 const getPhoneBackendValue = (value: string) => {
-  // Remove all non-digits for backend
-  return value.replace(/\D/g, '')
+  const digits = (value || '').trim().replace(/\D/g, '')
+  if (digits.startsWith('86')) return digits.slice(2)
+  return digits
 }
 
 const validateForm = () => {
   if (!data.value?.proveedores) return false
 
-  validationErrors.value = {}
+  const errors: Record<string, boolean> = {}
   let hasValidData = false
+  let hasIncompleteProvider = false
 
-  data.value.proveedores.forEach((proveedor: any, index: number) => {
+  data.value.proveedores.forEach((proveedor: any) => {
     const hasVendor = proveedor.supplier && proveedor.supplier.trim() !== ''
-    const hasPhone = proveedor.supplier_phone && proveedor.supplier_phone.trim() !== ''
+    const phoneDigits = (proveedor.supplier_phone || '').trim().replace(/\D/g, '')
+    const hasRealPhone = phoneDigits.length >= 8
+    const hasIncompletePhone = phoneDigits.length > 0 && phoneDigits.length < 8
 
-    // Solo mostrar error si el proveedor tiene al menos un campo con datos
-    if (hasVendor || hasPhone) {
+    if (hasVendor || hasRealPhone || hasIncompletePhone) {
       hasValidData = true
 
-      // Si tiene datos pero le falta el otro campo, marcar error
-      if (hasVendor && !hasPhone) {
-        validationErrors.value[`phone_${proveedor.id}`] = true
-        validationErrors.value[`vendor_${proveedor.id}`] = false
-      } else if (!hasVendor && hasPhone) {
-        validationErrors.value[`vendor_${proveedor.id}`] = true
-        validationErrors.value[`phone_${proveedor.id}`] = false
+      if (hasVendor && !hasRealPhone) {
+        errors[`phone_${proveedor.id}`] = true
+        errors[`vendor_${proveedor.id}`] = false
+        hasIncompleteProvider = true
+      } else if (!hasVendor && hasRealPhone) {
+        errors[`vendor_${proveedor.id}`] = true
+        errors[`phone_${proveedor.id}`] = false
+        hasIncompleteProvider = true
+      } else if (hasIncompletePhone) {
+        errors[`phone_${proveedor.id}`] = true
+        errors[`vendor_${proveedor.id}`] = !hasVendor
+        hasIncompleteProvider = true
+      } else if (hasVendor && hasRealPhone) {
+        errors[`vendor_${proveedor.id}`] = false
+        errors[`phone_${proveedor.id}`] = false
       } else {
-        // Si tiene ambos campos, limpiar errores
-        validationErrors.value[`vendor_${proveedor.id}`] = false
-        validationErrors.value[`phone_${proveedor.id}`] = false
+        errors[`vendor_${proveedor.id}`] = false
+        errors[`phone_${proveedor.id}`] = false
       }
     } else {
-      // Si no tiene ningún campo, no mostrar errores
-      validationErrors.value[`vendor_${proveedor.id}`] = false
-      validationErrors.value[`phone_${proveedor.id}`] = false
+      errors[`vendor_${proveedor.id}`] = false
+      errors[`phone_${proveedor.id}`] = false
     }
   })
 
-  return hasValidData
+  validationErrors.value = { ...errors }
+  return hasValidData && !hasIncompleteProvider
 }
+
+
 
 // Load data on mount
 onMounted(async () => {
@@ -632,7 +679,7 @@ onMounted(async () => {
   previousColorPreference.value = colorMode.preference || 'light'
   // Force light mode for this view
   colorMode.preference = 'light'
-  
+
   // Load cotization data
   console.log('uuid', uuid)
   if (uuid) {
@@ -666,8 +713,9 @@ const guardarDatos = async () => {
 
     const providersWithData = data.value.proveedores.filter((proveedor: any) => {
       const hasVendor = proveedor.supplier && proveedor.supplier.trim() !== ''
-      const hasPhone = proveedor.supplier_phone && proveedor.supplier_phone.trim() !== ''
-      return hasVendor || hasPhone
+      const phoneDigits = (proveedor.supplier_phone || '').trim().replace(/\D/g, '')
+      const hasRealPhone = phoneDigits.length >= 8
+      return hasVendor || hasRealPhone
     })
 
     // Prepare data for backend
