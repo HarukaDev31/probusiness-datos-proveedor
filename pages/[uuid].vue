@@ -157,26 +157,33 @@
                         class="relative flex items-center rounded-lg border bg-white dark:bg-gray-900 overflow-hidden focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-primary-500"
                         :class="[validationErrors[`phone_${proveedor.id}`] ? 'border-red-500 focus-within:ring-red-500 focus-within:border-red-500' : 'border-gray-200 dark:border-gray-700']">
 
-                        <UInput v-model="proveedor.supplier_phone" v-maska="chinaPhoneMask"
-                          placeholder="(86) 138 1234 5678" size="md" type="text" :class="[
+                        <UInput v-model="proveedor.supplier_phone" v-maska="chinaPhoneMask" placeholder="138 1234 5678"
+                          size="md" type="text" :class="[
                             'text-base w-full min-w-0 border-0 rounded-none bg-transparent focus:ring-0 placeholder:text-gray-400',
                             validationErrors[`phone_${proveedor.id}`] ? '!border-red-500' : ''
                           ]" :aria-label="`Número celular para ${proveedor.products}`"
-                          @input="handlePhoneInput(proveedor, $event.target.value)" @keypress="onPhoneKeypress">
+                          @input="handlePhoneInput(proveedor, $event.target.value)" @keypress="onPhoneKeypress" :ui="{
+                            base: 'pl-16',
+                            leading: 'flex items-center gap-1 shrink-0'
+                          }">
+                          
                           <template #leading>
-                            <svg width="18px" height="18px" viewBox="0 0 0.81 0.81" xmlns="http://www.w3.org/2000/svg"
-                              xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
-                              class="iconify iconify--twemoji" preserveAspectRatio="xMidYMid meet">
-                              <path fill="#DE2910"
-                                d="M0.81 0.608a0.09 0.09 0 0 1 -0.09 0.09H0.09A0.09 0.09 0 0 1 0 0.608V0.202a0.09 0.09 0 0 1 0.09 -0.09H0.72a0.09 0.09 0 0 1 0.09 0.09z" />
-                              <path fill="#FFDE02"
-                                d="m0.251 0.202 0.017 0.008 0.013 -0.013 -0.002 0.018 0.016 0.009 -0.018 0.003 -0.003 0.018 -0.009 -0.016 -0.018 0.002 0.013 -0.013zm0.105 0.066 -0.008 0.017 0.013 0.013 -0.018 -0.003 -0.009 0.016 -0.003 -0.018 -0.018 -0.003 0.016 -0.009 -0.003 -0.018 0.013 0.013zm-0.022 0.085 0.006 0.017 0.018 0 -0.015 0.011 0.005 0.018 -0.015 -0.011 -0.015 0.011 0.005 -0.018 -0.015 -0.011 0.018 0zm-0.083 0.074 0.017 0.008 0.013 -0.013 -0.002 0.018 0.016 0.009 -0.018 0.003 -0.003 0.018 -0.009 -0.016 -0.018 0.002 0.013 -0.013zm-0.093 -0.181 0.021 0.06 0.064 0.001 -0.051 0.038 0.018 0.061 -0.052 -0.036 -0.052 0.036 0.018 -0.061 -0.051 -0.038 0.064 -0.001z" />
-                            </svg>
+                            <p class="flex items-center gap-1 shrink-0">
+                              <svg width="18px" height="18px" viewBox="0 0 0.81 0.81" xmlns="http://www.w3.org/2000/svg"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+                                class="iconify iconify--twemoji" preserveAspectRatio="xMidYMid meet">
+                                <path fill="#DE2910"
+                                  d="M0.81 0.608a0.09 0.09 0 0 1 -0.09 0.09H0.09A0.09 0.09 0 0 1 0 0.608V0.202a0.09 0.09 0 0 1 0.09 -0.09H0.72a0.09 0.09 0 0 1 0.09 0.09z" />
+                                <path fill="#FFDE02"
+                                  d="m0.251 0.202 0.017 0.008 0.013 -0.013 -0.002 0.018 0.016 0.009 -0.018 0.003 -0.003 0.018 -0.009 -0.016 -0.018 0.002 0.013 -0.013zm0.105 0.066 -0.008 0.017 0.013 0.013 -0.018 -0.003 -0.009 0.016 -0.003 -0.018 -0.018 -0.003 0.016 -0.009 -0.003 -0.018 0.013 0.013zm-0.022 0.085 0.006 0.017 0.018 0 -0.015 0.011 0.005 0.018 -0.015 -0.011 -0.015 0.011 0.005 -0.018 -0.015 -0.011 0.018 0zm-0.083 0.074 0.017 0.008 0.013 -0.013 -0.002 0.018 0.016 0.009 -0.018 0.003 -0.003 0.018 -0.009 -0.016 -0.018 0.002 0.013 -0.013zm-0.093 -0.181 0.021 0.06 0.064 0.001 -0.051 0.038 0.018 0.061 -0.052 -0.036 -0.052 0.036 0.018 -0.061 -0.051 -0.038 0.064 -0.001z" />
+                              </svg>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">+86</p>
+                            </p>
                           </template>
                         </UInput>
                       </div>
                       <small v-if="validationErrors[`phone_${proveedor.id}`]" class="text-red-500 text-xs mt-1 block">
-                        Este campo es requerido
+                        Este campo es requerido (mín. 8 dígitos)
                       </small>
                     </div>
                   </div>
@@ -220,20 +227,26 @@
                         class="relative flex items-center rounded-md border bg-white dark:bg-gray-900 overflow-hidden focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-primary-500"
                         :class="[validationErrors[`phone_${proveedor.id}`] ? 'border-red-500 focus-within:ring-red-500 focus-within:border-red-500' : 'border-gray-200 dark:border-gray-700']">
 
-                        <UInput v-model="proveedor.supplier_phone" v-maska="chinaPhoneMask"
-                          placeholder="(86) 138 1234 5678" size="sm" type="tel" :class="[
+                        <UInput v-model="proveedor.supplier_phone" v-maska="chinaPhoneMask" placeholder="138 1234 5678"
+                          size="sm" type="tel" :class="[
                             'text-sm w-full min-w-0 border-0 rounded-none bg-transparent focus:ring-0 placeholder:text-gray-400',
                             validationErrors[`phone_${proveedor.id}`] ? '!border-red-500' : ''
-                          ]" @input="handlePhoneInput(proveedor, $event.target.value)" @keypress="onPhoneKeypress">
+                          ]" @input="handlePhoneInput(proveedor, $event.target.value)" @keypress="onPhoneKeypress" :ui="{
+                            base: 'pl-16',
+                            leading: 'flex items-center gap-1 shrink-0'
+                          }">
                           <template #leading>
-                            <svg width="18px" height="18px" viewBox="0 0 0.81 0.81" xmlns="http://www.w3.org/2000/svg"
-                              xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
-                              class="iconify iconify--twemoji" preserveAspectRatio="xMidYMid meet">
-                              <path fill="#DE2910"
-                                d="M0.81 0.608a0.09 0.09 0 0 1 -0.09 0.09H0.09A0.09 0.09 0 0 1 0 0.608V0.202a0.09 0.09 0 0 1 0.09 -0.09H0.72a0.09 0.09 0 0 1 0.09 0.09z" />
-                              <path fill="#FFDE02"
-                                d="m0.251 0.202 0.017 0.008 0.013 -0.013 -0.002 0.018 0.016 0.009 -0.018 0.003 -0.003 0.018 -0.009 -0.016 -0.018 0.002 0.013 -0.013zm0.105 0.066 -0.008 0.017 0.013 0.013 -0.018 -0.003 -0.009 0.016 -0.003 -0.018 -0.018 -0.003 0.016 -0.009 -0.003 -0.018 0.013 0.013zm-0.022 0.085 0.006 0.017 0.018 0 -0.015 0.011 0.005 0.018 -0.015 -0.011 -0.015 0.011 0.005 -0.018 -0.015 -0.011 0.018 0zm-0.083 0.074 0.017 0.008 0.013 -0.013 -0.002 0.018 0.016 0.009 -0.018 0.003 -0.003 0.018 -0.009 -0.016 -0.018 0.002 0.013 -0.013zm-0.093 -0.181 0.021 0.06 0.064 0.001 -0.051 0.038 0.018 0.061 -0.052 -0.036 -0.052 0.036 0.018 -0.061 -0.051 -0.038 0.064 -0.001z" />
-                            </svg>
+                            <p class="flex items-center gap-1 shrink-0">
+                              <svg width="18px" height="18px" viewBox="0 0 0.81 0.81" xmlns="http://www.w3.org/2000/svg"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+                                class="iconify iconify--twemoji" preserveAspectRatio="xMidYMid meet">
+                                <path fill="#DE2910"
+                                  d="M0.81 0.608a0.09 0.09 0 0 1 -0.09 0.09H0.09A0.09 0.09 0 0 1 0 0.608V0.202a0.09 0.09 0 0 1 0.09 -0.09H0.72a0.09 0.09 0 0 1 0.09 0.09z" />
+                                <path fill="#FFDE02"
+                                  d="m0.251 0.202 0.017 0.008 0.013 -0.013 -0.002 0.018 0.016 0.009 -0.018 0.003 -0.003 0.018 -0.009 -0.016 -0.018 0.002 0.013 -0.013zm0.105 0.066 -0.008 0.017 0.013 0.013 -0.018 -0.003 -0.009 0.016 -0.003 -0.018 -0.018 -0.003 0.016 -0.009 -0.003 -0.018 0.013 0.013zm-0.022 0.085 0.006 0.017 0.018 0 -0.015 0.011 0.005 0.018 -0.015 -0.011 -0.015 0.011 0.005 -0.018 -0.015 -0.011 0.018 0zm-0.083 0.074 0.017 0.008 0.013 -0.013 -0.002 0.018 0.016 0.009 -0.018 0.003 -0.003 0.018 -0.009 -0.016 -0.018 0.002 0.013 -0.013zm-0.093 -0.181 0.021 0.06 0.064 0.001 -0.051 0.038 0.018 0.061 -0.052 -0.036 -0.052 0.036 0.018 -0.061 -0.051 -0.038 0.064 -0.001z" />
+                              </svg>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">+86</p>
+                            </p>
                           </template>
                         </UInput>
                       </div>
@@ -571,8 +584,8 @@ const getPhoneMask = (value: string) => {
   return getCountryInfo(value).mask
 }
 
-// China: (86) al inicio del UInput vía máscara; 13 huecos para poder escribir 86 + número; al enviar se corta el 86
-const chinaPhoneMask = '(86) ### ### #### ###'
+// China: 86 solo en leading; en el input solo número nacional; al enviar se envía sin 86
+const chinaPhoneMask = '### #### ####'
 
 const normalizePhoneToNational = (value: string) => {
   const digits = (value || '').trim().replace(/\D/g, '')
@@ -582,18 +595,12 @@ const normalizePhoneToNational = (value: string) => {
 
 const handlePhoneInput = (proveedor: any, value: string) => {
   const cleaned = (value || '').trim().replace(/\D/g, '')
-  if (cleaned.startsWith('86')) {
-    proveedor.supplier_phone = `(86) ${cleaned.slice(2)}`
-  } else if (cleaned.startsWith('+86')) {
-    proveedor.supplier_phone = `(86) ${cleaned.slice(3)}`
-  } else {
-    proveedor.supplier_phone = `(86) ${cleaned}`
-  }
-  // Solo quitar error si tiene 8+ dígitos; si tiene 1–7 dígitos mostrar error
-  const digits = (proveedor.supplier_phone || '').trim().replace(/\D/g, '')
+  const national = cleaned.startsWith('86') ? cleaned.slice(2) : (cleaned.startsWith('+86') ? cleaned.slice(3) : cleaned)
+  proveedor.supplier_phone = national
+  const showPhoneError = national.length > 0 && national.length < 8
   validationErrors.value = {
     ...validationErrors.value,
-    [`phone_${proveedor.id}`]: digits.length >= 8 ? false : digits.length > 0
+    [`phone_${proveedor.id}`]: showPhoneError
   }
 }
 
@@ -636,8 +643,9 @@ const validateForm = () => {
   data.value.proveedores.forEach((proveedor: any) => {
     const hasVendor = proveedor.supplier && proveedor.supplier.trim() !== ''
     const phoneDigits = (proveedor.supplier_phone || '').trim().replace(/\D/g, '')
-    const hasRealPhone = phoneDigits.length >= 8
-    const hasIncompletePhone = phoneDigits.length > 0 && phoneDigits.length < 8
+    const nationalDigits = phoneDigits.startsWith('86') ? phoneDigits.slice(2) : phoneDigits
+    const hasRealPhone = nationalDigits.length >= 8
+    const hasIncompletePhone = nationalDigits.length > 0 && nationalDigits.length < 8
 
     if (hasVendor || hasRealPhone || hasIncompletePhone) {
       hasValidData = true
@@ -714,7 +722,8 @@ const guardarDatos = async () => {
     const providersWithData = data.value.proveedores.filter((proveedor: any) => {
       const hasVendor = proveedor.supplier && proveedor.supplier.trim() !== ''
       const phoneDigits = (proveedor.supplier_phone || '').trim().replace(/\D/g, '')
-      const hasRealPhone = phoneDigits.length >= 8
+      const nationalDigits = phoneDigits.startsWith('86') ? phoneDigits.slice(2) : phoneDigits
+      const hasRealPhone = nationalDigits.length >= 8
       return hasVendor || hasRealPhone
     })
 
