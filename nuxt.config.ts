@@ -62,6 +62,7 @@ export default defineNuxtConfig({
       pusherAppKey: process.env.NUXT_PUSHER_APP_KEY,
       pusherAppCluster: process.env.NUXT_PUSHER_APP_CLUSTER,
       pusherWsHost: process.env.NUXT_WEBSOCKETS_URL,
+      orgKey: process.env.NUXT_PUBLIC_ORG_KEY || '',
     }
   },
 
